@@ -276,7 +276,6 @@ int main() {
     y->print_gradient();
     z->print_gradient();
 
-
     internal::Buffer::instance().flush();
 
     return 0;
