@@ -14,68 +14,73 @@ namespace internal {
 class BinaryExpression : public Expression {
     public:
     ~BinaryExpression() override = default;
-    BinaryExpression(const Tensor& first, const Tensor& second)
+
+    BinaryExpression(const Tensor* first, const Tensor* second)
     :   operands{ first, second }
-    ,   gradient_requirement(first.requires_gradient || second.requires_gradient)
+    ,   gradient_requirement(first->requires_gradient() || second->requires_gradient())
     {
-        if (first.shape() != second.shape()) throw std::runtime_error("shape mismatch");
+        if (first->shape() != second->shape()) throw std::runtime_error("shape mismatch");
     }
-    Tensor::shape_type shape() const { return operands.first.shape(); }
+
+    Tensor::shape_type shape() const { return operands.first->shape(); }
 
     virtual Tensor perform() const = 0;
 
     protected:
-    std::pair<const Tensor&, const Tensor&> operands;
+    std::pair<const Tensor*, const Tensor*> operands;
     bool gradient_requirement;
 };
 
 class Addition : public BinaryExpression {
     public:
     using BinaryExpression::BinaryExpression;
-    using BinaryExpression::backward;
+
     ~Addition() final = default;
 
     Tensor perform() const final {
-        Tensor result(this->shape(), this->gradient_requirement, false);
-        result.copy(operands.first);
+        Tensor result(operands.first);
         result.add(operands.second);
+        result.requires_gradient(this->gradient_requirement);
+        result.is_leaf(false);
         return result;
     }
 
-    void backward(Array& gradient) final {
-        Array gradient_copy = gradient;
-        if (operands.first.requires_gradient) {
-            operands.first.backward(gradient);
+    void backward(Array* gradient) final {
+        Array* gradient_copy = new Array(gradient);
+        if (operands.first->requires_gradient()) {
+            operands.first->backward(gradient);
         }
-        if (operands.second.requires_gradient) {
-            operands.second.backward(gradient_copy);
+        if (operands.second->requires_gradient()) {
+            operands.second->backward(gradient_copy);
         }
+        delete gradient_copy;
     }
 };
 
 class Multiplication : public BinaryExpression {
     public:
     using BinaryExpression::BinaryExpression;
-    using BinaryExpression::backward;
     ~Multiplication() final = default;
 
     Tensor perform() const final {
-        Tensor result(this->shape(), this->gradient_requirement, false);
-        result.copy(operands.first);
+        Tensor result(operands.first);
         result.multiply(operands.second);
+        result.requires_gradient(this->gradient_requirement);
+        result.is_leaf(false);
         return result;
     }
 
-    void backward(Array& gradient) {
-        Array gradient_copy = gradient;
-        if (operands.first.requires_gradient) {
-            gradient.multiply(operands.second);
-            operands.first.backward(gradient);
+    void backward(Array* gradient) final {
+        Array* gradient_copy = new Array(gradient);
+        if (operands.first->requires_gradient()) {
+            gradient->multiply(operands.second);
+            operands.first->backward(gradient);
         }
-        if (operands.second.requires_gradient) {
-            gradient_copy.multiply(operands.first);
-            operands.second.backward(gradient_copy);
+        if (operands.second->requires_gradient()) {
+            gradient_copy->multiply(operands.first);
+            operands.second->backward(gradient_copy);
         }
+        delete gradient_copy;
     }
 };
 

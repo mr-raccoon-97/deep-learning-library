@@ -11,7 +11,7 @@ namespace internal {
 
 struct Expression {
     virtual ~Expression() = default;
-    virtual void backward(Array& gradient) = 0;
+    virtual void backward(Array* gradient) = 0;
 };
 
 } // namespace internal

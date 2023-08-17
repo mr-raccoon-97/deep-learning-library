@@ -18,49 +18,74 @@ class Array {
     using iterator = storage_type::iterator;
     using const_iterator = storage_type::const_iterator;
 
+    virtual ~Array() = default;
+
+    virtual void copy(const Array* other) {
+        size_ = other->size_;
+        shape_ = other->shape_;
+        storage_ = other->storage_;
+    };
+
+    virtual void move(Array* other) {
+        size_ = other->size_;
+        shape_ = std::move(other->shape_);
+        storage_ = std::move(other->storage_);
+        other->size_ = 0;
+        other->shape_.clear();
+        other->storage_.clear();
+    };
+
     Array() = default;
+    Array(const Array* other) { copy(other); }
     Array(shape_type shape)
-    :   _shape(shape) {
-        _size = 1; for (size_type dimension : shape) _size *= dimension;
-        _storage.resize(_size);
+    :   shape_(shape) {
+        size_ = 1; for (size_type dimension : shape) size_ *= dimension;
+        storage_.resize(size_);
     }
 
-    size_type size() const { return _size; }
-    shape_type shape() const { return _shape; }
-    pointer data() { return _storage.data(); }
-    const_pointer data() const { return _storage.data(); }
+    size_type size() const { return size_; }
+    shape_type shape() const { return shape_; }
+    pointer data() { return storage_.data(); }
+    const_pointer data() const { return storage_.data(); }
 
-    iterator begin() { return _storage.begin(); }
-    iterator end() { return _storage.end(); }
-    const_iterator begin() const { return _storage.cbegin(); }
-    const_iterator end() const { return _storage.cend(); }
-    const_iterator cbegin() const { return _storage.cbegin(); }
-    const_iterator cend() const { return _storage.cend(); }
+    iterator begin() { return storage_.begin(); }
+    iterator end() { return storage_.end(); }
+    const_iterator begin() const { return storage_.cbegin(); }
+    const_iterator end() const { return storage_.cend(); }
+    const_iterator cbegin() const { return storage_.cbegin(); }
+    const_iterator cend() const { return storage_.cend(); }
 
-    Array& add (const Array& other);
-    Array& multiply (const Array& other);
-
-    protected:
-    void set_size(size_type size) { _size = size; }
-    void set_shape(shape_type shape) { _shape = shape; }
-    void resize_storage(size_type size) { _storage.resize(size); }
+    void add(const Array* other);
+    void multiply(const Array* other);
+    void divide(const Array* other);
+    void subtract(const Array* other);
 
     private:
-    size_type _size;
-    shape_type _shape;
-    storage_type _storage;
+    size_type size_;
+    shape_type shape_;
+    storage_type storage_;
 };
 
-Array& Array::add (const Array& other) {
-    if(_shape != other._shape) throw std::runtime_error("shape mismatch");
-    for(size_type i = 0; i < _size; ++i) _storage[i] += other._storage[i];
-    return *this;
+// implement with eigen.
+
+void Array::add(const Array* other) {
+    if(shape_ != other->shape_) throw std::runtime_error("shape mismatch");
+    for(size_type i = 0; i < size_; ++i) storage_[i] += other->storage_[i];
 }
 
-Array& Array::multiply (const Array& other) {
-    if(_shape != other._shape) throw std::runtime_error("shape mismatch");
-    for(size_type i = 0; i < _size; ++i) _storage[i] *= other._storage[i];
-    return *this;
+void Array::multiply(const Array* other) {
+    if(shape_ != other->shape_) throw std::runtime_error("shape mismatch");
+    for(size_type i = 0; i < size_; ++i) storage_[i] *= other->storage_[i];
+}
+
+void Array::divide(const Array* other) {
+    if(shape_ != other->shape_) throw std::runtime_error("shape mismatch");
+    for(size_type i = 0; i < size_; ++i) storage_[i] /= other->storage_[i];
+}
+
+void Array::subtract(const Array* other) {
+    if(shape_ != other->shape_) throw std::runtime_error("shape mismatch");
+    for(size_type i = 0; i < size_; ++i) storage_[i] -= other->storage_[i];
 }
 
 } // namespace internal
