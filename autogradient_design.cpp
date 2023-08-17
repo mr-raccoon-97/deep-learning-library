@@ -17,7 +17,25 @@ class Array {
     using iterator = storage_type::iterator;
     using const_iterator = storage_type::const_iterator;
 
+    virtual ~Array() = default;
+
+    virtual void copy(const Array* other) {
+        _size = other->_size;
+        _shape = other->_shape;
+        _storage = other->_storage;
+    };
+
+    virtual void move(Array* other) {
+        _size = other->_size;
+        _shape = std::move(other->_shape);
+        _storage = std::move(other->_storage);
+        other->_size = 0;
+        other->_shape.clear();
+        other->_storage.clear();
+    };
+
     Array() = default;
+    Array(const Array* other) { copy(other); }
     Array(shape_type shape)
     :   _shape(shape) {
         _size = 1; for (size_type dimension : shape) _size *= dimension;
@@ -36,8 +54,12 @@ class Array {
     const_iterator cbegin() const { return _storage.cbegin(); }
     const_iterator cend() const { return _storage.cend(); }
 
-    Array& add (const Array& other);
-    Array& multiply (const Array& other);
+    Array& add (const Array& other); //
+    Array& multiply (const Array& other); //
+
+    void add(const Array* other);
+    void multiply(const Array* other);
+
 
     protected:
     void set_size(size_type size) { _size = size; }
@@ -50,22 +72,20 @@ class Array {
     storage_type _storage;
 };
 
-
-Array& Array::add (const Array& other) {
-    if(_shape != other._shape) throw std::runtime_error("shape mismatch");
-    for(size_type i = 0; i < _size; ++i) _storage[i] += other._storage[i];
-    return *this;
+void Array::add(const Array* other) {
+    if(_shape != other->_shape) throw std::runtime_error("shape mismatch");
+    for(size_type i = 0; i < _size; ++i) _storage[i] += other->_storage[i];
 }
 
-Array& Array::multiply (const Array& other) {
-    if(_shape != other._shape) throw std::runtime_error("shape mismatch");
-    for(size_type i = 0; i < _size; ++i) _storage[i] *= other._storage[i];
-    return *this;
+
+void Array::multiply(const Array* other) {
+    if(_shape != other->_shape) throw std::runtime_error("shape mismatch");
+    for(size_type i = 0; i < _size; ++i) _storage[i] *= other->_storage[i];
 }
 
 struct Expression {
     virtual ~Expression() = default;
-    virtual void backward(Array& gradient) = 0;
+    virtual void backward(Array* gradient) = 0;
 };
 
 class Tensor : public Array {
@@ -73,11 +93,13 @@ class Tensor : public Array {
     bool requires_gradient;
     bool is_leaf;
 
-    Tensor(const Tensor& other) : requires_gradient(other.requires_gradient) , is_leaf(other.is_leaf) { copy(other); }
-    Tensor(Tensor&& other) : requires_gradient(other.requires_gradient) , is_leaf(other.is_leaf)  { move(std::move(other)); }
-    Tensor& operator=(const Tensor& other) { if (this != &other) copy(other);  return *this; }
-    Tensor& operator=(Tensor&& other) { if (this != &other) move(std::move(other)); return *this; }
-    ~Tensor() { if (requires_gradient) delete _gradient; }
+
+    Tensor(const Tensor* other) : requires_gradient(other->requires_gradient) , is_leaf(other->is_leaf) { copy(other); }
+    Tensor(const Tensor& other) : requires_gradient(other.requires_gradient) , is_leaf(other.is_leaf) { copy(&other); }
+    Tensor(Tensor&& other) : requires_gradient(other.requires_gradient) , is_leaf(other.is_leaf)  { move(&other); }
+    Tensor& operator=(const Tensor& other) { if (this != &other) copy(&other);  return *this; }
+    Tensor& operator=(Tensor&& other) { if (this != &other) move(&other); return *this; }
+    ~Tensor() override { if (requires_gradient) delete _gradient; }
 
     Tensor(shape_type shape, bool gradient_requirement, bool node_status)
     :   Array(shape)
@@ -90,7 +112,7 @@ class Tensor : public Array {
     
     void derive_with(Expression* expression) { _expression_view = expression; }
 
-    void backward(Array& gradient) const {
+    void backward(Array* gradient) const {
         if (is_leaf) { _gradient->add(gradient); } 
         else { _expression_view->backward(gradient); }
     }
@@ -101,27 +123,38 @@ class Tensor : public Array {
         }
     }
 
-    void copy(const Tensor& other) {
-        set_size(other.size());
-        set_shape(other.shape());
-        resize_storage(other.size());
-        std::copy(other.begin(), other.end(), begin());
-        if (other.requires_gradient) {
-            _gradient = new Array(other.shape());
-            std::copy(other._gradient->begin(), other._gradient->end(), _gradient->begin());
+    void copy(const Array* other) final {
+        Array::copy(other);
+        requires_gradient = false;
+        is_leaf = false;
+    }
+
+    void move(Array* other) final {
+        Array::move(other);
+        requires_gradient = false;
+        is_leaf = false;
+    }
+
+    void copy(const Tensor* other) {
+        Array::copy(other);
+        requires_gradient = other->requires_gradient;
+        if (requires_gradient) {
+            _gradient = new Array(other);
         }
     }
 
-    void move(Tensor&& other) {
-        set_size(other.size());
-        set_shape(other.shape());
-        resize_storage(other.size());
-        std::move(other.begin(), other.end(), begin());
-        if (other.requires_gradient) {
-            _gradient = other._gradient;
-            other._gradient = nullptr;
+    void move(Tensor* other) {
+        Array::move(other);
+        requires_gradient = other->requires_gradient;
+        if (requires_gradient) {
+            _gradient = other->_gradient;
+            other->_gradient = nullptr;
         }
     }
+
+    void copy(const Tensor& other) { copy(&other); }
+    void move(Tensor&& other) { move(&other); }
+
     private:
     Array* _gradient = nullptr;
     Expression* _expression_view = nullptr;
@@ -130,18 +163,20 @@ class Tensor : public Array {
 class BinaryExpression : public Expression {
     public:
     ~BinaryExpression() override = default;
-    BinaryExpression(const Tensor& first, const Tensor& second)
+
+    BinaryExpression(const Tensor* first, const Tensor* second)
     :   operands{ first, second }
-    ,   gradient_requirement(first.requires_gradient || second.requires_gradient)
+    ,   gradient_requirement(first->requires_gradient || second->requires_gradient)
     {
-        if (first.shape() != second.shape()) throw std::runtime_error("shape mismatch");
+        if (first->shape() != second->shape()) throw std::runtime_error("shape mismatch");
     }
-    Tensor::shape_type shape() const { return operands.first.shape(); }
+
+    Tensor::shape_type shape() const { return operands.first->shape(); }
 
     virtual Tensor perform() const = 0;
 
     protected:
-    std::pair<const Tensor&, const Tensor&> operands;
+    std::pair<const Tensor*, const Tensor*> operands;
     bool gradient_requirement;
 };
 
@@ -152,20 +187,22 @@ class Addition : public BinaryExpression {
     ~Addition() final = default;
 
     Tensor perform() const final {
-        Tensor result(this->shape(), this->gradient_requirement, false);
-        result.copy(operands.first);
+        Tensor result(operands.first);
         result.add(operands.second);
+        result.requires_gradient = this->gradient_requirement;
+        result.is_leaf = false;
         return result;
     }
 
-    void backward(Array& gradient) final {
-        Array gradient_copy = gradient;
-        if (operands.first.requires_gradient) {
-            operands.first.backward(gradient);
+    void backward(Array* gradient) final {
+        Array* gradient_copy = new Array(gradient);
+        if (operands.first->requires_gradient) {
+            operands.first->backward(gradient);
         }
-        if (operands.second.requires_gradient) {
-            operands.second.backward(gradient_copy);
+        if (operands.second->requires_gradient) {
+            operands.second->backward(gradient_copy);
         }
+        delete gradient_copy;
     }
 };
 
@@ -176,22 +213,25 @@ class Multiplication : public BinaryExpression {
     ~Multiplication() final = default;
 
     Tensor perform() const final {
-        Tensor result(this->shape(), this->gradient_requirement, false);
-        result.copy(operands.first);
+        Tensor result(operands.first);
         result.multiply(operands.second);
+        result.requires_gradient = this->gradient_requirement;
+        result.is_leaf = false;
         return result;
     }
 
-    void backward(Array& gradient) {
-        Array gradient_copy = gradient;
-        if (operands.first.requires_gradient) {
-            gradient.multiply(operands.second);
-            operands.first.backward(gradient);
+
+    void backward(Array* gradient) {
+        Array* gradient_copy = new Array(gradient);
+        if (operands.first->requires_gradient) {
+            gradient->multiply(operands.second);
+            operands.first->backward(gradient);
         }
-        if (operands.second.requires_gradient) {
-            gradient_copy.multiply(operands.first);
-            operands.second.backward(gradient_copy);
+        if (operands.second->requires_gradient) {
+            gradient_copy->multiply(operands.first);
+            operands.second->backward(gradient_copy);
         }
+        delete gradient_copy;
     }
 };
 
@@ -214,7 +254,6 @@ class Buffer {
 
 }
 
-///////////////////////////////////
 
 namespace net {
 
@@ -230,17 +269,22 @@ class Tensor {
         _tensor = std::make_shared<internal::Tensor>(shape, requires_gradient, is_leaf);
     }
 
-    internal::Tensor* operator -> () { return _tensor.get(); }
-    internal::Tensor& operator * () const { return *_tensor; }
+    void backward(const net::Tensor& gradient) const { _tensor->backward(gradient.internal()); }
 
+    internal::Tensor* internal() const {return _tensor.get(); }
+
+    auto begin() { return _tensor->begin(); }
+    auto end() { return _tensor->end(); }
+    auto cbegin() const { return _tensor->cbegin(); }
+    auto cend() const { return _tensor->cend(); }
 
     private:
     std::shared_ptr<internal::Tensor> _tensor;
 };
 
 
-Tensor operator + (const Tensor& left, const Tensor& right) {
-    internal::BinaryExpression* expression = new internal::Addition(*left, *right);
+Tensor operator + (const Tensor& first, const Tensor& second) {
+    internal::BinaryExpression* expression = new internal::Addition(first.internal(), second.internal());
     std::shared_ptr<internal::Tensor> internal_result = std::make_shared<internal::Tensor>(expression->perform());
     internal_result->derive_with(expression);
     Tensor result(std::move(internal_result));
@@ -248,8 +292,8 @@ Tensor operator + (const Tensor& left, const Tensor& right) {
     return result;
 }
 
-Tensor operator * (const Tensor& left, const Tensor& right) {
-    internal::BinaryExpression* expression = new internal::Multiplication(*left, *right);
+Tensor operator * (const Tensor& first, const Tensor& second) {
+    internal::BinaryExpression* expression = new internal::Multiplication(first.internal(), second.internal());
     std::shared_ptr<internal::Tensor> internal_result = std::make_shared<internal::Tensor>(expression->perform());
     internal_result->derive_with(expression);
     Tensor result(std::move(internal_result));
@@ -260,27 +304,29 @@ Tensor operator * (const Tensor& left, const Tensor& right) {
 }
 
 int main() {
-    net::Tensor x({2, 2});
-    net::Tensor y({2, 2});
-    net::Tensor z({2, 2});
+    net::Tensor x({2, 2}, true, true);
+    net::Tensor y({2, 2}, true, true);
+    net::Tensor z({2, 2}, true, true);
+
+    net::Tensor I({2, 2}, false, false);
 
 
-    for(auto i = 0; i < x->size(); ++i) x->data()[i] = 1;
-    for(auto i = 0; i < y->size(); ++i) y->data()[i] = -3;
-    for(auto i = 0; i < z->size(); ++i) z->data()[i] = 4;
+    for (auto& element : x) element = 1;
+    for (auto& element : y) element = -3;
+    for (auto& element : z) element = 4;
+    for (auto& element : I) element = 1;
 
-    auto result = x * z + y * z;
+    net::Tensor result({2, 2}, true, false);
+    result = x * z + y * z;
+    result.backward(I);
 
-    internal::Array gradient({2, 2});
-    for(auto i = 0; i < gradient.size(); ++i) gradient.data()[i] = 1;
+    x.internal()->print_gradient();
+    std::cout << std::endl;
+    y.internal()->print_gradient();
+    std::cout << std::endl;
+    z.internal()->print_gradient();
+    std::cout << std::endl;
 
-    result->backward(gradient);
-    
-    x->print_gradient();
-    y->print_gradient();
-    z->print_gradient();
-
-    internal::Buffer::instance().flush();
 
     return 0;
 }
