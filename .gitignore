@@ -1,32 +1,41 @@
-# Prerequisites
-*.d
+# Compiled output
+/build/
+/bin/
+/a.out
+/autogradient_design
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# CMake artifacts
+CMakeFiles/
+CMakeCache.txt
+CMakeScripts/
+cmake_install.cmake
+CMakeOutput.log
+CMakeTmp/
+CMakeDirectoryInformation.cmake
 
-# Precompiled Headers
-*.gch
-*.pch
+# Compiled libraries
+/lib/
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# IDE-specific files
+.vscode/
+.idea/
 
-# Fortran module files
-*.mod
-*.smod
+# Ignore any personal or system-specific files
+.DS_Store
+Thumbs.db
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# Ignore user-specific CMake files
+CMakeUserPresets.json
+CMakeUserPresets.json.old
 
-# Executables
-*.exe
-*.out
-*.app
+# Ignore compilation scripts (if not needed in the repo)
+compilation.sh
+
+# Ignore generated documentation or other generated files
+/doc/
+/docs/
+/coverage/
+/xml/
+
+# Ignore any log files
+*.log
