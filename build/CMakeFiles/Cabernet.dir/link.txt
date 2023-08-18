@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../lib/libCabernet.a CMakeFiles/Cabernet.dir/src/tensor.cpp.o
-/usr/bin/ranlib ../lib/libCabernet.a
