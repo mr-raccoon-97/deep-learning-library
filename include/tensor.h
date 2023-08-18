@@ -11,11 +11,23 @@ namespace net {
 
 class Tensor {
     public:
+    using scalar_type = float;
     using size_type = std::size_t;
     using shape_type = std::vector<size_type>;
+    using storage_type = std::vector<scalar_type>;
+    using iterator = storage_type::iterator;
+    using const_iterator = storage_type::const_iterator;
+
     Tensor(std::shared_ptr<internal::Tensor> tensor);
     Tensor(shape_type shape, bool requires_gradient = true, bool is_leaf = true);
     internal::Tensor* internal() const;
+
+    iterator begin();
+    iterator end();
+    const_iterator begin() const;
+    const_iterator end() const;
+    const_iterator cbegin() const;
+    const_iterator cend() const;
 
     private:
     std::shared_ptr<internal::Tensor> _tensor;

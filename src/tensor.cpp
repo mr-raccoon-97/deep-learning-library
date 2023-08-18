@@ -11,11 +11,18 @@ namespace net {
 Tensor::Tensor(std::shared_ptr<internal::Tensor> tensor)
 :   _tensor(tensor) {}
 
-Tensor::Tensor(shape_type shape, bool requires_gradient = true, bool is_leaf = true) {
+Tensor::Tensor(shape_type shape, bool requires_gradient, bool is_leaf ) {
     _tensor = std::make_shared<internal::Tensor>(shape, requires_gradient, is_leaf);
 }
 
 internal::Tensor* Tensor::internal() const {return _tensor.get(); }
+
+Tensor::iterator Tensor::begin() { return _tensor->begin(); }
+Tensor::iterator Tensor::end() { return _tensor->end(); }
+Tensor::const_iterator Tensor::begin() const { return _tensor->begin(); }
+Tensor::const_iterator Tensor::end() const { return _tensor->end(); }
+Tensor::const_iterator Tensor::cbegin() const { return _tensor->cbegin(); }
+Tensor::const_iterator Tensor::cend() const { return _tensor->cend(); }
 
 Tensor operator + (const Tensor& first, const Tensor& second) {
     internal::BinaryExpression* expression = new internal::Addition(first.internal(), second.internal());

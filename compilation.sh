@@ -1,0 +1,1 @@
+g++ -o autogradient_design autogradient_design.cpp -LCabernet/lib -lCabernet -I Cabernet/include
