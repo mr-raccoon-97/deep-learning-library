@@ -1,0 +1,6 @@
+#ifndef TENSOR_CONFIG_H
+#define TENSOR_CONFIG_H
+
+#define USING_EIGEN_BACKEND true
+
+#endif //TENSOR_CONFIG_H

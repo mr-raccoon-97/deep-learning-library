@@ -13,75 +13,49 @@ namespace internal {
 
 class BinaryExpression : public Expression {
     public:
+    bool gradient_requirement;
+    std::pair<const Tensor*, const Tensor*> operands;
+
     ~BinaryExpression() override = default;
 
     BinaryExpression(const Tensor* first, const Tensor* second)
     :   operands{ first, second }
     ,   gradient_requirement(first->requires_gradient() || second->requires_gradient())
-    {
-        if (first->shape() != second->shape()) throw std::runtime_error("shape mismatch");
-    }
-
-    Tensor::shape_type shape() const { return operands.first->shape(); }
+    {}
 
     virtual Tensor perform() const = 0;
-
-    protected:
-    std::pair<const Tensor*, const Tensor*> operands;
-    bool gradient_requirement;
 };
 
 class Addition : public BinaryExpression {
     public:
     using BinaryExpression::BinaryExpression;
-
     ~Addition() final = default;
-
-    Tensor perform() const final {
-        Tensor result(operands.first);
-        result.add(operands.second);
-        result.requires_gradient(this->gradient_requirement);
-        result.is_leaf(false);
-        return result;
-    }
-
-    void backward(Array* gradient) final {
-        Array* gradient_copy = new Array(gradient);
-        if (operands.first->requires_gradient()) {
-            operands.first->backward(gradient);
-        }
-        if (operands.second->requires_gradient()) {
-            operands.second->backward(gradient_copy);
-        }
-        delete gradient_copy;
-    }
+    Tensor perform() const final;
+    void backward(Array* gradient) final;
 };
 
 class Multiplication : public BinaryExpression {
     public:
     using BinaryExpression::BinaryExpression;
     ~Multiplication() final = default;
+    Tensor perform() const final;
+    void backward(Array* gradient) final;
+};
 
-    Tensor perform() const final {
-        Tensor result(operands.first);
-        result.multiply(operands.second);
-        result.requires_gradient(this->gradient_requirement);
-        result.is_leaf(false);
-        return result;
-    }
+class MatrixMultiplication : public BinaryExpression {
+    public:
+    using scalar_type = Tensor::scalar_type;
+    using size_type = Tensor::size_type;
 
-    void backward(Array* gradient) final {
-        Array* gradient_copy = new Array(gradient);
-        if (operands.first->requires_gradient()) {
-            gradient->multiply(operands.second);
-            operands.first->backward(gradient);
-        }
-        if (operands.second->requires_gradient()) {
-            gradient_copy->multiply(operands.first);
-            operands.second->backward(gradient_copy);
-        }
-        delete gradient_copy;
-    }
+    size_type rows;
+    size_type columns;
+    size_type inner_dimension;
+
+    MatrixMultiplication(const Tensor* first, const Tensor* second);
+    ~MatrixMultiplication() final = default;
+
+    Tensor perform() const final ;
+    void backward(Array* gradient) final ;
 };
 
 } // namespace internal

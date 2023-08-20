@@ -20,13 +20,13 @@ class Array {
 
     virtual ~Array() = default;
 
-    virtual void copy(const Array* other) {
+    void copy(const Array* other) {
         size_ = other->size_;
         shape_ = other->shape_;
         storage_ = other->storage_;
     };
 
-    virtual void move(Array* other) {
+    void move(Array* other) {
         size_ = other->size_;
         shape_ = std::move(other->shape_);
         storage_ = std::move(other->storage_);
@@ -45,6 +45,7 @@ class Array {
 
     size_type size() const { return size_; }
     shape_type shape() const { return shape_; }
+    size_type rank() const { return shape_.size(); }
     pointer data() { return storage_.data(); }
     const_pointer data() const { return storage_.data(); }
 
@@ -57,36 +58,12 @@ class Array {
 
     void add(const Array* other);
     void multiply(const Array* other);
-    void divide(const Array* other);
-    void subtract(const Array* other);
 
     private:
     size_type size_;
     shape_type shape_;
     storage_type storage_;
 };
-
-// implement with eigen.
-
-void Array::add(const Array* other) {
-    if(shape_ != other->shape_) throw std::runtime_error("shape mismatch");
-    for(size_type i = 0; i < size_; ++i) storage_[i] += other->storage_[i];
-}
-
-void Array::multiply(const Array* other) {
-    if(shape_ != other->shape_) throw std::runtime_error("shape mismatch");
-    for(size_type i = 0; i < size_; ++i) storage_[i] *= other->storage_[i];
-}
-
-void Array::divide(const Array* other) {
-    if(shape_ != other->shape_) throw std::runtime_error("shape mismatch");
-    for(size_type i = 0; i < size_; ++i) storage_[i] /= other->storage_[i];
-}
-
-void Array::subtract(const Array* other) {
-    if(shape_ != other->shape_) throw std::runtime_error("shape mismatch");
-    for(size_type i = 0; i < size_; ++i) storage_[i] -= other->storage_[i];
-}
 
 } // namespace internal
 

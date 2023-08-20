@@ -6,6 +6,8 @@
 
 namespace internal {
 
+class Expression;
+
 class Buffer {
     public:
     static Buffer& instance() { static Buffer instance; return instance; }
