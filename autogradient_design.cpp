@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <memory>
 
 #include <eigen3/Eigen/Dense>
 
@@ -159,9 +160,6 @@ class Tensor : public Array {
 
 class BinaryExpression : public Expression {
     public:
-    bool gradient_requirement;
-    std::pair<const Tensor*, const Tensor*> operands;
-
     ~BinaryExpression() override = default;
 
     BinaryExpression(const Tensor* first, const Tensor* second)
@@ -170,6 +168,9 @@ class BinaryExpression : public Expression {
     {}
 
     virtual Tensor perform() const = 0;
+
+    bool gradient_requirement;
+    std::pair<const Tensor*, const Tensor*> operands;
 };
 
 class Addition : public BinaryExpression {
@@ -234,12 +235,12 @@ class MatrixMultiplication : public BinaryExpression {
     using scalar_type = Tensor::scalar_type;
     using size_type = Tensor::size_type;
 
+    MatrixMultiplication(const Tensor* first, const Tensor* second);
+    ~MatrixMultiplication() final = default;
+
     size_type rows;
     size_type columns;
     size_type inner_dimension;
-
-    MatrixMultiplication(const Tensor* first, const Tensor* second);
-    ~MatrixMultiplication() final = default;
 
     Tensor perform() const final ;
     void backward(Array* gradient) final ;
@@ -291,30 +292,206 @@ void MatrixMultiplication::backward(Array* gradient) {
     }
 }
 
+class Linear : public Expression {
+    public:
+    using scalar_type = Tensor::scalar_type;
+    using size_type = Tensor::size_type;
+    using shape_type = Tensor::shape_type;
+
+    Linear(const Tensor* input, const Tensor* weights, const Tensor* bias);
+    ~Linear() final = default;
+
+    Tensor perform() const;
+    void backward(Array* gradient) final;
+
+    bool gradient_requirement;
+
+    const Tensor* input;
+    const Tensor* weight;
+    const Tensor* bias;
+
+    size_type rows;
+    size_type columns;
+    size_type inner_dimension;
+};
+
+Linear::Linear(const Tensor* input, const Tensor* weight, const Tensor* bias)
+:   input(input)
+,   weight(weight)
+,   bias(bias)
+,   gradient_requirement(weight->requires_gradient() || bias->requires_gradient())
+,   rows(input->shape().front())
+,   columns(weight->shape().back())
+,   inner_dimension(input->shape().back()) {
+    if (input->rank() != 2 || weight->rank() != 2) throw std::runtime_error("rank mismatch");
+    if (input->shape().back() != weight->shape().front()) throw std::runtime_error("shape mismatch");
+}
+
+Tensor Linear::perform() const {
+    Tensor result({rows, columns});
+
+    Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 1>> result_map(result.data(), rows, columns);
+    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> input_map(input->data(), rows, inner_dimension);
+    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> weight_map(weight->data(), inner_dimension, columns);
+    Eigen::Map<const Eigen::Matrix<scalar_type, 1, -1>> bias_map(bias->data(), columns);
+
+    result_map = (input_map * weight_map).rowwise() + bias_map;
+    result_map.eval();
+
+    result.requires_gradient(this->gradient_requirement);
+    result.is_leaf(false);
+    return result;
+}
+
+void Linear::backward(Array* gradient) {
+    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> row_gradient_map(gradient->data(), rows, columns);
+
+    if (input->requires_gradient()) {
+        Array* input_gradient = new Array({rows, inner_dimension});
+        Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> weight_map(weight->data(), inner_dimension, columns);
+        Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 1>> input_gradient_map(input_gradient->data(), rows, inner_dimension);
+        input_gradient_map = row_gradient_map * weight_map.transpose();
+        input_gradient_map.eval();
+        input->backward(input_gradient);
+        delete input_gradient;
+    }
+    
+    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> column_gradient_map(gradient->data(), rows, columns);
+
+    if (weight->requires_gradient()) {
+        Array* weight_gradient = new Array({inner_dimension, columns});
+        Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> input_map(input->data(), rows, inner_dimension);
+        Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 0>> weight_gradient_map(weight_gradient->data(), inner_dimension, columns);
+        weight_gradient_map = input_map.transpose() * column_gradient_map;
+        weight_gradient_map.eval();
+        weight->backward(weight_gradient);
+        delete weight_gradient;
+    }
+    
+    if (bias->requires_gradient()) {
+        Array* bias_gradient = new Array({columns});
+        Eigen::Map<Eigen::Matrix<scalar_type, 1, -1>> bias_gradient_map(bias_gradient->data(), columns);
+        bias_gradient_map = row_gradient_map.rowwise().sum();
+        bias->backward(bias_gradient);
+        delete bias_gradient;
+    }
+}
+
+class Buffer {
+    public:
+    static Buffer& instance() { static Buffer instance; return instance; }
+    ~Buffer() { flush(); }
+    void flush() { for(auto& element : _buffer) delete element; _buffer.clear(); }
+    void operator << (Expression* expression) { _buffer.push_back(expression); }
+
+    private:
+    Buffer() = default;
+    Buffer(const Buffer&) = delete;
+    Buffer(Buffer&&) = delete;
+    Buffer& operator=(Buffer&&) = delete;
+    Buffer& operator=(const Buffer&) = delete;
+
+    std::vector<Expression*> _buffer;
+};
 
 } // namespace internal
 
+namespace net {
+
+class Tensor {
+    public:
+    using scalar_type = float;
+    using size_type = std::size_t;
+    using shape_type = std::vector<size_type>;
+    using storage_type = std::vector<scalar_type>;
+    using iterator = storage_type::iterator;
+    using const_iterator = storage_type::const_iterator;
+
+    Tensor(std::shared_ptr<internal::Tensor> tensor);
+    Tensor(shape_type shape, bool requires_gradient = true, bool is_leaf = true);
+    internal::Tensor* internal() const;
+
+    iterator begin();
+    iterator end();
+    const_iterator begin() const;
+    const_iterator end() const;
+    const_iterator cbegin() const;
+    const_iterator cend() const;
+
+    private:
+    std::shared_ptr<internal::Tensor> _tensor;
+};
+
+
+Tensor::Tensor(std::shared_ptr<internal::Tensor> tensor)
+:   _tensor(tensor) {}
+
+Tensor::Tensor(shape_type shape, bool gradient_requirement, bool node_status ) {
+    _tensor = std::make_shared<internal::Tensor>(shape);
+    _tensor->requires_gradient(gradient_requirement);
+    _tensor->is_leaf(node_status);
+}
+
+internal::Tensor* Tensor::internal() const {return _tensor.get(); }
+
+Tensor::iterator Tensor::begin() { return _tensor->begin(); }
+Tensor::iterator Tensor::end() { return _tensor->end(); }
+Tensor::const_iterator Tensor::begin() const { return _tensor->begin(); }
+Tensor::const_iterator Tensor::end() const { return _tensor->end(); }
+Tensor::const_iterator Tensor::cbegin() const { return _tensor->cbegin(); }
+Tensor::const_iterator Tensor::cend() const { return _tensor->cend(); }
+
+Tensor operator + (const Tensor& first, const Tensor& second) {
+    internal::BinaryExpression* expression = new internal::Addition(first.internal(), second.internal());
+    std::shared_ptr<internal::Tensor> internal_result = std::make_shared<internal::Tensor>(expression->perform());
+    internal_result->derive_with(expression);
+    Tensor result(std::move(internal_result));
+    internal::Buffer::instance() << expression;
+    return result;
+}
+
+Tensor operator * (const Tensor& first, const Tensor& second) {
+    internal::BinaryExpression* expression = new internal::Multiplication(first.internal(), second.internal());
+    std::shared_ptr<internal::Tensor> internal_result = std::make_shared<internal::Tensor>(expression->perform());
+    internal_result->derive_with(expression);
+    Tensor result(std::move(internal_result));
+    internal::Buffer::instance() << expression;
+    return result;
+}
+
+
+} // namespace net
+
+
 int main() {
-    internal::Tensor x({2,3}); for(auto& e : x) e = 1;
-    x.requires_gradient(true);
-    x.is_leaf(true);
+    internal::Tensor X({2, 3}); for(auto& e : X) e = 1;
+    internal::Tensor W({3, 2}); for(auto& e : W) e = 2;
+    internal::Tensor b({2}); for(auto& e : b) e = 3;
 
-    internal::Tensor y({3,2}); for(auto& e : y) e = 1;
-    y.requires_gradient(true);
-    y.is_leaf(true);
+    X.requires_gradient(true);
+    W.requires_gradient(true);
+    b.requires_gradient(true);
 
-    internal::MatrixMultiplication m(&x,&y);
-    internal::Tensor z = m.perform();
-    z.requires_gradient(true);
-    z.is_leaf(false);
+    X.is_leaf(true);
+    W.is_leaf(true);
+    b.is_leaf(true);
+    
+    internal::Array I({2, 2}); for(auto& e : I) e = 1;
 
-    internal::Array I({2,2}); for(auto& e : I) e = 1;
+    internal::Linear linear(&X, &W, &b);
 
-    m.backward(&I);
+    internal::Tensor Y({2, 2});
+    Y.requires_gradient(true);
+    Y.is_leaf(false);
 
-    x.print_gradient();
-    y.print_gradient();
+    Y = linear.perform();
+    linear.backward(&I);
 
+    for (auto& e : Y) std::cout << e << " ";
+
+    X.print_gradient();
+    W.print_gradient();
+    b.print_gradient();
     return 0;
 }
 
