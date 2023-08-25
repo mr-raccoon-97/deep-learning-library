@@ -9,12 +9,14 @@
 
 namespace internal {
 
+class Tensor;
+
 struct Expression {
     virtual ~Expression() = default;
-    virtual void backward(Array* gradient) = 0;
+    virtual void backward(Array* gradient) const = 0;
+    virtual Tensor perform() const = 0;
 };
 
 } // namespace internal
-
 
 #endif // INTERNAL_EXPRESSION_HPP

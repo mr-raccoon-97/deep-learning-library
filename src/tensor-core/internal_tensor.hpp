@@ -12,6 +12,8 @@ namespace internal {
 
 class Tensor : public Array {
     public:
+
+    Tensor(shape_type shape) : Array(shape) {}
     Tensor(const Tensor* other) { copy(other); }
     Tensor(const Tensor& other) { copy(&other); }
     Tensor(Tensor&& other) { move(&other); }
@@ -19,12 +21,6 @@ class Tensor : public Array {
     Tensor& operator=(Tensor&& other) { if (this != &other) move(&other); return *this; }
     ~Tensor() override { if (requires_gradient_) delete gradient_; }
     Tensor(Array&& other) { Array::move(&other); }
-
-    Tensor(shape_type shape) : Array(shape) {
-        if (requires_gradient_) { 
-            gradient_ = new Array(shape);
-        }
-    }
     
     void backward(Array* gradient) const {
         if (is_leaf_) { gradient_->add(gradient); } 
