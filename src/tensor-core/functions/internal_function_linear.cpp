@@ -5,7 +5,6 @@
 
 #include "internal_function_linear.h"
 
-
 #if defined(USE_EIGEN_BACKEND)
 
 #include <eigen3/Eigen/Dense>

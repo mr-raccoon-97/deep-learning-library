@@ -6,6 +6,9 @@
 
 namespace internal {
 
+class Array;
+class Tensor;
+
 class Linear : public Expression {
     public:
     ~Linear() final;
