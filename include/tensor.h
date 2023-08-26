@@ -30,7 +30,7 @@ class Tensor {
     const_iterator cend() const;
 
     private:
-    std::shared_ptr<internal::Tensor> _tensor;
+    std::shared_ptr<internal::Tensor> tensor_;
 };
 
 Tensor operator + (const Tensor& first, const Tensor& second);

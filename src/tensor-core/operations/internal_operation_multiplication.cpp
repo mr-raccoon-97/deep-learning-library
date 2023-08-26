@@ -1,4 +1,6 @@
 #include "../config.h"
+#include "../internal_tensor.hpp"
+#include "../internal_array.hpp"
 #include "internal_operation_multiplication.h"
 
 #if defined(USE_EIGEN_BACKEND)

@@ -5,16 +5,20 @@
 #include <vector>
 #include <memory>
 
+#include "internal_types.h"
+
 namespace internal {
 
 class Array {
     public:
-    using scalar_type = float;
+    using scalar_type = type::scalar_type;
     using pointer = scalar_type*;
     using const_pointer = const scalar_type*;
-    using size_type = std::size_t;
-    using shape_type = std::vector<size_type>;
-    using storage_type = std::vector<scalar_type>;
+
+    using size_type = type::size_type;
+    using shape_type = type::shape_type;
+    using storage_type = type::storage_type;
+    
     using iterator = storage_type::iterator;
     using const_iterator = storage_type::const_iterator;
 

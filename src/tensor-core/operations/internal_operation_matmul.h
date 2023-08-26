@@ -16,10 +16,14 @@ class Matmul : public Operation {
     Tensor perform() const final;
     void backward(Array* gradient) const final;
 
+    size_type rows_dimension() const;
+    size_type columns_dimension() const;
+    size_type inner_dimension() const;
+
     protected:
-    size_type rows_dimension;
-    size_type columns_dimension;
-    size_type inner_dimension;
+    size_type rows_dimension_;
+    size_type columns_dimension_;
+    size_type inner_dimension_;
 };
 
 } // namespace internal 

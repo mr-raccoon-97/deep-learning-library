@@ -49,6 +49,7 @@ class Tensor : public Array {
     }
 
     Array* gradient() const { return gradient_; }
+    
     bool is_leaf() const { return is_leaf_; }
     void is_leaf(bool status) { is_leaf_ = status; }
     void derive_with(Expression* expression) { expression_view_ = expression; }

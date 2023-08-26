@@ -5,11 +5,10 @@
 #include <vector>
 #include <memory>
 
-#include "internal_array.hpp"
-
 namespace internal {
 
 class Tensor;
+class Array;
 
 struct Expression {
     virtual ~Expression() = default;

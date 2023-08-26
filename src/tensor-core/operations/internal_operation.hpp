@@ -5,17 +5,18 @@
 #include <memory>
 #include <vector>
 
+#include "../internal_types.h"
 #include "../internal_array.hpp"
-#include "../internal_expression.hpp"
 #include "../internal_tensor.hpp"
+#include "../internal_expression.hpp"
 
 namespace internal {
 
 class Operation : public Expression {
     public:
-    using scalar_type = Tensor::scalar_type;
-    using size_type = Tensor::size_type;
-    using shape_type = Tensor::shape_type;
+    using scalar_type = type::scalar_type;
+    using size_type = type::size_type;
+    using shape_type = type::shape_type;
 
     ~Operation() override = default;
 
