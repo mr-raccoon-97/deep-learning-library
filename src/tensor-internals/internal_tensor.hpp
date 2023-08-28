@@ -12,6 +12,8 @@ namespace internal {
 
 class Tensor : public Array {
     public:
+
+    Tensor(shape_type shape) : Array(shape) {}
     Tensor(const Tensor* other) { copy(other); }
     Tensor(const Tensor& other) { copy(&other); }
     Tensor(Tensor&& other) { move(&other); }
@@ -19,12 +21,6 @@ class Tensor : public Array {
     Tensor& operator=(Tensor&& other) { if (this != &other) move(&other); return *this; }
     ~Tensor() override { if (requires_gradient_) delete gradient_; }
     Tensor(Array&& other) { Array::move(&other); }
-
-    Tensor(shape_type shape) : Array(shape) {
-        if (requires_gradient_) { 
-            gradient_ = new Array(shape);
-        }
-    }
     
     void backward(Array* gradient) const {
         if (is_leaf_) { gradient_->add(gradient); } 
@@ -53,9 +49,10 @@ class Tensor : public Array {
     }
 
     Array* gradient() const { return gradient_; }
+    
     bool is_leaf() const { return is_leaf_; }
     void is_leaf(bool status) { is_leaf_ = status; }
-    void derive_with(Expression* expression) { expression_view_ = expression; }
+
     bool requires_gradient() const { return requires_gradient_; }
     void requires_gradient(bool status) {        
         if (requires_gradient_ == false && status == true) {
@@ -70,6 +67,10 @@ class Tensor : public Array {
         }
     }
 
+    void derive_with(const Expression* expression) {
+        if (requires_gradient_) expression_view_ = expression;
+    }
+
     void print_gradient() {
         if(requires_gradient_) {
             for(auto e : *gradient_) std::cout << e;
@@ -80,7 +81,7 @@ class Tensor : public Array {
     bool requires_gradient_ = false;
     bool is_leaf_ = false;
     Array* gradient_ = nullptr;
-    Expression* expression_view_ = nullptr;
+    const Expression* expression_view_ = nullptr;
 };
 
 } // namespace internal
