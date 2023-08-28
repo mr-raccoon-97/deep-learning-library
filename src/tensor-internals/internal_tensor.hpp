@@ -52,7 +52,7 @@ class Tensor : public Array {
     
     bool is_leaf() const { return is_leaf_; }
     void is_leaf(bool status) { is_leaf_ = status; }
-    void derive_with(Expression* expression) { expression_view_ = expression; }
+
     bool requires_gradient() const { return requires_gradient_; }
     void requires_gradient(bool status) {        
         if (requires_gradient_ == false && status == true) {
@@ -67,6 +67,10 @@ class Tensor : public Array {
         }
     }
 
+    void derive_with(const Expression* expression) {
+        if (requires_gradient_) expression_view_ = expression;
+    }
+
     void print_gradient() {
         if(requires_gradient_) {
             for(auto e : *gradient_) std::cout << e;
@@ -77,7 +81,7 @@ class Tensor : public Array {
     bool requires_gradient_ = false;
     bool is_leaf_ = false;
     Array* gradient_ = nullptr;
-    Expression* expression_view_ = nullptr;
+    const Expression* expression_view_ = nullptr;
 };
 
 } // namespace internal

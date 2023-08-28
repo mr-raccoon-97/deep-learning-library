@@ -24,15 +24,20 @@ bool Linear::gradient_requirement() const {
     return ( gradient_requirement || input()->requires_gradient() );
 }
 
+const Tensor* Linear::input() const { return input_; }
+const Tensor* Linear::weight() const { return weight_; }
+const Tensor* Linear::bias() const { return bias_; }
+
 type::size_type Linear::rows_dimension() const { return input()->shape().front(); }
 type::size_type Linear::columns_dimension() const { return weight()->shape().back(); }
 type::size_type Linear::inner_dimension() const { return input()->shape().back(); };
 
-Tensor Linear::perform() const {
-    Tensor result({rows_dimension(), columns_dimension()});
+std::unique_ptr<Tensor> Linear::perform() const {
+    type::shape_type result_shape = {rows_dimension(), columns_dimension()};
+    std::unique_ptr<Tensor> result = std::make_unique<Tensor>(result_shape);
 
     Eigen::Map<Eigen::Matrix<type::scalar_type, -1, -1, 1>> result_map(
-        result.data(),
+        result->data(),
         rows_dimension(),
         columns_dimension() );
 
@@ -52,8 +57,9 @@ Tensor Linear::perform() const {
 
     result_map = (input_map * weight_map).rowwise() + bias_map;
 
-    result.requires_gradient(gradient_requirement());
-    result.is_leaf(false);
+    result->requires_gradient(gradient_requirement());
+    result->is_leaf(false);
+    result->derive_with(this);
     return result;
 }
 
@@ -117,6 +123,6 @@ void Linear::backward(Array* gradient) const {
     }
 }
 
-#endif
+} // namespace internal
 
-} // namespace internal;
+#endif

@@ -13,10 +13,11 @@ set(HEADERS
 
 set(SOURCES
     ${SOURCE_DIR}/tensor.cpp
-    ${SOURCE_DIR}/tensor-core/internal_array_operations.cpp
-    ${SOURCE_DIR}/tensor-core/operations/internal_operation_addition.cpp
-    ${SOURCE_DIR}/tensor-core/operations/internal_operation_matmul.cpp
-    ${SOURCE_DIR}/tensor-core/operations/internal_operation_multiplication.cpp
+    ${SOURCE_DIR}/tensor-internals/internal_array_operations.cpp
+    ${SOURCE_DIR}/tensor-internals/operations/internal_operation_addition.cpp
+    ${SOURCE_DIR}/tensor-internals/operations/internal_operation_multiplication.cpp
+    ${SOURCE_DIR}/tensor-internals/operations/internal_operation_matmul.cpp
+    ${SOURCE_DIR}/tensor-internals/functions/internal_function_linear.cpp
 )
 
 

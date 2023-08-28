@@ -24,11 +24,12 @@ type::size_type Matmul::rows_dimension() const { return first_operand()->shape()
 type::size_type Matmul::columns_dimension() const { return second_operand()->shape().back(); }
 type::size_type Matmul::inner_dimension() const { return first_operand()->shape().back(); };
 
-Tensor Matmul::perform() const {
-    Tensor result({rows_dimension(), columns_dimension()});
+std::unique_ptr<Tensor> Matmul::perform() const {
+    shape_type result_shape = {rows_dimension(), columns_dimension()};
+    std::unique_ptr<Tensor> result = std::make_unique<Tensor>(result_shape);
 
     Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 1>> result_map(
-        result.data(),
+        result->data(),
         rows_dimension(),
         columns_dimension() );
 
@@ -43,8 +44,9 @@ Tensor Matmul::perform() const {
         columns_dimension() );
     
     result_map = first_map * second_map;
-    result.requires_gradient(this->gradient_requirement());
-    result.is_leaf(false);
+    result->requires_gradient(this->gradient_requirement());
+    result->is_leaf(false);
+    result->derive_with(this);
     return result;
 }
 

@@ -20,6 +20,9 @@ class Tensor {
 
     Tensor(std::shared_ptr<internal::Tensor> tensor);
     Tensor(shape_type shape, bool requires_gradient = true, bool is_leaf = true);
+
+    void backward(const Tensor& gradient);
+
     internal::Tensor* internal() const;
 
     iterator begin();
@@ -29,12 +32,15 @@ class Tensor {
     const_iterator cbegin() const;
     const_iterator cend() const;
 
+    void print_gradient() const;
+
     private:
     std::shared_ptr<internal::Tensor> tensor_;
 };
 
 Tensor operator + (const Tensor& first, const Tensor& second);
 Tensor operator * (const Tensor& first, const Tensor& second);
+Tensor matmul(const Tensor& first, const Tensor& second);
 
 } // namespace net
 

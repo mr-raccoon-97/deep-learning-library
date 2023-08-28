@@ -11,9 +11,9 @@ class Tensor;
 
 class Linear : public Expression {
     public:
-    ~Linear() final;
+    ~Linear() final = default;
     Linear(const Tensor* input, const Tensor* weight, const Tensor* bias);
-    Tensor perform() const final;
+    std::unique_ptr<Tensor> perform() const final;
     void backward(Array* gradient) const final;
 
     const Tensor* input() const;

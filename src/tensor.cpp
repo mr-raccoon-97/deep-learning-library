@@ -1,13 +1,14 @@
 #include "../include/tensor.h"
 
-#include "tensor-core/internal_tensor.hpp"
-#include "tensor-core/internal_expression.hpp"
-#include "tensor-core/internal_buffer.hpp"
-#include "tensor-core/internal_array.hpp"
-#include "tensor-core/operations/internal_operation.hpp"
-#include "tensor-core/operations/internal_operation_addition.h"
-#include "tensor-core/operations/internal_operation_multiplication.h"
-#include "tensor-core/operations/internal_operation_matmul.h"
+#include "tensor-internals/internal_tensor.hpp"
+#include "tensor-internals/internal_expression.hpp"
+#include "tensor-internals/internal_buffer.hpp"
+#include "tensor-internals/internal_array.hpp"
+
+#include "tensor-internals/operations/internal_operation.hpp"
+#include "tensor-internals/operations/internal_operation_addition.h"
+#include "tensor-internals/operations/internal_operation_multiplication.h"
+#include "tensor-internals/operations/internal_operation_matmul.h"
 
 
 namespace net {
@@ -23,6 +24,10 @@ Tensor::Tensor(shape_type shape, bool gradient_requirement, bool node_status ) {
 
 internal::Tensor* Tensor::internal() const {return tensor_.get(); }
 
+void Tensor::backward(const Tensor& gradient) {
+    tensor_->backward(gradient.internal());
+}
+
 Tensor::iterator Tensor::begin() { return tensor_->begin(); }
 Tensor::iterator Tensor::end() { return tensor_->end(); }
 Tensor::const_iterator Tensor::begin() const { return tensor_->begin(); }
@@ -30,21 +35,28 @@ Tensor::const_iterator Tensor::end() const { return tensor_->end(); }
 Tensor::const_iterator Tensor::cbegin() const { return tensor_->cbegin(); }
 Tensor::const_iterator Tensor::cend() const { return tensor_->cend(); }
 
+void Tensor::print_gradient() const {
+    tensor_->print_gradient();
+}
+
 Tensor operator + (const Tensor& first, const Tensor& second) {
     internal::Expression* expression = new internal::Addition(first.internal(), second.internal());
-    std::shared_ptr<internal::Tensor> internal_result = std::make_shared<internal::Tensor>(expression->perform());
-    internal_result->derive_with(expression);
-    Tensor result(std::move(internal_result));
     internal::Buffer::instance() << expression;
+    Tensor result(expression->perform());
     return result;
 }
 
 Tensor operator * (const Tensor& first, const Tensor& second) {
     internal::Expression* expression = new internal::Multiplication(first.internal(), second.internal());
-    std::shared_ptr<internal::Tensor> internal_result = std::make_shared<internal::Tensor>(expression->perform());
-    internal_result->derive_with(expression);
-    Tensor result(std::move(internal_result));
     internal::Buffer::instance() << expression;
+    Tensor result(expression->perform());
+    return result;
+}
+
+Tensor matmul(const Tensor& first, const Tensor& second) {
+    internal::Expression* expression = new internal::Matmul(first.internal(), second.internal());
+    internal::Buffer::instance() << expression;
+    Tensor result(expression->perform());
     return result;
 }
 

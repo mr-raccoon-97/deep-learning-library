@@ -14,7 +14,7 @@ class Multiplication : public Operation {
     Multiplication(const Tensor* first, const Tensor* second);
 
     void backward(Array* gradient) const final;
-    Tensor perform() const final; 
+    std::unique_ptr<Tensor> perform() const final; 
 };
 
 } // namespace internal 
