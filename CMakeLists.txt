@@ -9,10 +9,12 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 set(HEADERS
     ${INCLUDE_DIR}/tensor.h
+    ${INCLUDE_DIR}/functions.h
 )
 
 set(SOURCES
     ${SOURCE_DIR}/tensor.cpp
+    ${SOURCE_DIR}/functions.cpp
     ${SOURCE_DIR}/tensor-internals/internal_array_operations.cpp
     ${SOURCE_DIR}/tensor-internals/operations/internal_operation_addition.cpp
     ${SOURCE_DIR}/tensor-internals/operations/internal_operation_multiplication.cpp
