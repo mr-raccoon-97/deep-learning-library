@@ -15,13 +15,13 @@ set(HEADERS
 set(SOURCES
     ${SOURCE_DIR}/tensor.cpp
     ${SOURCE_DIR}/functions.cpp
-    ${SOURCE_DIR}/tensor-internals/internal_array_operations.cpp
-    ${SOURCE_DIR}/tensor-internals/operations/internal_operation_addition.cpp
-    ${SOURCE_DIR}/tensor-internals/operations/internal_operation_multiplication.cpp
-    ${SOURCE_DIR}/tensor-internals/operations/internal_operation_matmul.cpp
-    ${SOURCE_DIR}/tensor-internals/functions/internal_function_linear.cpp
-    ${SOURCE_DIR}/tensor-internals/functions/internal_function_softmax.cpp
-    ${SOURCE_DIR}/tensor-internals/functions/internal_function_logsoftmax.cpp
+    ${SOURCE_DIR}/internals/internal_array_operations.cpp
+    ${SOURCE_DIR}/internals/operations/internal_operation_addition.cpp
+    ${SOURCE_DIR}/internals/operations/internal_operation_multiplication.cpp
+    ${SOURCE_DIR}/internals/operations/internal_operation_matmul.cpp
+    ${SOURCE_DIR}/internals/functions/internal_function_linear.cpp
+    ${SOURCE_DIR}/internals/functions/internal_function_softmax.cpp
+    ${SOURCE_DIR}/internals/functions/internal_function_logsoftmax.cpp
 )
 
 
