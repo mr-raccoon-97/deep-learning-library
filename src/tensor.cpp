@@ -1,15 +1,14 @@
 #include "../include/tensor.h"
 
-#include "tensor-internals/internal_tensor.hpp"
-#include "tensor-internals/internal_expression.hpp"
-#include "tensor-internals/internal_buffer.hpp"
-#include "tensor-internals/internal_array.hpp"
+#include "internals/internal_tensor.hpp"
+#include "internals/internal_expression.hpp"
+#include "internals/internal_buffer.hpp"
+#include "internals/internal_array.hpp"
 
-#include "tensor-internals/operations/internal_operation.hpp"
-#include "tensor-internals/operations/internal_operation_addition.h"
-#include "tensor-internals/operations/internal_operation_multiplication.h"
-#include "tensor-internals/operations/internal_operation_matmul.h"
-
+#include "internals/operations/internal_operation.hpp"
+#include "internals/operations/internal_operation_addition.h"
+#include "internals/operations/internal_operation_multiplication.h"
+#include "internals/operations/internal_operation_matmul.h"
 
 namespace net {
 

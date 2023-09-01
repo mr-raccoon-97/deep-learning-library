@@ -21,6 +21,7 @@ set(SOURCES
     ${SOURCE_DIR}/tensor-internals/operations/internal_operation_matmul.cpp
     ${SOURCE_DIR}/tensor-internals/functions/internal_function_linear.cpp
     ${SOURCE_DIR}/tensor-internals/functions/internal_function_softmax.cpp
+    ${SOURCE_DIR}/tensor-internals/functions/internal_function_logsoftmax.cpp
 )
 
 
