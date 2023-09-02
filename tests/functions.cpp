@@ -32,7 +32,6 @@ int main() {
     net::Tensor I({2,3}, false, false); for (auto& e : I) e = 1;
 
     net::Tensor result = net::function::linear(x,W,b);
-    net::function::softmax(result, 0);
 
     result.backward(I);
 
@@ -43,9 +42,7 @@ int main() {
         i +=1;
     }
     
-    net::function::softmax(x, 0);
+    net::function::log_softmax(x, 1);
 
     for ( auto e : x ) std::cout << e;
-
-
 }

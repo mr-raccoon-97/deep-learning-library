@@ -1,10 +1,10 @@
 #include "../include/functions.h"
-
-#include "tensor-internals/internal_tensor.hpp"
-#include "tensor-internals/internal_expression.hpp"
-#include "tensor-internals/internal_buffer.hpp"
-#include "tensor-internals/functions/internal_function_linear.h"
-#include "tensor-internals/functions/internal_functions_inplace.h"
+#include "internals/internal_tensor.hpp"
+#include "internals/internal_expression.hpp"
+#include "internals/internal_buffer.hpp"
+#include "internals/functions/internal_function_linear.h"
+#include "internals/functions/internal_function_softmax.h"
+#include "internals/functions/internal_function_logsoftmax.h"
 
 namespace net::function {
 
@@ -15,8 +15,14 @@ Tensor linear(const Tensor& input, const Tensor& weight, const Tensor& bias) {
     return result;
 }
 
-void softmax(Tensor& input, int axis = 0) {
-    internal::softmax_inplace(input.internal(), axis);
+// Task: add optional return type. 
+
+void softmax(Tensor& input, int axis) {
+    internal::Softmax::inplace(input.internal(), axis);
 }
 
+void log_softmax(Tensor& input, int axis) {
+    internal::LogSoftmax::inplace(input.internal(), axis);
 }
+
+} // namespace net::function
