@@ -10,7 +10,7 @@ namespace net::function {
 
 Tensor linear(const Tensor& input, const Tensor& weight, const Tensor& bias) {
     internal::Expression* expression = new internal::Linear(input.internal(), weight.internal(), bias.internal());
-    internal::Buffer::instance() << expression;
+    internal::Buffer::cache(expression);
     Tensor result(expression->perform());
     return result;
 }
