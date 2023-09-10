@@ -10,11 +10,25 @@ class Expression;
 
 class Buffer {
     public:
-    static Buffer& instance() { static Buffer instance; return instance; }
-    ~Buffer() { flush(); }
-    void flush() { for(auto& element : _buffer) delete element; _buffer.clear(); }
-    void operator << (Expression* expression) { _buffer.push_back(expression); }
 
+    static Buffer& instance() {
+        static Buffer instance;
+        return instance;
+    }
+    
+    static void flush() {
+        auto& buffer = instance()._buffer;
+        for(auto& element : buffer) delete element;
+        buffer.clear(); 
+    }
+
+    static void cache(Expression* data) {
+        auto& buffer = instance()._buffer;
+        buffer.push_back(data);
+    }
+
+    ~Buffer() { flush(); }
+    
     private:
     Buffer() = default;
     Buffer(const Buffer&) = delete;

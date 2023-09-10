@@ -40,21 +40,21 @@ void Tensor::print_gradient() const {
 
 Tensor operator + (const Tensor& first, const Tensor& second) {
     internal::Expression* expression = new internal::Addition(first.internal(), second.internal());
-    internal::Buffer::instance() << expression;
+    internal::Buffer::cache(expression);
     Tensor result(expression->perform());
     return result;
 }
 
 Tensor operator * (const Tensor& first, const Tensor& second) {
     internal::Expression* expression = new internal::Multiplication(first.internal(), second.internal());
-    internal::Buffer::instance() << expression;
+    internal::Buffer::cache(expression);
     Tensor result(expression->perform());
     return result;
 }
 
 Tensor matmul(const Tensor& first, const Tensor& second) {
     internal::Expression* expression = new internal::Matmul(first.internal(), second.internal());
-    internal::Buffer::instance() << expression;
+    internal::Buffer::cache(expression);
     Tensor result(expression->perform());
     return result;
 }
