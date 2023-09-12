@@ -2,11 +2,10 @@
 #define INTERNAL_FUNCTION_LOGSOFTMAX_H
 
 #include "../config.h"
-#include "../internal_expression.hpp"
 
 namespace internal {
 
-class LogSoftmax : public Expression {
+class LogSoftmax {
     public:
     static void inplace(Tensor* input, int axis);
 };

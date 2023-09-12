@@ -21,7 +21,8 @@ Tensor::Tensor(shape_type shape, bool gradient_requirement, bool node_status ) {
     tensor_->is_leaf(node_status);
 }
 
-internal::Tensor* Tensor::internal() const {return tensor_.get(); }
+const internal::Tensor* Tensor::internal() const {return tensor_.get(); }
+internal::Tensor* Tensor::internal() { return tensor_.get(); }
 
 void Tensor::backward(const Tensor& gradient) {
     tensor_->backward(gradient.internal());

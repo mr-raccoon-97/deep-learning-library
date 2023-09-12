@@ -13,7 +13,6 @@ class Array;
 struct Expression {
     virtual ~Expression() = default;
     virtual void backward(Array* gradient) const = 0;
-    virtual std::unique_ptr<Tensor> perform() const = 0;
 };
 
 } // namespace internal

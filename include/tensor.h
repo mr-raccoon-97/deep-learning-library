@@ -23,7 +23,8 @@ class Tensor {
 
     void backward(const Tensor& gradient);
 
-    internal::Tensor* internal() const;
+    const internal::Tensor* internal() const;
+    internal::Tensor* internal();
 
     iterator begin();
     iterator end();

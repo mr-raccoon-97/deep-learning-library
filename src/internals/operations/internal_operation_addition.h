@@ -14,7 +14,7 @@ class Addition : public Operation {
     Addition(const Tensor* first, const Tensor* second);
 
     void backward(Array* gradient) const final;
-    std::unique_ptr<Tensor> perform() const final;
+    std::unique_ptr<Tensor> perform() const;
 };
 
 } // namespace internal 

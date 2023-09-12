@@ -6,7 +6,7 @@
 
 namespace internal {
 
-class Softmax : public Expression {
+class Softmax {
     public:
     static void inplace(Tensor* input, int axis);
 };

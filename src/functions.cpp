@@ -5,6 +5,7 @@
 #include "internals/functions/internal_function_linear.h"
 #include "internals/functions/internal_function_softmax.h"
 #include "internals/functions/internal_function_logsoftmax.h"
+#include "internals/functions/internal_function_relu.h"
 
 namespace net::function {
 
@@ -23,6 +24,11 @@ void softmax(Tensor& input, int axis) {
 
 void log_softmax(Tensor& input, int axis) {
     internal::LogSoftmax::inplace(input.internal(), axis);
+}
+
+Tensor relu(const Tensor& input) {
+    internal::Expression* expression = new internal::ReLU(input.internal());
+    internal::Buffer::cache(expression);
 }
 
 } // namespace net::function

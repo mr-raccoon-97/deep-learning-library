@@ -12,7 +12,6 @@ namespace internal {
 
 class Tensor : public Array {
     public:
-
     Tensor(shape_type shape) : Array(shape) {}
     Tensor(const Tensor* other) { copy(other); }
     Tensor(const Tensor& other) { copy(&other); }

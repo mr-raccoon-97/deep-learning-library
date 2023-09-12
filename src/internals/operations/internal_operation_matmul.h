@@ -13,7 +13,7 @@ class Matmul : public Operation {
     ~Matmul() final = default;
     Matmul(const Tensor* first, const Tensor* second);
 
-    std::unique_ptr<Tensor> perform() const final;
+    std::unique_ptr<Tensor> perform() const;
     void backward(Array* gradient) const final;
 
     size_type rows_dimension() const;
