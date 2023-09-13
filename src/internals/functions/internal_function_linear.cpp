@@ -11,7 +11,7 @@
 
 namespace internal {
 
-Linear::Linear(const Tensor* input, const Tensor* weight, const Tensor* bias)
+Linear::Linear(Tensor* input, Tensor* weight, Tensor* bias)
 :   Function(input)
 ,   weight_(weight)
 ,   bias_(bias) {

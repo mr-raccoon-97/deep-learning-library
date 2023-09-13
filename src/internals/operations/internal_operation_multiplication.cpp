@@ -9,7 +9,7 @@
 
 namespace internal {
 
-Multiplication::Multiplication(const Tensor* first, const Tensor* second)
+Multiplication::Multiplication(Tensor* first, Tensor* second)
 :   Operation(first, second) {
     if(first->shape() != second->shape()) throw std::runtime_error("shape mismatch");
     reshape(first->shape());
@@ -35,7 +35,7 @@ Tensor* Multiplication::forward() {
     return this;
 }
 
-void Multiplication::backward(Array* gradient) const {
+void Multiplication::backward(Array* gradient) {
     Eigen::Map<Eigen::Array<scalar_type, 1, -1>> gradient_map(gradient->data(), gradient->size());
 
     if (first_operand()->requires_gradient()) {
@@ -51,7 +51,7 @@ void Multiplication::backward(Array* gradient) const {
                 gradient_copy->size()
             );
             gradient_copy_map *= second_operand_map;
-            first_operand()->differentiate(gradient_copy);
+            first_operand()->backward(gradient_copy);
             delete gradient_copy;
         }
         

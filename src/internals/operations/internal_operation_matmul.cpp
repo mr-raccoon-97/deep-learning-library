@@ -31,12 +31,12 @@ Tensor* Matmul::forward() {
         columns_dimension() );
 
     Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> first_map(
-        multiplicand()->data(),
+        multiplicand->data(),
         rows_dimension(),
         inner_dimension() );
 
     Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> second_map(
-        multiplier()->data(),
+        multiplier->data(),
         inner_dimension(),
         columns_dimension() );
     
@@ -45,7 +45,7 @@ Tensor* Matmul::forward() {
 }
 
 
-void Matmul::differentiate(Array* gradient) {
+void Matmul::backward(Array* gradient) {
 
     Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> row_gradient_map(
         gradient->data(),

@@ -15,24 +15,27 @@ void LogSoftmax::inplace(Tensor* input, int axis) {
     size_type rows = input->shape().front();
     size_type columns = input->size() / input->shape().front();
 
-    Eigen::Map<Eigen::Array<type::scalar_type, -1, -1, 0>> input_map;
-
     if (axis == 0) {
-        input_map = Eigen::Map<Eigen::Array<type::scalar_type, -1, -1, 0>>(
+        Eigen::Map<Eigen::Array<scalar_type, -1, -1, 0>> input_map(
             input->data(),
             rows,
             columns );
+
+        auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
+        input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
+
     }
 
     else if (axis == 1) {        
-        input_map = Eigen::Map<Eigen::Array<type::scalar_type, -1, -1, 1>>(
+        Eigen::Map<Eigen::Array<scalar_type, -1, -1, 0>> input_map(
             input->data(),
             rows,
             columns );
-    }
 
-    auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
-    input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
+        auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
+        input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
+
+    }
 }
 
 } // namespace internal

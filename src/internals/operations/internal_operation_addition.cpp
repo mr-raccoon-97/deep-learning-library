@@ -14,7 +14,7 @@ Addition::Addition(Tensor* first, Tensor* second)
     reshape(first->shape());
 }
 
-Tensor* Addition::perform() {
+Tensor* Addition::forward() {
     Tensor* addend = first_operand()->forward();
     Tensor* augend = second_operand()->forward();
 
@@ -34,7 +34,7 @@ Tensor* Addition::perform() {
     return this;
 }
 
-void Addition::differentiate(Array* gradient) {
+void Addition::backward(Array* gradient) {
     if (first_operand()->requires_gradient()) {
         if (second_operand()->requires_gradient()) {
             Array* gradient_copy = new Array(gradient);

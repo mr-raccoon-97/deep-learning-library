@@ -12,12 +12,12 @@ class Function : public Tensor {
 
     private:
     Tensor* input_;
-}
+};
 
 class Linear : public Function {
     public:
     ~Linear() final = default;
-    Linear(const Tensor* input, const Tensor* weight, const Tensor* bias);
+    Linear(Tensor* input, Tensor* weight, Tensor* bias);
     Tensor* forward() final;
     void backward(Array* gradient) final;
 
@@ -29,8 +29,8 @@ class Linear : public Function {
     size_type columns_dimension() const { return weight()->shape().front(); }
 
     private:
-    const Tensor* weight_;
-    const Tensor* bias_;       
+    Tensor* weight_;
+    Tensor* bias_;       
 };
 
 class ReLU : public Function {
