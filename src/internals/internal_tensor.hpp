@@ -56,7 +56,7 @@ class Tensor : public Array {
         }
     }
 
-    virtual void backward(Array* gradient) {
+    virtual void backward(Array* gradient) const {
         gradient_->add(gradient);
     };
 

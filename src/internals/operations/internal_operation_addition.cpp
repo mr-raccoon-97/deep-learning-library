@@ -15,26 +15,23 @@ Addition::Addition(Tensor* first, Tensor* second)
 }
 
 Tensor* Addition::forward() {
-    Tensor* addend = first_operand()->forward();
-    Tensor* augend = second_operand()->forward();
-
     Eigen::Map<Eigen::Array<scalar_type, 1, -1>> this_map(
         this->data(),
         this->size() );
 
-    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> addend_map(
-        addend->data(),
-        addend->size() );
+    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> first_operand_map(
+        first_operand()->forward()->data(),
+        first_operand()->size() );
         
-    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> augend_map(
-        augend->data(),
-        augend->size() );
+    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> second_operand_map(
+        second_operand()->forward()->data(),
+        second_operand()->size() );
 
-    this_map = addend_map + augend_map;
+    this_map = first_operand_map + second_operand_map;
     return this;
 }
 
-void Addition::backward(Array* gradient) {
+void Addition::backward(Array* gradient) const {
     if (first_operand()->requires_gradient()) {
         if (second_operand()->requires_gradient()) {
             Array* gradient_copy = new Array(gradient);

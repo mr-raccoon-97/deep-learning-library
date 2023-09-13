@@ -2,11 +2,13 @@
 #define INTERNAL_FUNCTIONS_HPP
 
 #include "../internal_tensor.hpp"
+#include "../internal_expression.hpp"
 
 namespace internal {
 
-class Function : public Tensor {
+class Function : public Expression {
     public:
+    ~Function() override = default;
     Function(Tensor* input) { input_ = input; }
     Tensor* input() const { return input_; }
 
@@ -19,7 +21,7 @@ class Linear : public Function {
     ~Linear() final = default;
     Linear(Tensor* input, Tensor* weight, Tensor* bias);
     Tensor* forward() final;
-    void backward(Array* gradient) final;
+    void backward(Array* gradient) const final;
 
     Tensor* weight() const { return weight_; }
     Tensor* bias() const { return bias_; }   
@@ -38,7 +40,7 @@ class ReLU : public Function {
     ~ReLU() final = default;
     ReLU(Tensor* input);
     Tensor* forward() final;
-    void backward(Array* gradient) final;
+    void backward(Array* gradient) const final;
 };
 
 class Softmax : public Function {

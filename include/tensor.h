@@ -22,8 +22,9 @@ class Tensor {
     Tensor(shape_type shape, bool requires_gradient = true);
 
     void backward(const Tensor& gradient);
+    void perform();
 
-    const internal::Tensor* internal() const;
+    internal::Tensor* internal() const;
     internal::Tensor* internal();
 
     iterator begin();

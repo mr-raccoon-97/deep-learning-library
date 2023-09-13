@@ -16,26 +16,24 @@ Multiplication::Multiplication(Tensor* first, Tensor* second)
 }
 
 Tensor* Multiplication::forward() {
-    Tensor* multiplicand = first_operand()->forward();
-    Tensor* multiplier = second_operand()->forward();
 
     Eigen::Map<Eigen::Array<scalar_type, 1, -1>> this_map(
         this->data(),
         this->size() );
 
-    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> multiplicand_map(
-        multiplicand->data(),
-        multiplicand->size() );
+    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> first_operand_map(
+        first_operand()->forward()->data(),
+        first_operand()->size() );
         
-    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> multiplier_map(
-        multiplier->data(),
-        multiplier->size() );
+    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> second_operand_map(
+        second_operand()->forward()->data(),
+        second_operand()->size() );
 
-    this_map = multiplicand_map * multiplier_map;
+    this_map = first_operand_map * second_operand_map;
     return this;
 }
 
-void Multiplication::backward(Array* gradient) {
+void Multiplication::backward(Array* gradient) const {
     Eigen::Map<Eigen::Array<scalar_type, 1, -1>> gradient_map(gradient->data(), gradient->size());
 
     if (first_operand()->requires_gradient()) {

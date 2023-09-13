@@ -22,30 +22,28 @@ Matmul::Matmul(Tensor* first, Tensor* second)
 
 
 Tensor* Matmul::forward() {
-    Tensor* multiplicand = first_operand()->forward();
-    Tensor* multiplier = second_operand()->forward();
 
     Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 1>> this_map(
         this->data(),
         rows_dimension(),
         columns_dimension() );
 
-    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> first_map(
-        multiplicand->data(),
+    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> first_operand_map(
+        first_operand()->forward()->data(),
         rows_dimension(),
         inner_dimension() );
 
-    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> second_map(
-        multiplier->data(),
+    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> second_operand_map(
+        second_operand()->forward()->data(),
         inner_dimension(),
         columns_dimension() );
     
-    this_map = first_map * second_map;
+    this_map = first_operand_map * second_operand_map;
     return this;
 }
 
 
-void Matmul::backward(Array* gradient) {
+void Matmul::backward(Array* gradient) const {
 
     Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> row_gradient_map(
         gradient->data(),

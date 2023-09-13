@@ -2,10 +2,11 @@
 #define INTERNAL_OPERATION_HPP
 
 #include "../internal_tensor.hpp"
+#include "../internal_expression.hpp"
 
 namespace internal {
 
-class Operation : public Tensor {
+class Operation : public Expression {
     public:
     Operation(Tensor* first, Tensor* second) {
         first_operand_ = first;
@@ -25,7 +26,7 @@ class Addition : public Operation {
     public:
     Addition(Tensor* first, Tensor* second);
     Tensor* forward() final;
-    void backward(Array* gradient) final;
+    void backward(Array* gradient) const final;
 };
 
 
@@ -33,7 +34,7 @@ class Multiplication : public Operation {
     public:
     Multiplication(Tensor* first, Tensor* second);
     Tensor* forward() final;
-    void backward(Array* gradient) final;
+    void backward(Array* gradient) const final;
 };
 
 class Matmul : public Operation {
@@ -41,7 +42,7 @@ class Matmul : public Operation {
     Matmul(Tensor* first, Tensor* second);
 
     Tensor* forward() final;
-    void backward(Array* gradient) final;
+    void backward(Array* gradient) const final;
 
     size_type rows_dimension() const { return first_operand()->shape().front(); }
     size_type inner_dimension() const { return  first_operand()->shape().back(); }

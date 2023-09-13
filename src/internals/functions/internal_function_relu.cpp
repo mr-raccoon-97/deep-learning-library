@@ -21,7 +21,7 @@ Tensor* ReLU::forward() {
     return result;
 }
 
-void ReLU::backward(Array* gradient) {
+void ReLU::backward(Array* gradient) const {
     if (input()->requires_gradient()) {
         Eigen::Map<Eigen::Array<scalar_type, 1, -1>> result_map(
             input()->data(),
@@ -31,8 +31,7 @@ void ReLU::backward(Array* gradient) {
             gradient->data(),
             gradient->size());
 
-        Eigen::Array<scalar_type, 1, -1> mask = result_map > 0;
-        gradient_map = gradient_map * mask;
+        gradient_map = gradient_map * (result_map > 0).cast<scalar_type>();
         input()->backward(gradient);
     }
 }
