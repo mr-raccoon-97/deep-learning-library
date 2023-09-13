@@ -1,8 +1,7 @@
 #include "../config.h"
-#include "../internal_types.h"
 #include "../internal_tensor.hpp"
 
-#include "internal_function_logsoftmax.h"
+#include "internal_functions.hpp"
 
 #if defined(USE_EIGEN_BACKEND)
 
@@ -11,31 +10,29 @@
 namespace internal {
 
 void LogSoftmax::inplace(Tensor* input, int axis) {
-    
     if (axis != 0 && axis != 1) { throw std::runtime_error("axis should be 0 or 1"); }
 
-    type::size_type rows = input->shape().front();
-    type::size_type columns = input->size() / input->shape().front();
+    size_type rows = input->shape().front();
+    size_type columns = input->size() / input->shape().front();
+
+    Eigen::Map<Eigen::Array<type::scalar_type, -1, -1, 0>> input_map;
 
     if (axis == 0) {
-        Eigen::Map<Eigen::Array<type::scalar_type, -1, -1, 0>> input_map(
+        input_map = Eigen::Map<Eigen::Array<type::scalar_type, -1, -1, 0>>(
             input->data(),
             rows,
             columns );
-
-        auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
-        input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
     }
 
     else if (axis == 1) {        
-        Eigen::Map<Eigen::Array<type::scalar_type, -1, -1, 1>> input_map(
+        input_map = Eigen::Map<Eigen::Array<type::scalar_type, -1, -1, 1>>(
             input->data(),
             rows,
             columns );
-
-        auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
-        input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
     }
+
+    auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
+    input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
 }
 
 } // namespace internal

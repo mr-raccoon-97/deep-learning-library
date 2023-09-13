@@ -1,7 +1,7 @@
 #include "../config.h"
 #include "../internal_tensor.hpp"
 #include "../internal_array.hpp"
-#include "internal_operation_multiplication.h"
+#include "./internal_operations.hpp"
 
 #if defined(USE_EIGEN_BACKEND)
 
@@ -12,18 +12,27 @@ namespace internal {
 Multiplication::Multiplication(const Tensor* first, const Tensor* second)
 :   Operation(first, second) {
     if(first->shape() != second->shape()) throw std::runtime_error("shape mismatch");
+    reshape(first->shape());
 }
 
-std::unique_ptr<Tensor> Multiplication::perform() const {
-    std::unique_ptr<Tensor> result = std::make_unique<Tensor>(first_operand()->shape());
-    Eigen::Map<Eigen::Array<scalar_type, 1, -1>> result_map(result->data(), result->size());
-    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> first_operand_map(first_operand()->data(), second_operand()->size());
-    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> second_operand_map(second_operand()->data(), second_operand()->size());
-    result_map = first_operand_map * second_operand_map;
-    result->requires_gradient(gradient_requirement());
-    result->is_leaf(false);
-    result->derive_with(this);
-    return result;
+Tensor* Multiplication::forward() {
+    Tensor* multiplicand = first_operand()->forward();
+    Tensor* multiplier = second_operand()->forward();
+
+    Eigen::Map<Eigen::Array<scalar_type, 1, -1>> this_map(
+        this->data(),
+        this->size() );
+
+    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> multiplicand_map(
+        multiplicand->data(),
+        multiplicand->size() );
+        
+    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> multiplier_map(
+        multiplier->data(),
+        multiplier->size() );
+
+    this_map = multiplicand_map * multiplier_map;
+    return this;
 }
 
 void Multiplication::backward(Array* gradient) const {
@@ -42,7 +51,7 @@ void Multiplication::backward(Array* gradient) const {
                 gradient_copy->size()
             );
             gradient_copy_map *= second_operand_map;
-            first_operand()->backward(gradient_copy);
+            first_operand()->differentiate(gradient_copy);
             delete gradient_copy;
         }
         

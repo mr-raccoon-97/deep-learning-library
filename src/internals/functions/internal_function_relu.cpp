@@ -1,9 +1,7 @@
 #include "../config.h"
-#include "../internal_types.h"
 #include "../internal_array.hpp"
 #include "../internal_tensor.hpp"
-
-#include "internal_function_relu.h"
+#include "internal_functions.hpp"
 
 #if defined(USE_EIGEN_BACKEND)
 
@@ -11,21 +9,23 @@
 
 namespace internal {
 
-ReLU::ReLU(Tensor* input) : result_(input) {
+ReLU::ReLU(Tensor* input) : Function(input) {}
+
+Tensor* ReLU::forward() {
+    Tensor* result = input()->forward();
     Eigen::Map<Eigen::Array<type::scalar_type, 1, -1>> result_map(
-        result_->data(),
-        result_->size());
+        result->data(),
+        result->size());
 
     result_map = result_map.cwiseMax(0);
+    return result;
 }
 
-const Tensor* ReLU::result() const { return result_; }
-
 void ReLU::backward(Array* gradient) const {
-    if (result_->requires_gradient()) {
+    if (input()->requires_gradient()) {
         Eigen::Map<Eigen::Array<type::scalar_type, 1, -1>> result_map(
-            result_->data(),
-            result_->size());
+            input()->data(),
+            input()->size());
 
         Eigen::Map<Eigen::Array<type::scalar_type, 1, -1>> gradient_map(
             gradient->data(),
@@ -33,7 +33,6 @@ void ReLU::backward(Array* gradient) const {
 
         Eigen::Array<type::scalar_type, 1, -1> mask = result_map > 0;
         gradient_map = gradient_map * mask;
-
         result_->backward(gradient);
     }
 }

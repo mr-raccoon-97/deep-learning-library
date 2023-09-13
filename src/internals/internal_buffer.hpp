@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
+
+#include "internal_tensor.hpp"
 
 namespace internal {
 
@@ -10,33 +13,18 @@ class Expression;
 
 class Buffer {
     public:
-
-    static Buffer& instance() {
-        static Buffer instance;
-        return instance;
-    }
-    
-    static void flush() {
-        auto& buffer = instance()._buffer;
-        for(auto& element : buffer) delete element;
-        buffer.clear(); 
-    }
-
-    static void cache(Expression* data) {
-        auto& buffer = instance()._buffer;
-        buffer.push_back(data);
-    }
-
-    ~Buffer() { flush(); }
+    static Buffer& instance() { static Buffer buffer; return buffer; }
+    static void add(std::shared_ptr<Tensor> tensor) { instance()._buffer.push_back(tensor); }
+    static void flush() { instance()._buffer.clear(); }
     
     private:
     Buffer() = default;
+    ~Buffer() = default;
     Buffer(const Buffer&) = delete;
     Buffer(Buffer&&) = delete;
     Buffer& operator=(Buffer&&) = delete;
     Buffer& operator=(const Buffer&) = delete;
-
-    std::vector<Expression*> _buffer;
+    std::vector<std::shared_ptr<Tensor>> _buffer;
 };
 
 } // namespace internal

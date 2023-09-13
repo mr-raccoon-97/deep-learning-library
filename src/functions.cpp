@@ -1,22 +1,22 @@
 #include "../include/functions.h"
-#include "internals/internal_tensor.hpp"
-#include "internals/internal_expression.hpp"
 #include "internals/internal_buffer.hpp"
-#include "internals/functions/internal_function_linear.h"
-#include "internals/functions/internal_function_softmax.h"
-#include "internals/functions/internal_function_logsoftmax.h"
-#include "internals/functions/internal_function_relu.h"
+#include "internals/internal_tensor.hpp"
+#include "internals/functions/internal_functions.hpp"
+
+#include <iostream>
+#include <memory>
 
 namespace net::function {
 
 Tensor linear(const Tensor& input, const Tensor& weight, const Tensor& bias) {
-    internal::Expression* expression = new internal::Linear(input.internal(), weight.internal(), bias.internal());
-    internal::Buffer::cache(expression);
-    Tensor result(expression->perform());
-    return result;
+    std::shared_ptr<internal::Tensor> expression = std::make_shared<internal::Linear>(
+        input.internal(),
+        weight.internal(),
+        bias.internal()
+    );
+    internal::Buffer::add(expression);
+    return Tensor(expression);
 }
-
-// Task: add optional return type. 
 
 void softmax(Tensor& input, int axis) {
     internal::Softmax::inplace(input.internal(), axis);
@@ -27,8 +27,11 @@ void log_softmax(Tensor& input, int axis) {
 }
 
 Tensor relu(const Tensor& input) {
-    internal::Expression* expression = new internal::ReLU(input.internal());
-    internal::Buffer::cache(expression);
+    std::shared_ptr<internal::Tensor> expression = std::make_shared<internal::ReLU>(
+        input.internal()
+    );
+    internal::Buffer::add(expression);
+    return Tensor(expression);
 }
 
 } // namespace net::function

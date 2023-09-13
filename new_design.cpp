@@ -87,7 +87,6 @@ class Tensor : public Array {
             gradient_ = new Array(other);
         }
         requires_gradient_ = other->requires_gradient_;
-        is_leaf_ = other->is_leaf_;
     }
 
     void move(Tensor* other) {
@@ -98,14 +97,10 @@ class Tensor : public Array {
             other->gradient_ = nullptr;    
         } 
         requires_gradient_ = other->requires_gradient_;
-        is_leaf_ = other->is_leaf_;
     }
 
     Array* gradient() const { return gradient_; }
     
-    bool is_leaf() const { return is_leaf_; }
-    void is_leaf(bool status) { is_leaf_ = status; }
-
     bool requires_gradient() const { return requires_gradient_; }
     void requires_gradient(bool status) {        
         if (requires_gradient_ == false && status == true) {
@@ -121,7 +116,7 @@ class Tensor : public Array {
     }
 
     virtual void backward(Array* gradient) {
-    // Add gradient to the current gradient.
+        gradient_->add(gradient);
     };
 
     virtual Tensor* forward() {
@@ -130,7 +125,6 @@ class Tensor : public Array {
 
     private:
     bool requires_gradient_ = false;
-    bool is_leaf_ = false;
     Array* gradient_ = nullptr;
 };
 
