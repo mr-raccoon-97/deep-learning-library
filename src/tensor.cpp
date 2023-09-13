@@ -14,6 +14,12 @@ Tensor::Tensor(shape_type shape, bool gradient_requirement ) {
     tensor_-> requires_gradient(gradient_requirement);
 }
 
+Tensor::Tensor(shape_type shape, storage_type data, bool gradient_requirement ) {
+    tensor_ = std::make_shared<internal::Tensor>(shape);
+    std::copy(data.begin(), data.end(), tensor_->begin());
+    tensor_-> requires_gradient(gradient_requirement);
+}
+
 internal::Tensor* Tensor::internal() const {return tensor_.get(); }
 internal::Tensor* Tensor::internal() { return tensor_.get(); }
 
@@ -21,8 +27,8 @@ void Tensor::backward(const Tensor& gradient) {
     tensor_-> backward(gradient.internal());
 }
 
-void Tensor::perform() {
-    tensor_-> perform();
+void Tensor::perform() const{
+    tensor_-> forward();
 }
 
 Tensor::iterator Tensor::begin() { return tensor_->begin(); }

@@ -6,8 +6,8 @@
 namespace net::function {
 
 Tensor linear(const Tensor& input, const Tensor& weight, const Tensor& bias);
-void softmax(Tensor& input, int axis);
-void log_softmax(Tensor&input, int axis);
+Tensor softmax(Tensor& input, int axis);
+Tensor log_softmax(Tensor&input, int axis);
 Tensor relu(const Tensor& input);
 
 } // namespace net

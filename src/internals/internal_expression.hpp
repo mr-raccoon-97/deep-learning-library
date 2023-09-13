@@ -7,10 +7,6 @@ namespace internal {
 
 struct Expression : public Tensor {
     ~Expression() override = default;
-
-    void perform() {
-        Tensor* result = forward();
-    }
 };
 
 } // namespace internal

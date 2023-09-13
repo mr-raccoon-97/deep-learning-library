@@ -18,12 +18,22 @@ Tensor linear(const Tensor& input, const Tensor& weight, const Tensor& bias) {
     return Tensor(expression);
 }
 
-void softmax(Tensor& input, int axis) {
-    internal::Softmax::inplace(input.internal(), axis);
+Tensor softmax(Tensor& input, int axis) {
+    std::shared_ptr<internal::Tensor> expression = std::make_shared<internal::Softmax>(
+        input.internal(),
+        axis
+    );
+    internal::Buffer::add(expression);
+    return Tensor(expression);
 }
 
-void log_softmax(Tensor& input, int axis) {
-    internal::LogSoftmax::inplace(input.internal(), axis);
+Tensor log_softmax(Tensor& input, int axis) {
+    std::shared_ptr<internal::Tensor> expression = std::make_shared<internal::LogSoftmax>(
+        input.internal(),
+        axis
+    );
+    internal::Buffer::add(expression);
+    return Tensor(expression);
 }
 
 Tensor relu(const Tensor& input) {

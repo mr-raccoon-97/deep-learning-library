@@ -8,15 +8,19 @@
 
 namespace internal {
 
-void Softmax::inplace(Tensor* input, int axis) {
+Softmax::Softmax(Tensor* input, int axis) : Function(input) {
     if (axis != 0 && axis != 1) { throw std::runtime_error("axis should be 0 or 1"); }
-    
-    size_type rows = input->shape().front();
-    size_type columns = input->size() / input->shape().front();
+    axis_ = axis;
+}
 
-    if (axis == 0) {
+Tensor* Softmax::forward() {
+    
+    size_type rows = input()->shape().front();
+    size_type columns = input()->size() / input()->shape().front();
+
+    if (axis_ == 0) {
         Eigen::Map<Eigen::Array<scalar_type, -1, -1, 0>> input_map(
-            input->data(),
+            input()->forward()->data(),
             rows,
             columns );
 
@@ -25,15 +29,21 @@ void Softmax::inplace(Tensor* input, int axis) {
         input_map = shifted_exp.colwise() / shifted_exp.rowwise().sum();
     }
 
-    else if (axis == 1) {        
+    else if (axis_ == 1) {        
         Eigen::Map<Eigen::Array<scalar_type, -1, -1, 1>> input_map(
-            input->data(),
+            input()->forward()->data(),
             rows,
             columns );
         
 
         auto shifted_exp = (input_map.colwise() - input_map.rowwise().maxCoeff()).exp();
         input_map = shifted_exp.colwise() / shifted_exp.rowwise().sum();
+    }
+}
+
+void Softmax::backward(Array* gradient) const {
+    if (input()->requires_gradient()) {
+        input()->backward(gradient);
     }
 }
 

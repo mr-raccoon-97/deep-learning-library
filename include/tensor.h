@@ -19,10 +19,11 @@ class Tensor {
     using const_iterator = storage_type::const_iterator;
 
     Tensor(std::shared_ptr<internal::Tensor> tensor);
-    Tensor(shape_type shape, bool requires_gradient = true);
+    Tensor(shape_type shape, bool requires_gradient = false);
+    Tensor(shape_type shape, storage_type data, bool requires_gradient = false);
 
     void backward(const Tensor& gradient);
-    void perform();
+    void perform() const;
 
     internal::Tensor* internal() const;
     internal::Tensor* internal();

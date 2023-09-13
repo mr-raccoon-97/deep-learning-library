@@ -45,12 +45,24 @@ class ReLU : public Function {
 
 class Softmax : public Function {
     public:
-    static void inplace(Tensor* input, int axis);
+    ~Softmax() final = default;
+    Softmax(Tensor* input, int axis);
+    Tensor* forward() final;
+    void backward(Array* gradient) const final;
+
+    private:
+    int axis_;
 };
 
 class LogSoftmax : public Function {
     public:
-    static void inplace(Tensor* input, int axis);
+    ~LogSoftmax() final = default;
+    LogSoftmax(Tensor* input, int axis);
+    Tensor* forward() final;
+    void backward(Array* gradient) const final;
+
+    private:
+    int axis_;
 };
 
 } // namespace internal
