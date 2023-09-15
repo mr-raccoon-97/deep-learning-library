@@ -1,6 +1,6 @@
-#ifndef TENSOR_CONFIG_H
-#define TENSOR_CONFIG_H
+#ifndef INTERNAL_CONFIG_H
+#define INTERNAL_CONFIG_H
 
 #define USE_EIGEN_BACKEND true
 
-#endif //TENSOR_CONFIG_H
+#endif //INTERNAL_CONFIG_H

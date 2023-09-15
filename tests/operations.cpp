@@ -24,16 +24,13 @@ print(result)
 */
 
 int main() {
-    net::Tensor x({2,2}, true, true); for (auto& e : x) e = 1;
-    net::Tensor W({3,2}, true, true); for (auto& e : W) e = 2;
-    net::Tensor b({1,3}, true, true); for (auto& e : b) e = 3;
-    net::Tensor I({2,3}, false, false); for (auto& e : I) e = 1;
+    net::Tensor x({2,2}, true); for (auto& e : x) e = 1;
+    net::Tensor W({3,2}, true); for (auto& e : W) e = 2;
+    net::Tensor b({1,3}, true); for (auto& e : b) e = 3;
+    net::Tensor I({2,3}, false); for (auto& e : I) e = 1;
 
     net::Tensor result = net::function::linear(x,W,b);
+    net::function::log_softmax(result, 1);
 
-    result.backward(I);
-
-    x.print_gradient();
-    W.print_gradient();
-    b.print_gradient();
+    for(auto e : result) std::cout << e << " ";
 }

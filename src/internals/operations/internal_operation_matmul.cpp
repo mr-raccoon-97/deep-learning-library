@@ -1,9 +1,7 @@
 #include "../config.h"
-#include "../internal_types.h"
-#include "../internal_tensor.hpp"
 #include "../internal_array.hpp"
-#include "internal_operation.hpp"
-#include "internal_operation_matmul.h"
+#include "../internal_tensor.hpp"
+#include "internal_operations.hpp"
 
 #if defined(USE_EIGEN_BACKEND)
 
@@ -11,46 +9,42 @@
 
 namespace internal {
 
-Matmul::Matmul(const Tensor* first, const Tensor* second)
+Matmul::Matmul(Tensor* first, Tensor* second)
 :   Operation(first, second) {    
     if (first_operand()->rank() != 2 || second_operand()->rank() != 2)
         throw std::runtime_error("rank mismatch");
 
     if (first_operand()->shape().back() != second_operand()->shape().front())
         throw std::runtime_error("shape mismatch");
+
+    reshape({first_operand()->shape().front(), second_operand()->shape().back()});
 }
 
-type::size_type Matmul::rows_dimension() const { return first_operand()->shape().front(); }
-type::size_type Matmul::columns_dimension() const { return second_operand()->shape().back(); }
-type::size_type Matmul::inner_dimension() const { return first_operand()->shape().back(); };
 
-std::unique_ptr<Tensor> Matmul::perform() const {
-    shape_type result_shape = {rows_dimension(), columns_dimension()};
-    std::unique_ptr<Tensor> result = std::make_unique<Tensor>(result_shape);
+Tensor* Matmul::forward() {
 
-    Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 1>> result_map(
-        result->data(),
+    Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 1>> this_map(
+        this->data(),
         rows_dimension(),
         columns_dimension() );
 
-    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> first_map(
-        first_operand()->data(),
+    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> first_operand_map(
+        first_operand()->forward()->data(),
         rows_dimension(),
         inner_dimension() );
 
-    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> second_map(
-        second_operand()->data(),
+    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> second_operand_map(
+        second_operand()->forward()->data(),
         inner_dimension(),
         columns_dimension() );
     
-    result_map = first_map * second_map;
-    result->requires_gradient(this->gradient_requirement());
-    result->is_leaf(false);
-    result->derive_with(this);
-    return result;
+    this_map = first_operand_map * second_operand_map;
+    return this;
 }
 
+
 void Matmul::backward(Array* gradient) const {
+
     Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> row_gradient_map(
         gradient->data(),
         rows_dimension(),

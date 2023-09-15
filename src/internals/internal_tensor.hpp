@@ -6,13 +6,12 @@
 #include <memory>
 
 #include "internal_array.hpp"
-#include "internal_expression.hpp"
 
 namespace internal {
 
 class Tensor : public Array {
     public:
-
+    Tensor() = default;
     Tensor(shape_type shape) : Array(shape) {}
     Tensor(const Tensor* other) { copy(other); }
     Tensor(const Tensor& other) { copy(&other); }
@@ -21,11 +20,6 @@ class Tensor : public Array {
     Tensor& operator=(Tensor&& other) { if (this != &other) move(&other); return *this; }
     ~Tensor() override { if (requires_gradient_) delete gradient_; }
     Tensor(Array&& other) { Array::move(&other); }
-    
-    void backward(Array* gradient) const {
-        if (is_leaf_) { gradient_->add(gradient); } 
-        else { expression_view_->backward(gradient); }
-    }
 
     void copy(const Tensor* other) {
         Array::copy(other);
@@ -34,7 +28,6 @@ class Tensor : public Array {
             gradient_ = new Array(other);
         }
         requires_gradient_ = other->requires_gradient_;
-        is_leaf_ = other->is_leaf_;
     }
 
     void move(Tensor* other) {
@@ -45,14 +38,10 @@ class Tensor : public Array {
             other->gradient_ = nullptr;    
         } 
         requires_gradient_ = other->requires_gradient_;
-        is_leaf_ = other->is_leaf_;
     }
 
     Array* gradient() const { return gradient_; }
     
-    bool is_leaf() const { return is_leaf_; }
-    void is_leaf(bool status) { is_leaf_ = status; }
-
     bool requires_gradient() const { return requires_gradient_; }
     void requires_gradient(bool status) {        
         if (requires_gradient_ == false && status == true) {
@@ -67,21 +56,12 @@ class Tensor : public Array {
         }
     }
 
-    void derive_with(const Expression* expression) {
-        if (requires_gradient_) expression_view_ = expression;
-    }
-
-    void print_gradient() {
-        if(requires_gradient_) {
-            for(auto e : *gradient_) std::cout << e;
-        }
-    }
+    virtual void backward(Array* gradient) const { gradient_->add(gradient); }
+    virtual Tensor* forward() { return this; }
 
     private:
     bool requires_gradient_ = false;
-    bool is_leaf_ = false;
     Array* gradient_ = nullptr;
-    const Expression* expression_view_ = nullptr;
 };
 
 } // namespace internal
