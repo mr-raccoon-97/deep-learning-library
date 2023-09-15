@@ -23,7 +23,6 @@ Linear::Linear(Tensor* input, Tensor* weight, Tensor* bias)
     requires_gradient(gradient_requirement);
 }
 
-
 Tensor* Linear::forward() {
 
     Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 1>> this_map(

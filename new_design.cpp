@@ -115,171 +115,75 @@ class Tensor : public Array {
         }
     }
 
-    virtual void backward(Array* gradient) {
-        gradient_->add(gradient);
-    };
-
-    virtual Tensor* forward() {
-        return this;
-    }
+    bool is_leaf() const { return is_leaf_; }
+    void is_leaf(bool status) { is_leaf_ = status; }
 
     private:
+    bool is_leaf_ = false;
     bool requires_gradient_ = false;
     Array* gradient_ = nullptr;
 };
 
-class Operation : public Tensor {
+class Expression {
     public:
-    Operation(Tensor* first, Tensor* second) 
-    :   operands_{ first, second } {
-        requires_gradient(first->requires_gradient() || second->requires_gradient());
+    using scalar_type = Tensor::scalar_type;
+    using size_type = Tensor::size_type;
+    using shape_type = Tensor::shape_type;
+
+    virtual ~Expression() = default;
+    virtual void backward(Array* gradient) const = 0;
+    virtual void forward() = 0;
+    virtual shape_type shape() const = 0;
+    virtual bool gradient_requirement() const = 0;
+};
+
+class Operation : public Expression {
+    public:
+    Operation(Tensor* first, Tensor* second) {
+        first_operand_ = first;
+        second_operand_ = second;
     }
 
-    Tensor* first_operand() const { return operands_.first; }
-    Tensor* second_operand() const { return operands_.second; }
-    
+    Tensor* first_operand() const { return first_operand_; }
+    Tensor* second_operand() const { return second_operand_; }
+
     private:
-    std::pair<Tensor*, Tensor*> operands_;
+    Tensor* first_operand_;
+    Tensor* second_operand_;
+    Tensor* result_;
 };
 
-class Addition : public Operation {
+class Graph {
     public:
-    Addition(Tensor* first, Tensor* second) : Operation(first, second) {
-        reshape(first->shape());
+    static Graph& instance() {
+        static Graph instance;
+        return instance;
     }
 
-    Tensor* forward() final;
-    void backward(Array* gradient) final;
+    void add_expression(Expression* expression) { expressions_.push_back(expression); }
+    void add_tensor(Tensor* tensor) { tensors_.push_back(tensor); }
+
+
+
+    private:
+    std::vector<Expression*> expressions_;
+    std::vector<Tensor*> tensors_;
 };
-
-Tensor* Addition::forward() {
-    Tensor* addend = first_operand()->forward();
-    Tensor* augend = second_operand()->forward();
-
-    Eigen::Map<Eigen::Array<scalar_type, 1, -1>> this_map(
-        this->data(),
-        this->size() );
-
-    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> addend_map(
-        addend->data(),
-        addend->size() );
-        
-    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> augend_map(
-        augend->data(),
-        augend->size() );
-
-    this_map = addend_map + augend_map;
-    return this;
-}
-
-void Addition::backward(Array* gradient) {
-    if (first_operand()->requires_gradient()) {
-        if (second_operand()->requires_gradient()) {
-            Array* gradient_copy = new Array(gradient);
-            first_operand()->backward(gradient_copy);
-            delete gradient_copy;
-        }
-        
-        else {
-            first_operand()->backward(gradient);
-        }
-    }
-
-    if (second_operand()->requires_gradient()) {
-        second_operand()->backward(gradient);
-    }
-}
-
-class Multiplication : public Operation {
-    public:
-    Multiplication(Tensor* first, Tensor* second) : Operation(first, second) {
-        reshape(first->shape());
-    }
-
-    Tensor* forward() final;
-    void backward(Array* gradient) final;
-};
-
-Tensor* Multiplication::forward() {
-    Tensor* multiplicand = first_operand()->forward();
-    Tensor* multiplier = second_operand()->forward();
-
-    Eigen::Map<Eigen::Array<scalar_type, 1, -1>> this_map(
-        this->data(),
-        this->size() );
-
-    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> multiplicand_map(
-        multiplicand->data(),
-        multiplicand->size() );
-        
-    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> multiplier_map(
-        multiplier->data(),
-        multiplier->size() );
-
-    this_map = multiplicand_map * multiplier_map;
-    return this;
-}
-
-void Multiplication::backward(Array* gradient) {
-    Eigen::Map<Eigen::Array<scalar_type, 1, -1>> gradient_map(
-        gradient->data(),
-        gradient->size()
-    );
-
-    if (first_operand()->requires_gradient()) {
-        Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> second_operand_map(
-            second_operand()->data(),
-            second_operand()->size()
-        );
-        
-        if (second_operand()->requires_gradient()) {
-            Array* gradient_copy = new Array(gradient);
-            Eigen::Map<Eigen::Array<scalar_type, 1, -1>> gradient_copy_map(
-                gradient_copy->data(),
-                gradient_copy->size()
-            );
-            gradient_copy_map *= second_operand_map;
-            first_operand()->backward(gradient_copy);
-            delete gradient_copy;
-        }
-        
-        else {
-            gradient_map *= second_operand_map;
-            first_operand()->backward(gradient);
-        }
-    }
-
-    if (second_operand()->requires_gradient()) {
-        Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> first_operand_map(
-            first_operand()->data(),
-            first_operand()->size()
-        );
-
-        gradient_map *= first_operand_map;
-        second_operand()->backward(gradient);
-    }
-}
 
 } // namespace internal
 
+class Tensor {
+
+    private:
+    std::shared_ptr<internal::Tensor> tensor_;
+};
+
+
+Tensor operator + (const Tensor& first, const Tensor& second) {
+    internal::Expression* expression = new internal::Addition(first.internal(), second.internal());
+    Tensor(expression->shape(), expression->gradient_requirement(), false);
+}
+
+
 int main() {
-    internal::Tensor x({2,2}); for(auto& element : x) element = 1; x.requires_gradient(true); x.is_leaf(true);
-    internal::Tensor y({2,2}); for(auto& element : y) element = -3; y.requires_gradient(true); y.is_leaf(true);
-    internal::Tensor z({2,2}); for(auto& element : z) element = 4; z.requires_gradient(true); z.is_leaf(true);
-
-    internal::Tensor* a = new internal::Multiplication(&x, &z);
-    internal::Tensor* b = new internal::Multiplication(&y, &z);
-    internal::Tensor* c = new internal::Addition(a, b);
-
-    internal::Array* gradient = new internal::Array({2,2}); for(auto& element : *gradient) element = 1;
-
-    internal::Tensor* result = c->forward();
-    result->backward(gradient);
-
-    for (auto e : *result) std::cout << e;
-
-    delete a;
-    delete b;
-    delete c;
-    delete gradient;
 }

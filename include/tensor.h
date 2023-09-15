@@ -23,7 +23,7 @@ class Tensor {
     Tensor(shape_type shape, storage_type data, bool requires_gradient = false);
 
     void backward(const Tensor& gradient);
-    void perform() const;
+    void perform();
 
     internal::Tensor* internal() const;
     internal::Tensor* internal();

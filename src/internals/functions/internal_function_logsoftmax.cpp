@@ -15,13 +15,13 @@ LogSoftmax::LogSoftmax(Tensor* input, int axis) : Function(input) {
 }
 
 Tensor* LogSoftmax::forward() {
-
+    this->move(input()->forward());
     size_type rows = input()->shape().front();
     size_type columns = input()->size() / input()->shape().front();
 
     if (axis_ == 0) {
         Eigen::Map<Eigen::Array<scalar_type, -1, -1, 0>> input_map(
-            input()->forward()->data(),
+            this->data(),
             rows,
             columns );
 
@@ -32,13 +32,15 @@ Tensor* LogSoftmax::forward() {
 
     else if (axis_ == 1) {        
         Eigen::Map<Eigen::Array<scalar_type, -1, -1, 0>> input_map(
-            input()->forward()->data(),
+            this->data(),
             rows,
             columns );
 
         auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
         input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
     }
+
+    return this;
 }
 
 void LogSoftmax::backward(Array* gradient) const {

@@ -13,14 +13,15 @@ Softmax::Softmax(Tensor* input, int axis) : Function(input) {
     axis_ = axis;
 }
 
-Tensor* Softmax::forward() {
-    
+Tensor* Softmax::forward() {    
+    this->move(input()->forward());
+
     size_type rows = input()->shape().front();
     size_type columns = input()->size() / input()->shape().front();
 
     if (axis_ == 0) {
         Eigen::Map<Eigen::Array<scalar_type, -1, -1, 0>> input_map(
-            input()->forward()->data(),
+            this->data(),
             rows,
             columns );
 
@@ -31,7 +32,7 @@ Tensor* Softmax::forward() {
 
     else if (axis_ == 1) {        
         Eigen::Map<Eigen::Array<scalar_type, -1, -1, 1>> input_map(
-            input()->forward()->data(),
+            this->data(),
             rows,
             columns );
         
@@ -39,10 +40,12 @@ Tensor* Softmax::forward() {
         auto shifted_exp = (input_map.colwise() - input_map.rowwise().maxCoeff()).exp();
         input_map = shifted_exp.colwise() / shifted_exp.rowwise().sum();
     }
+
+    return this;
 }
 
 void Softmax::backward(Array* gradient) const {
-    if (input()->requires_gradient()) {
+    if (requires_gradient()) {
         input()->backward(gradient);
     }
 }

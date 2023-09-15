@@ -12,27 +12,27 @@ namespace internal {
 ReLU::ReLU(Tensor* input) : Function(input) {}
 
 Tensor* ReLU::forward() {
-    Tensor* result = input()->forward();
-    Eigen::Map<Eigen::Array<scalar_type, 1, -1>> result_map(
-        result->data(),
-        result->size());
+    this->move(input()->forward());
+    Eigen::Map<Eigen::Array<scalar_type, 1, -1>> this_map(
+        this->data(),
+        this->size());
 
-    result_map = result_map.cwiseMax(0);
-    return result;
+    this_map = this_map.cwiseMax(0);
+    return this;
 }
 
 void ReLU::backward(Array* gradient) const {
-    if (input()->requires_gradient()) {
-        Eigen::Map<Eigen::Array<scalar_type, 1, -1>> result_map(
-            input()->data(),
-            input()->size());
+    if (requires_gradient()) {
+        Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> result_map(
+            this->data(),
+            this->size());
 
         Eigen::Map<Eigen::Array<scalar_type, 1, -1>> gradient_map(
             gradient->data(),
             gradient->size());
 
         gradient_map = gradient_map * (result_map > 0).cast<scalar_type>();
-        input()->backward(gradient);
+        this->backward(gradient);
     }
 }
 

@@ -46,13 +46,18 @@ print(result)
 */
 
 int main() {
-    net::Tensor x({2,2}, { 5, 5, 5, 5 } , true);
-    net::Tensor W({3,2}, { 2, 2, 2, 2, 2, 2 } ,true);
-    net::Tensor b({1,3}, { 1, 1, 1 }, true);
-    net::Tensor bb({2, 3}, { 1, 0, 1, 0, 1, 0 } , false);
-    net::Tensor tt({2, 3}, { 2, 2, 2, 1, 2 ,3 }, false);
+    net::Tensor x({2,2}, { -1, 2, 5, 1 } , false);
+    net::Tensor W({2,2}, { 2, -2, 2, 2 } ,true);
+    net::Tensor b({1,2}, { -10, -2 }, true);
 
     x = net::function::linear(x,W,b);
+    x = x + W;
+    x = net::function::linear(x,W,b);
+    x = net::function::relu(x);
     
+    x.perform();
+
     for (auto element : x) std::cout << element << " ";
+
+    return 0;
 }
