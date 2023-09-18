@@ -7,7 +7,10 @@ namespace internal {
 
 struct Expression : public Tensor {
     ~Expression() override = default;
-};
+
+    protected:
+    Expression() { is_leaf(false); }
+ };
 
 } // namespace internal
 

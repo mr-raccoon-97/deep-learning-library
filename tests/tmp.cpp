@@ -1,21 +1,21 @@
 #include <iostream>
 #include <memory>
 
-struct Tensor {
-    Tensor(float data) : data(std::make_shared<float>(data)) {}
-    std::shared_ptr<float> data;
-    void print() { std::cout << *data << std::endl; }
-};
-
 int main() {
-    Tensor t1(1.0);
-    Tensor t2(2.0);
-    Tensor t3(3.0);
+    /*
+    Net::Tensor x({2, 2}, true);  // is leaf here, but don't requires gradient
+    Net::Tensor W({2, 2}, true);
+    Net::Tensor b({2, 2}, true);
     
-    t2 = t1;
-    t1 = t3;
+    x = Net::function::linear(x, W, b); 
+    x = Net::function::relu(x);
+    x = Net::function::linear(x, W, b);
+    x = cnet::function::softmax(x);
 
-    t1.print();
+    x.perform();
+    x.derive();
 
-    return 0;
+    std::cout << x.gradient();  
+
+    */
 }
