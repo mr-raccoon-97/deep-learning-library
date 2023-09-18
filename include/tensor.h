@@ -12,6 +12,8 @@ namespace net {
 class Tensor {
     public:
     using scalar_type = float;
+    using pointer = scalar_type*;
+    using const_pointer = const scalar_type*;
     using size_type = std::size_t;
     using shape_type = std::vector<size_type>;
     using storage_type = std::vector<scalar_type>;
@@ -34,6 +36,13 @@ class Tensor {
     const_iterator end() const;
     const_iterator cbegin() const;
     const_iterator cend() const;
+
+    Tensor gradient() const;
+
+    pointer data();
+    const_pointer data() const;
+    shape_type shape() const;
+    size_type rank() const;
 
     private:
     std::shared_ptr<internal::Tensor> tensor_;

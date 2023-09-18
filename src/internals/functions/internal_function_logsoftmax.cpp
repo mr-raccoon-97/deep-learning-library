@@ -15,7 +15,7 @@ LogSoftmax::LogSoftmax(Tensor* input, int axis) : Function(input) {
 }
 
 Tensor* LogSoftmax::forward() {
-    this->move(input()->forward());
+    this->copy(input()->forward());
     size_type rows = input()->shape().front();
     size_type columns = input()->size() / input()->shape().front();
 

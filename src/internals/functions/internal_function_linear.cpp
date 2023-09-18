@@ -40,7 +40,7 @@ Tensor* Linear::forward() {
         columns_dimension(),
         inner_dimension() );
 
-    Eigen::Map<const Eigen::Matrix<scalar_type, 1, -1>> bias_map(
+    Eigen::Map<const Eigen::Matrix<scalar_type, 1, -1, 1>> bias_map(
         bias()->forward()->data(),
         columns_dimension());
 
@@ -51,7 +51,7 @@ Tensor* Linear::forward() {
 
 void Linear::backward(Array* gradient) const {
     
-    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> row_gradient_map(
+    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> gradient_map(
         gradient->data(),
         rows_dimension(),
         columns_dimension() );
@@ -59,7 +59,7 @@ void Linear::backward(Array* gradient) const {
     if (input()->requires_gradient()) {
         Array* input_gradient = new Array({rows_dimension(), inner_dimension()});
 
-        Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> weight_map(
+        Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> weight_map(
             weight()->data(),
             columns_dimension(),
             inner_dimension() );
@@ -69,39 +69,34 @@ void Linear::backward(Array* gradient) const {
             rows_dimension(),
             inner_dimension() );
 
-        input_gradient_map = row_gradient_map * weight_map;
+        input_gradient_map = gradient_map * weight_map;
         input()->backward(input_gradient);
         delete input_gradient;
     }
 
-    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> column_gradient_map(
-        gradient->data(),
-        rows_dimension(),
-        columns_dimension() );
-
     if (weight()->requires_gradient()) {
         Array* weight_gradient = new Array({columns_dimension(), inner_dimension()});
-        Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> input_map(
+        Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> input_map(
             input()->data(),
             rows_dimension(),
             inner_dimension() );
 
-        Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 0>> weight_gradient_map(
+        Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 1>> weight_gradient_map(
             weight_gradient->data(),
             columns_dimension(),
             inner_dimension() );
 
-        weight_gradient_map = column_gradient_map.transpose() * input_map;
+        weight_gradient_map = gradient_map.transpose() * input_map;
         weight()->backward(weight_gradient);
         delete weight_gradient;
     }
 
     if (bias()->requires_gradient()) {
         Array* bias_gradient = new Array({1,columns_dimension()});
-        Eigen::Map<Eigen::Matrix<scalar_type, 1, -1>> bias_gradient_map(
+        Eigen::Map<Eigen::Matrix<scalar_type, 1, -1, 1>> bias_gradient_map(
             bias_gradient->data(),
             columns_dimension() );
-        bias_gradient_map = row_gradient_map.colwise().sum();
+        bias_gradient_map = gradient_map.colwise().sum();
         bias()->backward(bias_gradient);
         delete bias_gradient;
     }

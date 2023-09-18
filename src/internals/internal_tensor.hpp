@@ -80,7 +80,10 @@ class Tensor : public Array {
     bool is_leaf() const { return is_leaf_; }
     void is_leaf(bool status) { is_leaf_ = status; }
 
-    virtual void backward(Array* gradient) const { gradient_->add(gradient); }
+    virtual void backward(Array* gradient) const {
+        gradient_->add(gradient); 
+    }
+
     virtual Tensor* forward() { return this; }
 
     private:

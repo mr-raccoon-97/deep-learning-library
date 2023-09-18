@@ -6,7 +6,7 @@
 
 /*
 
-g++ 
+g++ functions.cpp -LCabernet/lib -lCabernet -I Cabernet/include
 
 import torch
 import torch.nn.functional as F
@@ -49,15 +49,19 @@ int main() {
     net::Tensor x({2,2}, { -1, 2, 5, 1 } , false);
     net::Tensor W({2,2}, { 2, -2, 2, 2 } ,true);
     net::Tensor b({1,2}, { -10, -2 }, true);
+    net::Tensor I({2,2}, { 1, 1, 1, 1 }, false);
 
-    x = net::function::linear(x,W,b);
-    x = x + W;
     x = net::function::linear(x,W,b);
     x = net::function::relu(x);
-    
+    x = net::function::linear(x,W,b);
     x.perform();
 
-    for (auto element : x) std::cout << element << " ";
+    x.backward(I);
 
+    for (auto element : x) std::cout << element << " ";
+    std::cout << std::endl;
+    for (auto element : W.gradient()) std::cout << element << " ";
+    std::cout << std::endl;
+    for (auto element : b.gradient()) std::cout << element << " ";
     return 0;
 }

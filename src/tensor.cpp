@@ -42,6 +42,15 @@ Tensor::const_iterator Tensor::end() const { return tensor_->end(); }
 Tensor::const_iterator Tensor::cbegin() const { return tensor_->cbegin(); }
 Tensor::const_iterator Tensor::cend() const { return tensor_->cend(); }
 
+Tensor::pointer Tensor::data() { return tensor_->data(); }
+Tensor::const_pointer Tensor::data() const { return tensor_->data(); }
+Tensor::shape_type Tensor::shape() const { return tensor_->shape(); }
+Tensor::size_type Tensor::rank() const { return tensor_->rank(); }
+
+Tensor Tensor::gradient() const {
+    return Tensor(std::make_shared<internal::Tensor>(tensor_->gradient()));
+}
+
 Tensor operator + (const Tensor& first, const Tensor& second) {
     return Tensor(std::make_shared<internal::Addition>( first.internal(), second.internal() ));
 }

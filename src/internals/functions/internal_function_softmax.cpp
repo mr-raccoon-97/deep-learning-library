@@ -14,7 +14,7 @@ Softmax::Softmax(Tensor* input, int axis) : Function(input) {
 }
 
 Tensor* Softmax::forward() {    
-    this->move(input()->forward());
+    this->copy(input()->forward());
 
     size_type rows = input()->shape().front();
     size_type columns = input()->size() / input()->shape().front();
