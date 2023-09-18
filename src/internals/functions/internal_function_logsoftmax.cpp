@@ -1,8 +1,7 @@
 #include "../config.h"
-#include "../internal_types.h"
 #include "../internal_tensor.hpp"
 
-#include "internal_function_logsoftmax.h"
+#include "internal_functions.hpp"
 
 #if defined(USE_EIGEN_BACKEND)
 
@@ -10,16 +9,30 @@
 
 namespace internal {
 
-void LogSoftmax::inplace(Tensor* input, int axis) {
-    
+LogSoftmax::LogSoftmax(Tensor* input, int axis) : Function(input) {
     if (axis != 0 && axis != 1) { throw std::runtime_error("axis should be 0 or 1"); }
+    axis_ = axis;
+}
 
-    type::size_type rows = input->shape().front();
-    type::size_type columns = input->size() / input->shape().front();
+Tensor* LogSoftmax::forward() {
+    this->copy(input()->forward());
+    size_type rows = input()->shape().front();
+    size_type columns = input()->size() / input()->shape().front();
 
-    if (axis == 0) {
-        Eigen::Map<Eigen::Array<type::scalar_type, -1, -1, 0>> input_map(
-            input->data(),
+    if (axis_ == 0) {
+        Eigen::Map<Eigen::Array<scalar_type, -1, -1, 0>> input_map(
+            this->data(),
+            rows,
+            columns );
+
+        auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
+        input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
+
+    }
+
+    else if (axis_ == 1) {        
+        Eigen::Map<Eigen::Array<scalar_type, -1, -1, 0>> input_map(
+            this->data(),
             rows,
             columns );
 
@@ -27,14 +40,12 @@ void LogSoftmax::inplace(Tensor* input, int axis) {
         input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
     }
 
-    else if (axis == 1) {        
-        Eigen::Map<Eigen::Array<type::scalar_type, -1, -1, 1>> input_map(
-            input->data(),
-            rows,
-            columns );
+    return this;
+}
 
-        auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
-        input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
+void LogSoftmax::backward(Array* gradient) const {
+    if (input()->requires_gradient()) {
+        input()->backward(gradient);
     }
 }
 

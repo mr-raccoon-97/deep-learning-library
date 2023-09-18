@@ -22,6 +22,7 @@ set(SOURCES
     ${SOURCE_DIR}/internals/functions/internal_function_linear.cpp
     ${SOURCE_DIR}/internals/functions/internal_function_softmax.cpp
     ${SOURCE_DIR}/internals/functions/internal_function_logsoftmax.cpp
+    ${SOURCE_DIR}/internals/functions/internal_function_relu.cpp
 )
 
 
