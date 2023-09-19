@@ -11,38 +11,28 @@ g++ functions.cpp -LCabernet/lib -lCabernet -I Cabernet/include
 import torch
 import torch.nn.functional as F
 
-x = torch.tensor([
-    [5.,5.],
-    [5.,5.]
-], requires_grad = True)
+# Define tensors
+x = torch.tensor([[-1, 2], [5, 1]], dtype=torch.float32, requires_grad=False)
+W = torch.tensor([[2, -2], [2, 2]], dtype=torch.float32, requires_grad=True)
+b = torch.tensor([[-10, -2]], dtype=torch.float32, requires_grad=True)
+I = torch.tensor([[1, 1], [1, 1]], dtype=torch.float32)
 
-W = torch.tensor([
-    [2.,2.],
-    [2.,2.],
-    [2.,2.]
-], requires_grad = True)
+# Perform linear operation using torch.nn.functional.linear
+x = F.linear(x, W, b)
+x = F.relu(x)
+x = F.linear(x, W, b)
 
-b = torch.tensor([
-    [1.,1.,1.]
-], requires_grad = True)
-
-bb = torch.tensor([
-    [1, 0 ,1],
-    [0, 1, 0]
-])
-
-tt = torch.tensor([
-    [2, 2, 2],
-    [1, 2, 3]
-])
+# Backpropagation
+x.backward(I)
 
 
-a = F.linear(x,W,b)
-b = F.log_softmax(a, dim = 0)
-c = (b + bb) * tt
-result = F.relu(c)
+# Print gradients
+print(x)
+print("Gradient of W:")
+print(W.grad)
+print("Gradient of b:")
+print(b.grad)
 
-print(result)
 */
 
 int main() {
@@ -54,14 +44,18 @@ int main() {
     x = net::function::linear(x,W,b);
     x = net::function::relu(x);
     x = net::function::linear(x,W,b);
+
     x.perform();
+
+    for (auto element : x) std::cout << element << std::endl;
 
     x.backward(I);
 
-    for (auto element : x) std::cout << element << " ";
-    std::cout << std::endl;
-    for (auto element : W.gradient()) std::cout << element << " ";
-    std::cout << std::endl;
-    for (auto element : b.gradient()) std::cout << element << " ";
+    std::cout << "Gradient of W:" << std::endl;
+    for (auto element : W.gradient()) std::cout << element << std::endl;
+
+    std::cout << "Gradient of b:" << std::endl;
+    for (auto element : b.gradient()) std::cout << element << std::endl;
+
     return 0;
 }

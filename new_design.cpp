@@ -38,9 +38,6 @@ class Array {
     const_iterator cbegin() const { return storage_.cbegin(); }
     const_iterator cend() const { return storage_.cend(); }
 
-    void add(const Array* other);
-    void multiply(const Array* other);
-
     void copy(const Array* other) {
         size_ = other->size_;
         shape_ = other->shape_;
@@ -68,6 +65,9 @@ class Array {
     storage_type storage_;
 };
 
+
+
+
 class Tensor : public Array {
     public:
     Tensor() = default;
@@ -77,40 +77,61 @@ class Tensor : public Array {
     Tensor(Tensor&& other) { move(&other); }
     Tensor& operator=(const Tensor& other) { if (this != &other) copy(&other);  return *this; }
     Tensor& operator=(Tensor&& other) { if (this != &other) move(&other); return *this; }
-    ~Tensor() override { if (requires_gradient_) delete gradient_; }
+    ~Tensor() override { if (is_leaf_) delete gradient_; }
     Tensor(Array&& other) { Array::move(&other); }
 
     void copy(const Tensor* other) {
         Array::copy(other);
-        if (requires_gradient_) { delete gradient_; }
-        if (other->requires_gradient_) {
-            gradient_ = new Array(other);
-        }
         requires_gradient_ = other->requires_gradient_;
+
+        if (requires_gradient_ ) {
+
+            if (other->is_leaf_ && is_leaf_) {
+                if (!gradient_) gradient_ = new Array(other->gradient_);
+                else gradient_->copy(other->gradient_);
+            }
+
+            else if (other->is_leaf_ && !is_leaf_) {
+                gradient_ = new Array(other->gradient_);
+            }
+
+            else {
+                if (is_leaf_) delete gradient_;
+                gradient_ = other->gradient_;
+            }
+        }
+        
+        else {
+            if (is_leaf_) delete gradient_;
+            gradient_ = nullptr;
+        }
+
+        is_leaf_ = other->is_leaf_;
     }
 
     void move(Tensor* other) {
         Array::move(other);
-        if (requires_gradient_) { delete gradient_; }
-        if (other->requires_gradient_) {
-            gradient_ = other->gradient_;
-            other->gradient_ = nullptr;    
-        } 
+        if (is_leaf_) delete gradient_;
+        is_leaf_ = other->is_leaf_;
         requires_gradient_ = other->requires_gradient_;
+        gradient_ = other->gradient_;
+        other->gradient_ = nullptr;
     }
 
     Array* gradient() const { return gradient_; }
     
     bool requires_gradient() const { return requires_gradient_; }
+
     void requires_gradient(bool status) {        
+
         if (requires_gradient_ == false && status == true) {
             requires_gradient_ = true;
-            gradient_ = new Array(shape());
+            if (is_leaf_) gradient_ = new Array(shape());
         }
 
         if (requires_gradient_ == true && status == false ) {
             requires_gradient_ = false;
-            delete gradient_;
+            if (is_leaf_) delete gradient_;
             gradient_ = nullptr;
         }
     }
@@ -118,72 +139,27 @@ class Tensor : public Array {
     bool is_leaf() const { return is_leaf_; }
     void is_leaf(bool status) { is_leaf_ = status; }
 
+    virtual void backward(Array* gradient) const {
+    }
+
+    virtual Tensor* forward() { return this; }
+
     private:
-    bool is_leaf_ = false;
+    bool is_leaf_ = true;
     bool requires_gradient_ = false;
     Array* gradient_ = nullptr;
 };
 
-class Expression {
-    public:
-    using scalar_type = Tensor::scalar_type;
-    using size_type = Tensor::size_type;
-    using shape_type = Tensor::shape_type;
-
-    virtual ~Expression() = default;
-    virtual void backward(Array* gradient) const = 0;
-    virtual void forward() = 0;
-    virtual shape_type shape() const = 0;
-    virtual bool gradient_requirement() const = 0;
-};
-
-class Operation : public Expression {
-    public:
-    Operation(Tensor* first, Tensor* second) {
-        first_operand_ = first;
-        second_operand_ = second;
-    }
-
-    Tensor* first_operand() const { return first_operand_; }
-    Tensor* second_operand() const { return second_operand_; }
-
-    private:
-    Tensor* first_operand_;
-    Tensor* second_operand_;
-    Tensor* result_;
-};
-
-class Graph {
-    public:
-    static Graph& instance() {
-        static Graph instance;
-        return instance;
-    }
-
-    void add_expression(Expression* expression) { expressions_.push_back(expression); }
-    void add_tensor(Tensor* tensor) { tensors_.push_back(tensor); }
-
-
-
-    private:
-    std::vector<Expression*> expressions_;
-    std::vector<Tensor*> tensors_;
-};
-
-} // namespace internal
-
-class Tensor {
-
-    private:
-    std::shared_ptr<internal::Tensor> tensor_;
-};
-
-
-Tensor operator + (const Tensor& first, const Tensor& second) {
-    internal::Expression* expression = new internal::Addition(first.internal(), second.internal());
-    Tensor(expression->shape(), expression->gradient_requirement(), false);
 }
 
 
 int main() {
+    internal::Tensor* t = new internal::Tensor({2, 3});
+    for (auto& x : *t) x = 1;
+
+    internal::Tensor* t2 = new internal::Tensor();
+    t2->copy(t);
+
+    for(auto x : t2->shape()) std::cout << x << std::endl;
+    return 0;    
 }

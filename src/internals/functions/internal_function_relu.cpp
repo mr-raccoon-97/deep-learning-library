@@ -9,7 +9,9 @@
 
 namespace internal {
 
-ReLU::ReLU(Tensor* input) : Function(input) {}
+ReLU::ReLU(Tensor* input) : Function(input) {
+    reshape(input->shape());
+}
 
 Tensor* ReLU::forward() {
     this->copy(input()->forward());
