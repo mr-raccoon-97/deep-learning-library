@@ -5,13 +5,12 @@
 
 #if defined(USE_EIGEN_BACKEND)
 
-#include <eigen3/Eigen/Dense>
-
 namespace internal {
 
 LogSoftmax::LogSoftmax(Tensor* input, int axis) : Function(input) {
     if (axis != 0 && axis != 1) { throw std::runtime_error("axis should be 0 or 1"); }
     axis_ = axis;
+    reshape(input->shape());
 }
 
 Tensor* LogSoftmax::forward() {

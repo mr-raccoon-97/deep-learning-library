@@ -5,8 +5,6 @@
 
 #if defined(USE_EIGEN_BACKEND)
 
-#include <eigen3/Eigen/Dense>
-
 namespace internal {
 
 Multiplication::Multiplication(Tensor* first, Tensor* second)

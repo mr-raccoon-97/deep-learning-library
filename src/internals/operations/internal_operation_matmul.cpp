@@ -5,8 +5,6 @@
 
 #if defined(USE_EIGEN_BACKEND)
 
-#include <eigen3/Eigen/Dense>
-
 namespace internal {
 
 Matmul::Matmul(Tensor* first, Tensor* second)

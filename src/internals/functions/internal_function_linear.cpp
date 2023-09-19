@@ -5,9 +5,7 @@
 
 #if defined(USE_EIGEN_BACKEND)
 
-#include <eigen3/Eigen/Dense>
-
-// matmul(x, W.T) + b
+// matmul(x, W.T) + b like pytorch
 
 namespace internal {
 
@@ -104,4 +102,4 @@ void Linear::backward(Array* gradient) const {
 
 } // namespace internal
 
-#endif
+#endif // USE_EIGEN_BACKEND

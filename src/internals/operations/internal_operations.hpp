@@ -1,3 +1,17 @@
+/*************************************************************************************************\
+
+This classes are non-leaf nodes representing operations. They are used to build the computational.
+An operations should be implemented overriding the forward and backward methods, of the Tensor Base class.
+The forward method should return the "this" pointer, and the backward method should pass the gradient
+to the inputs.
+
+For implementing operations use the data() method to access the data of the tensor and map it to some
+data structure of some library. In this case I used Eigen::Map so avoid any unnecessary copy of the data
+when performing the operations, and to be able to use the optimized Eigen library for the operations.
+
+/*************************************************************************************************/
+
+
 #ifndef INTERNAL_OPERATION_HPP
 #define INTERNAL_OPERATION_HPP
 

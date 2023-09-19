@@ -1,5 +1,15 @@
-#ifndef INTERNAL_BUFFER_HPP
-#define INTERNAL_BUFFER_HPP
+/*************************************************************************************************\
+
+This is the computational graph class. It is a singleton class that stores the tensors that are
+created during the forward pass. The tensors are stored in a buffer and are deleted when the buffer
+is flushed. This allows to preallocate the memory for the tensors before the forward pass, allowing
+lazy evaluation. This is useful when the forward pass is performed multiple times, for example in
+training and testing phases of a neural network.
+
+/*************************************************************************************************/
+
+#ifndef INTERNAL_GRAPH_HPP
+#define INTERNAL_GRAPH_HPP
 
 #include <iostream>
 #include <vector>
@@ -29,4 +39,4 @@ class Graph {
 
 } // namespace internal
 
-#endif // INTERNAL_BUFFER_HPP
+#endif // INTERNAL_GRAPH_HPP
