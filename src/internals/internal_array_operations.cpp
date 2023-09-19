@@ -2,7 +2,6 @@
 #include "internal_array.hpp"
 
 #if defined(USE_EIGEN_BACKEND)
-#include <eigen3/Eigen/Dense>
 
 namespace internal {
     

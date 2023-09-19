@@ -5,8 +5,6 @@
 
 #if defined(USE_EIGEN_BACKEND)
 
-#include <eigen3/Eigen/Dense>
-
 namespace internal {
 
 LogSoftmax::LogSoftmax(Tensor* input, int axis) : Function(input) {

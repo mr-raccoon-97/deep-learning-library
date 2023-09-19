@@ -1,3 +1,12 @@
+/*************************************************************************************************\
+
+This is the internal multidimensional array class that is used to store the data of the tensors.
+It consists in a wrapper of a contiguous memory block (std::vector in this case, but it could be
+changed into another container in the future) and a shape vector that stores the size of each
+dimension of the array.
+
+/*************************************************************************************************/
+
 #ifndef INTERNAL_ARRAY_HPP
 #define INTERNAL_ARRAY_HPP
 

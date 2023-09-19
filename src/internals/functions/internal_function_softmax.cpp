@@ -4,8 +4,6 @@
 
 #if defined(USE_EIGEN_BACKEND)
 
-#include <eigen3/Eigen/Dense>
-
 namespace internal {
 
 Softmax::Softmax(Tensor* input, int axis) : Function(input) {

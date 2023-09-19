@@ -2,9 +2,8 @@
 #include "../internal_tensor.hpp"
 #include "../internal_array.hpp"
 #include "./internal_operations.hpp"
-#if defined(USE_EIGEN_BACKEND)
 
-#include <eigen3/Eigen/Dense>
+#if defined(USE_EIGEN_BACKEND)
 
 namespace internal {
 
