@@ -40,12 +40,13 @@ class Tensor : public Array {
     Tensor() = default;
     Tensor(shape_type shape) : Array(shape) {}
     Tensor(const Tensor* other) { copy(other); }
-    Tensor(const Tensor& other) { copy(&other); }
-    Tensor(Tensor&& other) { move(&other); }
-    Tensor& operator=(const Tensor& other) { if (this != &other) copy(&other);  return *this; }
-    Tensor& operator=(Tensor&& other) { if (this != &other) move(&other); return *this; }
-    ~Tensor() override { if (is_leaf_) delete gradient_; }
     Tensor(Array&& other) { Array::move(&other); }
+
+    ~Tensor() override { if (is_leaf_) delete gradient_; }
+    Tensor(const Tensor& other) = delete;
+    Tensor(Tensor&& other) { move(&other); }
+    Tensor& operator=(const Tensor& other) = delete;
+    Tensor& operator=(Tensor&& other) = delete;
 
     // The complexity of copy method is due to optional ownership.
     // If the tensor to be copied is a leaf node, then a deep copy of the gradient is performed.
@@ -63,7 +64,7 @@ class Tensor : public Array {
             }
 
             else if (other->is_leaf_ && !is_leaf_) {
-                gradient_ = new Array(other->gradient_);
+                gradient_ = other->gradient_;
             }
 
             else {
