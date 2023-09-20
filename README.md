@@ -1,4 +1,4 @@
-# deep-learning-library
+ deep-learning-library
 
 
 The code isn't fully documented yet, but it's very readable and structured in a highly decoupled manner, so it can grow indefinitely. The core part, which includes things related to the internal representation of tensors, the computational graph, and design, is now functional.
@@ -29,3 +29,18 @@ It produced the same results as the equivalent PyTorch code. Why am I excited? B
 I used Eigen::Map for performing all operations in place without making a single copy of the data, making them highly optimized. The code is also backend-agnostic, meaning you can write your custom CUDA implementations if needed.
 
 If you want to learn c++ or about automatic differentiation, feel free to contribute! There is a lot of work to do.
+
+
+To build the project:
+
+```
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
+
+Be sure Eigen is installed in your system. 
+Don't forget to add the path of the installed library when compiling, for example, if you want to compile example.cpp with g++:
+g++ example.cpp -LCabernet/lib -lCabernet -I Cabernet/include
