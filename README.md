@@ -41,6 +41,8 @@ make
 sudo make install
 ```
 
+Eigen supports cmake, so if sombody wants to integrate that support in the CMakeLists.txt would be nice. 
+
 Be sure Eigen is installed in your system. 
 Don't forget to add the path of the installed library when compiling, for example, if you want to compile example.cpp with g++:
 g++ example.cpp -LCabernet/lib -lCabernet -I Cabernet/include
