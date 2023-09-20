@@ -7,35 +7,20 @@ The API is currently inspired by PyTorch, with one notable difference: when you 
 
 ```
 net::Tensor x({2,2}, { -1, 2, 5, 1 } , false);
-
 net::Tensor W({2,2}, { 2, -2, 2, 2 } ,true);
-
 net::Tensor b({1,2}, { -10, -2 }, true);
-
 net::Tensor I({2,2}, { 1, 1, 1, 1 }, false);
-
 x = net::function::linear(x,W,b);
-
 x = net::function::relu(x);
-
 x = net::function::linear(x,W,b);
-
 x = W * x + W;
-
 x.perform();
-
 x.backward(I);
-
 std::cout << "x:" << std::endl;
-
 for (auto element : x) std::cout << element << std::endl;
-
 std::cout << "Gradient of W:" << std::endl;
-
 for (auto element : W.gradient()) std::cout << element << std::endl;
-
 std::cout << "Gradient of b:" << std::endl;
-
 for (auto element : b.gradient()) std::cout << element << std::end
 ```
 
