@@ -63,14 +63,11 @@ class Tensor : public Array {
                 else gradient_->copy(other->gradient_);
             }
 
-            else if (other->is_leaf_ && !is_leaf_) {
-                gradient_ = other->gradient_;
-            }
-
             else {
                 if (is_leaf_) delete gradient_;
                 gradient_ = other->gradient_;
             }
+
         }
         
         else {

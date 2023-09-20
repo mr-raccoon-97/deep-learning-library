@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-/*
+/*<
 To test this code run:
 g++ example.cpp -LCabernet/lib -lCabernet -I Cabernet/include
 
@@ -34,7 +34,7 @@ print(x)
 print("Gradient of W:")
 print(W.grad)
 print("Gradient of b:")
-print(b.grad)
+print(b.grad)>
 
 */
 
