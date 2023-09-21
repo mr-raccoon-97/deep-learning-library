@@ -1,5 +1,6 @@
  deep-learning-library
 
+Join the discord!: https://discord.gg/4guRKm5x
 
 The code isn't fully documented yet, but it's very readable and structured in a highly decoupled manner, so it can grow indefinitely. The core part, which includes things related to the internal representation of tensors, the computational graph, and design, is now functional.
 
