@@ -1,5 +1,10 @@
 # CaberNet C++ library
 
+## Join the Discord:
+
+https://discord.gg/4guRKm5x
+
+
 ## To do tasks:
 ### Short Term
 - [ ] Add an optional flag to linear function, we will need to be able to do linear(x,W) without the bias parameter. This can be made simply by creating a new linear(x,W) function, and checking for
