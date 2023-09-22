@@ -2,12 +2,12 @@
 
 ## To do tasks:
 ### Short Term
-[] Add an optional flag to linear function, we will need to be able to do linear(x,W) without the bias parameter. This can be made simply by creating a new linear(x,W) function, and checking for
+-[] Add an optional flag to linear function, we will need to be able to do linear(x,W) without the bias parameter. This can be made simply by creating a new linear(x,W) function, and checking for
    nullptr in the internal implementation of the function.
-[] Add backward methods to the softmax and log_softmax functions. They are not implemented yet.
-[] Overload << operators for tensors so we don't have to iterate over the tensors values for print them.
-... 
-[] Adding more tasks here is another task!
+-[] Add backward methods to the softmax and log_softmax functions. They are not implemented yet.
+-[] Overload << operators for tensors so we don't have to iterate over the tensors values for print them.
+-... 
+-[] Adding more tasks here is another task!
 
 ### Long Term
 We well need to design a mechanisms for loading data into tensors. This can be challenging, since the de data lives in the tensor as a single chunk of memory,
