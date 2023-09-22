@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
-project(Cabernet)
-set(CMAKE_CXX_STANDARD 20)
+project(CaberNet)
+set(CMAKE_CXX_STANDARD 17)
 
 # Define source and header file variables
 
@@ -8,8 +8,14 @@ set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 set(HEADERS
-    ${INCLUDE_DIR}/tensor.h
-    ${INCLUDE_DIR}/functions.h
+    ${INCLUDE_DIR}/CaberNet.h
+    ${INCLUDE_DIR}/CaberNet/tensor.h
+    ${INCLUDE_DIR}/CaberNet/functions.h
+    ${INCLUDE_DIR}/CaberNet/layers/layer.h
+    ${INCLUDE_DIR}/CaberNet/layers/dense.h
+    ${INCLUDE_DIR}/CaberNet/layers/relu.h
+    ${INCLUDE_DIR}/CaberNet/layers.h
+    ${INCLUDE_DIR}/CaberNet/model.h
 )
 
 set(SOURCES

@@ -45,6 +45,7 @@ Tensor* Softmax::forward() {
 
 void Softmax::backward(Array* gradient) const {
     if (requires_gradient()) {
+        throw std::runtime_error("Not implemented yet, if you want to contribute, you can start from here!");
         input()->backward(gradient);
     }
 }
