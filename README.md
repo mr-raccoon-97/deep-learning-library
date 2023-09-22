@@ -2,22 +2,23 @@
 
 ## To do tasks:
 ### Short Term
--[] Add an optional flag to linear function, we will need to be able to do linear(x,W) without the bias parameter. This can be made simply by creating a new linear(x,W) function, and checking for
+- [ ] Add an optional flag to linear function, we will need to be able to do linear(x,W) without the bias parameter. This can be made simply by creating a new linear(x,W) function, and checking for
    nullptr in the internal implementation of the function.
--[] Add backward methods to the softmax and log_softmax functions. They are not implemented yet.
--[] Overload << operators for tensors so we don't have to iterate over the tensors values for print them.
--... 
--[] Adding more tasks here is another task!
+- [ ] Add backward methods to the softmax and log_softmax functions. They are not implemented yet.
+- [ ] Overload << operators for tensors so we don't have to iterate over the tensors values for print them.
+- [ ] Adding more tasks here is another task!
 
 ### Long Term
-We well need to design a mechanisms for loading data into tensors. This can be challenging, since the de data lives in the tensor as a single chunk of memory,
+- [ ] We well need to design a mechanisms for loading data into tensors. This can be challenging, since the de data lives in the tensor as a single chunk of memory,
 and if we want to shuffle the batches while iterating over the Dataset for performing the SGD algorithm, the iterators of the dataset should be able to flush 
 the rows of the tensors.
 
-We will need to add strides on the tensor data structures, for some operations.
-
-I will be designing the OOP interface for creating the layers and the statistical distributions modules for initializing the weights, so don't worry about them,
+- [ ] We will need to add strides on the tensor data structures, for some operations.
+- [ ] I will be designing the OOP interface for creating the layers and the statistical distributions modules for initializing the weights, so don't worry about them,
 meanwhile there are a few files in the for you to see how the design is going.
+
+### Considerations
+If everything goes well, we can use sentenpice tokenizer creating some NLP server.
 
 ## Important
 
