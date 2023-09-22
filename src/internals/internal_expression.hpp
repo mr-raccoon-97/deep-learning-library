@@ -11,12 +11,17 @@ This is just an interface class for the non-leaf nodes of the computational grap
 
 namespace internal {
 
-struct Expression : public Tensor {
+class Expression : public Tensor {
+    public:
     ~Expression() override = default;
 
     protected:
-    Expression() { is_leaf(false); }
- };
+    Expression() 
+    :   Tensor(false) {}
+
+    Expression(shape_type shape, bool gradient_requirement = false)
+    :   Tensor(shape, gradient_requirement, false) {}
+};
 
 } // namespace internal
 
