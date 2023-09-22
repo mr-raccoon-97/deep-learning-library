@@ -37,32 +37,39 @@ namespace internal {
 
 class Tensor : public Array {
     public:
-    Tensor() = default;
-    Tensor(shape_type shape) : Array(shape) {}
+    Tensor(bool leaf_status = true)
+    :   Array() {
+        is_leaf_ = leaf_status; 
+        requires_gradient_ = false;
+    }
+
+    Tensor(shape_type shape, bool gradient_requirement = false, bool leaf_status = true) 
+    :   Array(shape) {
+        is_leaf_ = leaf_status; 
+        requires_gradient_ = gradient_requirement;
+        if (is_leaf_ && requires_gradient_) gradient_ = new Array(shape);
+    }
+
     Tensor(const Tensor* other) { copy(other); }
     Tensor(Array&& other) { Array::move(&other); }
 
-    ~Tensor() override { if (is_leaf_) delete gradient_; }
+    ~Tensor() override { if (is_leaf_ && requires_gradient_) delete gradient_; }
     Tensor(const Tensor& other) = delete;
-    Tensor(Tensor&& other) { move(&other); }
+    Tensor(Tensor&& other) = delete;
     Tensor& operator=(const Tensor& other) = delete;
     Tensor& operator=(Tensor&& other) = delete;
 
-    // The complexity of copy method is due to optional ownership.
-    // If the tensor to be copied is a leaf node, then a deep copy of the gradient is performed.
-    // Else the gradient_ is just a reference to the gradient of the real owner of the gradient.
 
     void copy(const Tensor* other) {
         Array::copy(other);
         requires_gradient_ = other->requires_gradient_;
 
         if (requires_gradient_ ) {
-
             if (other->is_leaf_ && is_leaf_) {
                 if (!gradient_) gradient_ = new Array(other->gradient_);
                 else gradient_->copy(other->gradient_);
             }
-
+            
             else {
                 if (is_leaf_) delete gradient_;
                 gradient_ = other->gradient_;
@@ -88,8 +95,6 @@ class Tensor : public Array {
     }
 
     Array* gradient() const { return gradient_; }
-    
-    bool requires_gradient() const { return requires_gradient_; }
 
     void requires_gradient(bool status) {        
         if (requires_gradient_ == false && status == true) {
@@ -105,20 +110,17 @@ class Tensor : public Array {
     }
 
     bool is_leaf() const { return is_leaf_; }
-
-    virtual void backward(Array* gradient) const {
-        gradient_->add(gradient); 
-    }
+    bool requires_gradient() const { return requires_gradient_; }
 
     virtual Tensor* forward() { return this; }
+    virtual void backward(Array* gradient) const { gradient_->add(gradient); }
 
     protected:
-    void is_leaf(bool status) { is_leaf_ = status; }
+    bool is_leaf_;
+    bool requires_gradient_;
 
     private:
-    bool is_leaf_ = true;
-    bool requires_gradient_ = false;
-    Array* gradient_ = nullptr;
+    Array* gradient_;
 };
 
 } // namespace internal
