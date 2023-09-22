@@ -1,7 +1,7 @@
-### CaberNet C++ library
+# CaberNet C++ library
 
 ## To do tasks:
-# Short Term
+### Short Term
 [] Add an optional flag to linear function, we will need to be able to do linear(x,W) without the bias parameter. This can be made simply by creating a new linear(x,W) function, and checking for
    nullptr in the internal implementation of the function.
 [] Add backward methods to the softmax and log_softmax functions. They are not implemented yet.
@@ -9,7 +9,7 @@
 ... 
 [] Adding more tasks here is another task!
 
-# Long Term
+### Long Term
 We well need to design a mechanisms for loading data into tensors. This can be challenging, since the de data lives in the tensor as a single chunk of memory,
 and if we want to shuffle the batches while iterating over the Dataset for performing the SGD algorithm, the iterators of the dataset should be able to flush 
 the rows of the tensors.
