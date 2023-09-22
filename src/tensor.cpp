@@ -1,4 +1,4 @@
-#include "../include/tensor.h"
+#include "../include/CaberNet/tensor.h"
 
 #include "internals/internal_tensor.hpp"
 #include "internals/internal_graph.hpp"
