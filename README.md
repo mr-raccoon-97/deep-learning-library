@@ -1,4 +1,4 @@
-# CaberNet C++ library
+# CaberNet C++ deep learning library
 
 ## Join the Discord:
 
