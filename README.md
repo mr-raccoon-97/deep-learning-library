@@ -11,6 +11,9 @@ https://discord.gg/4guRKm5x
    nullptr in the internal implementation of the function.
 - [ ] Add backward methods to the softmax and log_softmax functions. They are not implemented yet.
 - [ ] Overload << operators for tensors so we don't have to iterate over the tensors values for print them.
+- [ ] Add binary substraction and division operations.
+- [ ] Add unary operations (this is easy because inplace operations don't requires a backward method).
+- [ ] Add a broadcast mechanism to operate between tensors of diferent shapes.
 - [ ] Adding more tasks here is another task!
 
 ### Long Term
