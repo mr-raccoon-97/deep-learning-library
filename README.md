@@ -4,7 +4,6 @@
 
 https://discord.gg/4guRKm5x
 
-
 ## To do tasks:
 ### Short Term
 - [ ] Add an optional flag to linear function, we will need to be able to do linear(x,W) without the bias parameter. This can be made simply by creating a new linear(x,W) function, and checking for
@@ -31,7 +30,7 @@ If everything goes well, we can use sentenpice tokenizer creating some NLP serve
 ## Important
 
 If you want to add custom functions read the README inside the src foder.
-
+Also if you want to contribute but don't understand my code, don't be afraid to ask, write in the discord server or send me an email : eric.m.cardozo@gmail.com
 
 The code isn't fully documented yet, but it's very readable and structured in a highly decoupled manner, so it can grow indefinitely. The core part, which includes things related to the internal representation of tensors, the computational graph, and design, is now functional.
 
