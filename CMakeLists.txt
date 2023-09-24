@@ -11,9 +11,6 @@ set(HEADERS
     ${INCLUDE_DIR}/CaberNet.h
     ${INCLUDE_DIR}/CaberNet/tensor.h
     ${INCLUDE_DIR}/CaberNet/functions.h
-    ${INCLUDE_DIR}/CaberNet/layers/layer.h
-    ${INCLUDE_DIR}/CaberNet/layers/dense.h
-    ${INCLUDE_DIR}/CaberNet/layers/relu.h
     ${INCLUDE_DIR}/CaberNet/layers.h
     ${INCLUDE_DIR}/CaberNet/model.h
 )
@@ -21,6 +18,7 @@ set(HEADERS
 set(SOURCES
     ${SOURCE_DIR}/tensor.cpp
     ${SOURCE_DIR}/functions.cpp
+    ${SOURCE_DIR}/layers.cpp
     ${SOURCE_DIR}/internals/internal_array_operations.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_addition.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_multiplication.cpp

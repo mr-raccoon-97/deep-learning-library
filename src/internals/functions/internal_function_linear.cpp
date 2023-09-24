@@ -22,7 +22,7 @@ Linear::Linear(Tensor* input, Tensor* weight, Tensor* bias)
 }
 
 Tensor* Linear::forward() {
-
+    
     Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 1>> this_map(
         this->data(),
         rows_dimension(),
