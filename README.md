@@ -36,6 +36,55 @@ The code isn't fully documented yet, but it's very readable and structured in a 
 
 The API is currently inspired by PyTorch, with one notable difference: when you perform an operation, the program doesn't actually execute it immediately. Instead, it allocates a node into a graph, waiting for you to call the perform() method on the result ( like tensorflow but this is a dynamic graph ).Here's an example I created to test it (example.cpp in the repository):
 
+# Mayor Update, new OOP oriented interface:
+With the new object oriented interface you will be able to create models like this:
+```
+struct Encoder : public net::base::Model {
+    net::layer::Sequence layers;
+    Encoder() {
+        layers = {
+            new net::layer::Linear(64, 32),
+            new net::layer::ReLU(),
+            new net::layer::Linear(32, 16),
+            new net::layer::ReLU(),
+        };
+    }
+
+    net::Tensor forward(net::Tensor x) override {
+        return layers.forward(x);
+    }
+};
+
+struct Decoder : public net::base::Model {
+    net::layer::Sequence layers;
+    Decoder() {
+        layers = {
+            new net::layer::Linear(16, 32),
+            new net::layer::ReLU(),
+            new net::layer::Linear(32, 64)
+        };
+    }
+
+    net::Tensor forward(net::Tensor x) override {
+        x = layers.forward(x);
+        x = net::function::softmax(x, 1);
+        return x;
+    }
+};
+
+struct Autoencoder : public net::base::Model {
+    Encoder encoder;
+    Decoder decoder;
+
+    Autoencoder() : encoder(), decoder() {}
+    net::Tensor forward(net::Tensor x) override {
+        x = encoder.forward(x);
+        x = decoder.forward(x);
+        return x;
+    }
+};
+```
+
 ## Description
 
 ```
