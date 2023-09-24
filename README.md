@@ -1,6 +1,11 @@
 # CaberNet C++ deep learning library
 
 
+## Join the Discord:
+
+https://discord.gg/4guRKm5x
+
+
 # BIG Update, new OOP oriented interface:
 With the new object oriented interface you will be able to create models like this:
 ```
@@ -49,11 +54,6 @@ struct Autoencoder : public net::base::Model {
     }
 };
 ```
-
-## Join the Discord:
-
-https://discord.gg/4guRKm5x
-
 ## To do tasks:
 ### Short Term
 - [ ] Add an optional flag to linear function, we will need to be able to do linear(x,W) without the bias parameter. This can be made simply by creating a new linear(x,W) function, and checking for
