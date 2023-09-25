@@ -26,7 +26,6 @@ Tensor* LogSoftmax::forward() {
 
         auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
         input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
-
     }
 
     else if (axis_ == 1) {        
@@ -42,7 +41,7 @@ Tensor* LogSoftmax::forward() {
     return this;
 }
 
-void LogSoftmax::backward(Array* gradient) const {
+void LogSoftmax::backward(Tensor* gradient) const {
     if (input()->requires_gradient()) {
         throw std::runtime_error("Not implemented yet, if you want to contribute, you can start from here!");
         input()->backward(gradient);

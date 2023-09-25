@@ -41,7 +41,7 @@ Tensor* Matmul::forward() {
 }
 
 
-void Matmul::backward(Array* gradient) const {
+void Matmul::backward(Tensor* gradient) const {
 
     Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> row_gradient_map(
         gradient->data(),
@@ -49,7 +49,7 @@ void Matmul::backward(Array* gradient) const {
         columns_dimension() );
     
     if (first_operand()->requires_gradient()) {
-        Array* first_gradient = new Array({rows_dimension(), inner_dimension()});
+        Tensor* first_gradient = new Tensor({rows_dimension(), inner_dimension()}, false, false);
 
         Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> second_map(
             second_operand()->data(),
@@ -72,7 +72,7 @@ void Matmul::backward(Array* gradient) const {
         columns_dimension() );
 
     if (second_operand()->requires_gradient()) {
-        Array* second_gradient = new Array({inner_dimension(), columns_dimension()});
+        Tensor* second_gradient = new Tensor({inner_dimension(), columns_dimension()}, false, false);
         Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> first_map(
             first_operand()->data(),
             rows_dimension(),

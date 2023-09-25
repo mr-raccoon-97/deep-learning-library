@@ -7,6 +7,13 @@
 
 namespace internal {
 
+void Tensor::multiply(const Tensor* other) {
+    if(shape() != other->shape()) throw std::runtime_error("shape mismatch");
+    Eigen::Map<Eigen::Array<scalar_type, 1, -1>> this_map(data(), size());
+    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> other_map(other->data(), other->size());
+    this_map *= other_map;
+}
+
 Multiplication::Multiplication(Tensor* first, Tensor* second)
 :   Operation(first, second) {
     if(first->shape() != second->shape()) throw std::runtime_error("shape mismatch");
@@ -31,7 +38,7 @@ Tensor* Multiplication::forward() {
     return this;
 }
 
-void Multiplication::backward(Array* gradient) const {
+void Multiplication::backward(Tensor* gradient) const {
     Eigen::Map<Eigen::Array<scalar_type, 1, -1>> gradient_map(gradient->data(), gradient->size());
 
     if (first_operand()->requires_gradient()) {
@@ -41,7 +48,7 @@ void Multiplication::backward(Array* gradient) const {
         );
         
         if (second_operand()->requires_gradient()) {
-            Array* gradient_copy = new Array(gradient);
+            Tensor* gradient_copy = new Tensor(gradient);
             Eigen::Map<Eigen::Array<scalar_type, 1, -1>> gradient_copy_map(
                 gradient_copy->data(),
                 gradient_copy->size()

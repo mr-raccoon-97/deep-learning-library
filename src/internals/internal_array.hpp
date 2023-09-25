@@ -16,9 +16,10 @@ dimension of the array.
 
 namespace internal {
 
+template<typename T>
 class Array {
     public:
-    using scalar_type = float;
+    using scalar_type = T;
     using pointer = scalar_type*;
     using const_pointer = const scalar_type*;
 
@@ -26,8 +27,8 @@ class Array {
     using shape_type = std::vector<size_type>;
     using storage_type = std::vector<scalar_type>;
     
-    using iterator = storage_type::iterator;
-    using const_iterator = storage_type::const_iterator;
+    using iterator = typename storage_type::iterator;
+    using const_iterator = typename storage_type::const_iterator;
 
     virtual ~Array() = default;
 
@@ -48,9 +49,6 @@ class Array {
     const_iterator cbegin() const { return storage_.cbegin(); }
     const_iterator cend() const { return storage_.cend(); }
 
-    void add(const Array* other);
-    void multiply(const Array* other);
-
     void copy(const Array* other) {
         size_ = other->size_;
         shape_ = other->shape_;
@@ -70,6 +68,12 @@ class Array {
         shape_ = shape;
         size_ = 1; for (size_type dimension : shape) size_ *= dimension;
         storage_.resize(size_);
+    }
+
+    void clear() {
+        size_ = 0;
+        shape_.clear();
+        storage_.clear();
     }
 
     private:
