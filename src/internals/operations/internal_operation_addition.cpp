@@ -6,6 +6,14 @@
 #if defined(USE_EIGEN_BACKEND)
 
 namespace internal {
+        
+void Tensor::add(const Tensor* other) {
+    if(shape() != other->shape()) throw std::runtime_error("shape mismatch");
+    Eigen::Map<Eigen::Array<scalar_type, 1, -1>> this_map(data(), size());
+    Eigen::Map<const Eigen::Array<scalar_type, 1, -1>> other_map(other->data(), other->size());
+    this_map += other_map;
+}
+
 
 Addition::Addition(Tensor* first, Tensor* second)
 :   Operation(first, second) {
@@ -30,10 +38,10 @@ Tensor* Addition::forward() {
     return this;
 }
 
-void Addition::backward(Array* gradient) const {
+void Addition::backward(Tensor* gradient) const {
     if (first_operand()->requires_gradient()) {
         if (second_operand()->requires_gradient()) {
-            Array* gradient_copy = new Array(gradient);
+            Tensor* gradient_copy = new Tensor(gradient);
             first_operand()->backward(gradient_copy);
             delete gradient_copy;
         }

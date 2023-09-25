@@ -19,7 +19,6 @@ set(SOURCES
     ${SOURCE_DIR}/tensor.cpp
     ${SOURCE_DIR}/functions.cpp
     ${SOURCE_DIR}/layers.cpp
-    ${SOURCE_DIR}/internals/internal_array_operations.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_addition.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_multiplication.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_matmul.cpp

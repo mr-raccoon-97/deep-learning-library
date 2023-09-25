@@ -1,6 +1,5 @@
 /*************************************************************************************************\
 
-
 This is the main data structure of the library. It acts as a node of the computational graph. It is
 provided with virtual forward and backward methods that are used to perform the forward and backward 
 passes of the data through the graph. Those methods are mean to be overriden when implementing 
@@ -41,7 +40,7 @@ as we are using Eigen now. this changes won't really afect the following code. B
 
 namespace internal {
 
-class Tensor : public Array {
+class Tensor : public Array<float> {
     public:
     Tensor(bool leaf_status = true)
     :   Array() {
@@ -53,12 +52,10 @@ class Tensor : public Array {
     :   Array(shape) {
         is_leaf_ = leaf_status; 
         requires_gradient_ = gradient_requirement;
-        if (is_leaf_ && requires_gradient_) gradient_ = new Array(shape);
+        if (is_leaf_ && requires_gradient_) gradient_ = new Tensor(shape, false, false);
     }
 
     Tensor(const Tensor* other) { copy(other); }
-    Tensor(Array&& other) { Array::move(&other); }
-
     ~Tensor() override { if (is_leaf_ && requires_gradient_) delete gradient_; }
     Tensor(const Tensor& other) = delete;
     Tensor(Tensor&& other) = delete;
@@ -67,12 +64,13 @@ class Tensor : public Array {
 
 
     void copy(const Tensor* other) {
-        Array::copy(other);
+        reshape(other->shape());
+        std::copy(other->begin(), other->end(), this->begin());
         requires_gradient_ = other->requires_gradient_;
 
         if (requires_gradient_ ) {
             if (other->is_leaf_ && is_leaf_) {
-                if (!gradient_) gradient_ = new Array(other->gradient_);
+                if (!gradient_) gradient_ = new Tensor(other->gradient_);
                 else gradient_->copy(other->gradient_);
             }
             
@@ -92,7 +90,9 @@ class Tensor : public Array {
     }
 
     void move(Tensor* other) {
-        Array::move(other);
+        reshape(other->shape());
+        std::move(other->begin(), other->end(), this->begin());
+        other->clear();
         if (is_leaf_) delete gradient_;
         is_leaf_ = other->is_leaf_;
         requires_gradient_ = other->requires_gradient_;
@@ -100,12 +100,12 @@ class Tensor : public Array {
         other->gradient_ = nullptr;
     }
 
-    Array* gradient() const { return gradient_; }
+    Tensor* gradient() const { return gradient_; }
 
     void requires_gradient(bool status) {        
         if (requires_gradient_ == false && status == true) {
             requires_gradient_ = true;
-            if (is_leaf_) gradient_ = new Array(shape());
+            if (is_leaf_) gradient_ = new Tensor(this->shape(), false, false);
         }
 
         if (requires_gradient_ == true && status == false ) {
@@ -119,14 +119,17 @@ class Tensor : public Array {
     bool requires_gradient() const { return requires_gradient_; }
 
     virtual Tensor* forward() { return this; }
-    virtual void backward(Array* gradient) const { gradient_->add(gradient); }
+    virtual void backward(Tensor* gradient) const { gradient_->add(gradient); }
+
+    void add(const Tensor* other);
+    void multiply(const Tensor* other);
 
     protected:
     bool is_leaf_;
     bool requires_gradient_;
 
     private:
-    Array* gradient_;
+    Tensor* gradient_;
 };
 
 } // namespace internal

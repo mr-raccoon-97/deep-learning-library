@@ -40,7 +40,7 @@ class Addition : public Operation {
     public:
     Addition(Tensor* first, Tensor* second);
     Tensor* forward() final;
-    void backward(Array* gradient) const final;
+    void backward(Tensor* gradient) const final;
 };
 
 
@@ -48,7 +48,7 @@ class Multiplication : public Operation {
     public:
     Multiplication(Tensor* first, Tensor* second);
     Tensor* forward() final;
-    void backward(Array* gradient) const final;
+    void backward(Tensor* gradient) const final;
 };
 
 class Matmul : public Operation {
@@ -56,7 +56,7 @@ class Matmul : public Operation {
     Matmul(Tensor* first, Tensor* second);
 
     Tensor* forward() final;
-    void backward(Array* gradient) const final;
+    void backward(Tensor* gradient) const final;
 
     size_type rows_dimension() const { return first_operand()->shape().front(); }
     size_type inner_dimension() const { return  first_operand()->shape().back(); }

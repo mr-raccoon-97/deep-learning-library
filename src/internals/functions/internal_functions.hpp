@@ -37,7 +37,7 @@ class Linear : public Function {
     ~Linear() final = default;
     Linear(Tensor* input, Tensor* weight, Tensor* bias);
     Tensor* forward() final;
-    void backward(Array* gradient) const final;
+    void backward(Tensor* gradient) const final;
 
     Tensor* weight() const { return weight_; }
     Tensor* bias() const { return bias_; }   
@@ -56,7 +56,7 @@ class ReLU : public Function {
     ~ReLU() final = default;
     ReLU(Tensor* input);
     Tensor* forward() final;
-    void backward(Array* gradient) const final;
+    void backward(Tensor* gradient) const final;
 };
 
 class Softmax : public Function {
@@ -64,7 +64,7 @@ class Softmax : public Function {
     ~Softmax() final = default;
     Softmax(Tensor* input, int axis);
     Tensor* forward() final;
-    void backward(Array* gradient) const final;
+    void backward(Tensor* gradient) const final;
 
     private:
     int axis_;
@@ -75,7 +75,7 @@ class LogSoftmax : public Function {
     ~LogSoftmax() final = default;
     LogSoftmax(Tensor* input, int axis);
     Tensor* forward() final;
-    void backward(Array* gradient) const final;
+    void backward(Tensor* gradient) const final;
 
     private:
     int axis_;
