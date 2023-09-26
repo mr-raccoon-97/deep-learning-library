@@ -1,7 +1,7 @@
 #include <CaberNet/CaberNet.h>
 
 struct Encoder : public net::base::Model {
-    net::layer::Sequence layers;
+    public:
     Encoder() {
         layers = {
             new net::layer::Linear(64, 32),
@@ -11,40 +11,18 @@ struct Encoder : public net::base::Model {
         };
     }
 
-    net::Tensor forward(net::Tensor x) override {
+    net::Tensor forward(net::Tensor x) {
         return layers.forward(x);
     }
-};
 
-struct Decoder : public net::base::Model {
     net::layer::Sequence layers;
-    Decoder() {
-        layers = {
-            new net::layer::Linear(16, 32),
-            new net::layer::ReLU(),
-            new net::layer::Linear(32, 64)
-        };
-    }
-
-    net::Tensor forward(net::Tensor x) override {
-        x = layers.forward(x);
-        x = net::function::softmax(x, 1);
-        return x;
-    }
 };
 
-struct Autoencoder : public net::base::Model {
-    Encoder encoder;
-    Decoder decoder;
-
-    Autoencoder() : encoder(), decoder() {}
-    net::Tensor forward(net::Tensor x) override {
-        x = encoder.forward(x);
-        x = decoder.forward(x);
-        return x;
-    }
-};
 
 int main() {
-    Autoencoder model;
+    Encoder encoder;
+    net::Tensor input({256, 64}); input.fill(net::initializer::He);
+    net::Tensor output = encoder.forward(input);
+    output.perform();
+    for(auto element : output) std::cout << element;
 }

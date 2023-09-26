@@ -17,11 +17,9 @@ Tensor::Tensor(shape_type shape, bool gradient_requirement ) {
     internal::Graph::add(tensor_);
 }
 
-Tensor::Tensor(shape_type shape, storage_type data, bool gradient_requirement ) {
-    tensor_ = std::make_shared<internal::Tensor>(shape);
-    tensor_-> requires_gradient(gradient_requirement);
-    std::copy(data.begin(), data.end(), tensor_->begin());
-    internal::Graph::add(tensor_);
+void Tensor::reshape(shape_type shape) {
+    if(tensor_ == nullptr) tensor_ = std::make_shared<internal::Tensor>(shape, false, false);
+    tensor_-> reshape(shape);
 }
 
 Tensor Tensor::gradient() const {
@@ -58,6 +56,26 @@ Tensor operator * (const Tensor& first, const Tensor& second) {
 
 Tensor matmul(const Tensor& first, const Tensor& second) {
     return Tensor(std::make_shared<internal::Matmul>( first.internal(), second.internal() ));
+}
+
+void Tensor::fill(initializer distribution) {
+    distribution::Distribution<scalar_type>* filler = nullptr;
+    switch (distribution) {
+        case initializer::He :
+            filler = new distribution::Normal<scalar_type>(0, std::sqrt(2.0 / shape().back()));
+            for (auto& element : *this) element = filler->generate();
+            break;
+    
+        default :
+            throw std::runtime_error("Invalid initializer");
+            break;
+    }
+
+    delete filler;
+}
+
+void Tensor::fill(scalar_type value) {
+    for (auto& element : *this) element = value;
 }
 
 } // namespace net

@@ -34,7 +34,10 @@ print(b.grad)
 #include <vector>
 #include <CaberNet/CaberNet.h>
 
+
 int main() {
+
+    /* OUTDATED, new fill method should be added for initializer lists*/
     net::Tensor x({2,2}, { -1, 2, 5, 1 } , false);
     net::Tensor W({2,2}, { 2, -2, 2, 2 } ,true);
     net::Tensor b({1,2}, { -10, -2 }, true);
@@ -45,11 +48,7 @@ int main() {
     x = net::function::linear(x,W,b);
     x = W * x + W;
 
-    // no calculation till here:
     x.perform();
-
-    // This will allow to change the internal data of x
-    // and do all the calculations without rebuilding the graph and making memory allocations.
     x.backward(I);
 
     std::cout << "x:" << std::endl;

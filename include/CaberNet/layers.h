@@ -5,10 +5,16 @@
 namespace net::layer {
 
 struct Linear : public base::Model {
-    Tensor weight;
-    Tensor bias;
-    Linear(size_type input_features, size_type output_features);
+    Linear(
+        size_type input_features,
+        size_type output_features,
+        initializer distribution = initializer::He );
+
     Tensor forward(Tensor x) final;
+
+    private:
+    std::unique_ptr<Tensor> weight_;
+    std::unique_ptr<Tensor> bias_;
 };
 
 struct ReLU : public base::Model {
