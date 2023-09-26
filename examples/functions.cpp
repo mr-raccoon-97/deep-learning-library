@@ -36,6 +36,8 @@ print(b.grad)
 
 
 int main() {
+
+    /* OUTDATED, new fill method should be added for initializer lists*/
     net::Tensor x({2,2}, { -1, 2, 5, 1 } , false);
     net::Tensor W({2,2}, { 2, -2, 2, 2 } ,true);
     net::Tensor b({1,2}, { -10, -2 }, true);
