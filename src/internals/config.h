@@ -14,7 +14,13 @@ be able to choose the backend when compiling the library.
 #define USE_EIGEN_BACKEND true
 
 #if defined(USE_EIGEN_BACKEND)
-    #include <eigen3/Eigen/Dense>
+
+#if defined __APPLE__
+#include <Eigen/Dense>
+#else
+#include <eigen3/Eigen/Dense>
+#endif
+
 #endif // USE_EIGEN_BACKEND
 
 #endif //INTERNAL_CONFIG_H
