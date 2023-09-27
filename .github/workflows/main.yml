@@ -14,11 +14,11 @@ jobs:
         os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
+      - uses: friendlyanon/setup-vcpkg@v1
+        with: 
+          committish: db0473513e5dc73ec6b6f431ff05d2f398eea042
       - name: install eigen
-        run: |
-          git clone https://github.com/microsoft/vcpkg
-          .\vcpkg\bootstrap-vcpkg.bat
-          .\vcpkg\vcpkg install eigen3 --triplet=x64-windows
+        run: vcpkg install eigen3 --triplet=x64-windows
         
       - uses: actions/checkout@v3
       - run: cmake -E make_directory ${{ github.workspace }}/build
