@@ -14,16 +14,11 @@ jobs:
         os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
-      - if: matrix.os == 'windows-latest'
-        # run: choco install eigen # This port is broken since it's missing the CMake targets
+      - name: install eigen
         run: |
           git clone https://github.com/microsoft/vcpkg
           .\vcpkg\bootstrap-vcpkg.bat
           .\vcpkg\vcpkg install eigen3 --triplet=x64-windows
-      - if: matrix.os == 'macos-latest'
-        run: brew install eigen
-      - if: matrix.os == 'ubuntu-latest'
-        run: sudo apt install libeigen3-dev
         
       - uses: actions/checkout@v3
       - run: cmake -E make_directory ${{ github.workspace }}/build
@@ -31,7 +26,7 @@ jobs:
       - name: configure
         shell: bash # access regardless of the host operating system
         working-directory: ${{ github.workspace }}/build
-        run: cmake $GITHUB_WORKSPACE
+        run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=vpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: build
         working-directory: ${{ github.workspace }}/build
