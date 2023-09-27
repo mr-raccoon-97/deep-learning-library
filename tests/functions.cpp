@@ -1,22 +1,8 @@
-/*
-
-To run this code build the library:
-in your terminal:
-
-https://github.com/xEricCardozo/CaberNet-cpp.git
-
-and inside the folder:
-
-mkdir build
-cd build
-cmake ..
-make
-
-then compile this file with:
+/*We will need to automate this with CMake. I didn't decide yet what unit test library to use
+If someone wants to do it will be very appreciated.
 
 g++ functions.cpp -LCaberNet/lib -lCaberNet -I CaberNet/include
 ./a.out
-
 */
 
 #include <iostream>
@@ -48,9 +34,6 @@ Results should be:
 */
 
 /*
-
-Equivalent pytorch code:
-
 import torch.nn.functional as F
 
 # Initialize tensors
