@@ -15,7 +15,11 @@ jobs:
 
     steps:
       - if: matrix.os == 'windows-latest'
-        run: choco install eigen
+        # run: choco install eigen # This port is broken since it's missing the CMake targets
+        run: |
+          git clone https://github.com/microsoft/vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat
+          .\vcpkg\vcpkg install eigen3 --triplet=x64-windows
       - if: matrix.os == 'macos-latest'
         run: brew install eigen
       - if: matrix.os == 'ubuntu-latest'
