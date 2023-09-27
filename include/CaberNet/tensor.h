@@ -32,6 +32,7 @@ class Tensor {
 
     void fill(initializer distribution);
     void fill(scalar_type value);
+    void fill(std::vector<scalar_type> values);
 
     internal::Tensor* internal() const;
     internal::Tensor* internal();
@@ -49,6 +50,8 @@ class Tensor {
     const_pointer data() const;
     shape_type shape() const;
     size_type rank() const;
+
+    friend std::ostream& operator<<(std::ostream& ostream, const Tensor& tensor);
 
     private:
     std::shared_ptr<internal::Tensor> tensor_;
