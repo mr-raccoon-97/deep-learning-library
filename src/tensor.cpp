@@ -78,5 +78,16 @@ void Tensor::fill(scalar_type value) {
     for (auto& element : *this) element = value;
 }
 
+void Tensor::fill(std::vector<scalar_type> values) {
+    std::move(values.begin(), values.end(), begin());
+}
+
+std::ostream& operator<<(std::ostream& ostream, const Tensor& tensor) {
+    ostream << "[";
+    for (auto element : tensor) ostream << element << ", ";
+    ostream << "]";
+    return ostream;
+}
+
 } // namespace net
 

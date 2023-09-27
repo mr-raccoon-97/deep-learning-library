@@ -31,7 +31,7 @@ Tensor* Matmul::forward() {
         rows_dimension(),
         inner_dimension() );
 
-    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> second_operand_map(
+    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> second_operand_map(
         second_operand()->forward()->data(),
         inner_dimension(),
         columns_dimension() );
@@ -43,7 +43,7 @@ Tensor* Matmul::forward() {
 
 void Matmul::backward(Tensor* gradient) const {
 
-    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> row_gradient_map(
+    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> gradient_map(
         gradient->data(),
         rows_dimension(),
         columns_dimension() );
@@ -61,29 +61,24 @@ void Matmul::backward(Tensor* gradient) const {
             rows_dimension(),
             inner_dimension() );
 
-        first_gradient_map = row_gradient_map * second_map.transpose();
+        first_gradient_map = gradient_map * second_map.transpose();
         first_operand()->backward(first_gradient);
         delete first_gradient;
     }
     
-    Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> column_gradient_map(
-        gradient->data(),
-        rows_dimension(),
-        columns_dimension() );
-
     if (second_operand()->requires_gradient()) {
         Tensor* second_gradient = new Tensor({inner_dimension(), columns_dimension()}, false, false);
-        Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 0>> first_map(
+        Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> first_map(
             first_operand()->data(),
             rows_dimension(),
             inner_dimension() );
 
-        Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 0>> second_gradient_map(
+        Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 1>> second_gradient_map(
             second_gradient->data(),
             inner_dimension(),
             columns_dimension() );
 
-        second_gradient_map = first_map.transpose() * column_gradient_map;
+        second_gradient_map = first_map.transpose() * gradient_map;
         second_operand()->backward(second_gradient);
         delete second_gradient;
     }
