@@ -14,7 +14,7 @@ be able to choose the backend when compiling the library.
 #define USE_EIGEN_BACKEND true
 
 #if defined(USE_EIGEN_BACKEND)
-    #include <eigen3/Eigen/Dense>
+    #include <Eigen/Dense>
 #endif // USE_EIGEN_BACKEND
 
 #endif //INTERNAL_CONFIG_H
