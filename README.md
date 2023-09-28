@@ -1,10 +1,10 @@
 # CaberNet C++ deep learning library
 
-
 ## Join the Discord:
 
 https://discord.gg/4guRKm5x
 
+## 
 
 # BIG Update, new OOP oriented interface:
 With the new object oriented interface you will be able to create models like this:
@@ -105,3 +105,9 @@ Be sure Eigen is installed in your system.
 Don't forget to add the path of the installed library when compiling, for example, if you want to compile example.cpp with g++:
 
 ```g++ example.cpp -LCaberNet/lib -lCaberNet -I CaberNet/include```
+
+
+
+## Acknowledgements
+I want to acknowledge every one that joined this project.
+@prince-chrismc.
