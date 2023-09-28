@@ -19,7 +19,7 @@ jobs:
         with: 
           committish: db0473513e5dc73ec6b6f431ff05d2f398eea042
       - if: matrix.os == 'windows-latest' # Because windows is still x86 by default 
-        run: $VCPKG_ROOT/vcpkg install eigen3 --triplet=x64-windows
+        run: $VCPKG_ROOT\vcpkg install eigen3 --triplet=x64-windows
       - if : matrix.os != 'windows-latest'
         run: $VCPKG_ROOT/vcpkg install eigen3
         
