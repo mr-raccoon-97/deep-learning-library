@@ -28,15 +28,13 @@ set(SOURCES
     ${SOURCE_DIR}/internals/functions/internal_function_relu.cpp
 )
 
+find_package(Eigen3 REQUIRED CONFIG)
 
 # Create the library target
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-
-# Specify the public include directories for the library
 target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen) # TODO(prince-chrismc): Is this actually private?
 
-# Set the output directory for the compiled library
-set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 # Install the library and header files
 install(TARGETS ${PROJECT_NAME}
