@@ -14,7 +14,8 @@ jobs:
         os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
-      - uses: friendlyanon/setup-vcpkg@v1
+      - uses: actions/checkout@v3
+      - uses: friendlyanon/setup-vcpkg@v1 # needs to be after checkout or else it's deleted
         with: 
           committish: db0473513e5dc73ec6b6f431ff05d2f398eea042
       - if: matrix.os == 'windows-latest' # Because windows is still x86 by default 
@@ -22,7 +23,6 @@ jobs:
       - if : matrix.os != 'windows-latest'
         run: $VCPKG_ROOT/vcpkg install eigen3
         
-      - uses: actions/checkout@v3
       - run: cmake -E make_directory ${{ github.workspace }}/build
 
       - name: configure
