@@ -1,4 +1,4 @@
-# CaberNet C++ deep learning library
+# CaberNet C++ Deep Learning Library
 
 ## Join the Discord:
 
@@ -12,7 +12,7 @@ The code isn't fully documented yet, but it's very readable and structured in a 
 
 The API is currently inspired by PyTorch, with one notable difference: when you perform an operation, the program doesn't actually execute it immediately. Instead, it allocates a node into a graph, waiting for you to call the perform() method on the result ( like tensorflow but this is a dynamic graph ).Here's an example I created to test it:
 
-```
+```cpp
 #include <iostream>
 #include <CaberNet/CaberNet.h>
 
@@ -39,7 +39,7 @@ It produced the same results as the equivalent PyTorch code. Why am I excited? B
 You can also will be able to build layers like this: 
 With the new object oriented interface you will be able to create models like this:
 
-```
+```cpp
 #include <CaberNet/CaberNet.h>
 struct Encoder : public net::base::Model {
     net::layer::Sequence layers;
@@ -94,7 +94,7 @@ If you want to learn c++ or about automatic differentiation, feel free to contri
 
 ## To build the project:
 
-```
+```sh
 mkdir build
 cd build
 cmake ..
@@ -108,8 +108,6 @@ Be sure Eigen is installed in your system.
 Don't forget to add the path of the installed library when compiling, for example, if you want to compile example.cpp with g++:
 
 ```g++ example.cpp -LCaberNet/lib -lCaberNet -I CaberNet/include```
-
-
 
 ## Acknowledgements
 This project is being possible thanks to:

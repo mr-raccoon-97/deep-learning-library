@@ -1,8 +1,8 @@
 # Compiled output
-/build/
-/bin/
-/a.out
-/autogradient_design
+build/
+bin/
+*.out
+autogradient_design
 
 # CMake artifacts
 CMakeFiles/
@@ -14,7 +14,7 @@ CMakeTmp/
 CMakeDirectoryInformation.cmake
 
 # Compiled libraries
-/lib/
+lib/
 
 # IDE-specific files
 .vscode/
