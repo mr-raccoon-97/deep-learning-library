@@ -8,6 +8,9 @@ on:
 
 jobs:
   build:
+    defaults:
+      run:
+        shell: bash # access regardless of the host operating system
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -19,18 +22,16 @@ jobs:
         with: 
           committish: db0473513e5dc73ec6b6f431ff05d2f398eea042
       - if: matrix.os == 'windows-latest' # Because windows is still x86 by default 
-        run: $VCPKG_ROOT\vcpkg install eigen3 --triplet=x64-windows
+        run: $VCPKG_ROOT/vcpkg install eigen3 --triplet=x64-windows
       - if : matrix.os != 'windows-latest'
         run: $VCPKG_ROOT/vcpkg install eigen3
         
       - run: cmake -E make_directory ${{ github.workspace }}/build
 
       - name: configure
-        shell: bash # access regardless of the host operating system
         working-directory: ${{ github.workspace }}/build
         run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 
       - name: build
         working-directory: ${{ github.workspace }}/build
-        shell: bash
         run: cmake --build .
