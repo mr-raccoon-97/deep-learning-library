@@ -40,11 +40,12 @@ TEST(functions, gradient) {
     */
     constexpr auto expected_x = std::to_array({0, 34, 0, 0, 0, 79, 17, 27});
     std::vector<int> diff_x;
- 
     std::set_difference(expected_x.begin(), expected_x.end(), x.begin(), x.end(),
                         std::inserter(diff_x, diff_x.begin()));
-
     ASSERT_TRUE(diff_x.empty());
+
+
+    ASSERT_THAT(x, ElementsAre(0, 34, 0, 0, 0, 79, 17, 27));
     // ASSERT_EQ([0, 0, 0, 5, 7, 9, 4, 5, 6, 4, 5, 6], w.gradient());
     // ASSERT_EQ([0, 2, 1, 1], b.gradient());
 }
