@@ -23,8 +23,11 @@ g++ functions.cpp -LCaberNet/lib -lCaberNet -I CaberNet/include
 #include <CaberNet/CaberNet.h>
 
 int main() {
-    net::Tensor x({2,3}, false); x.fill({1,2,3,4,5,6});
-    net::Tensor w({4,3}, true); w.fill({1,2,-3,4,5,6,7,8,-9,10,11,-12});
+    // You can use enums to set the gradient requirement:
+    net::Tensor x({2,3}, net::requires_gradient::False); x.fill({1,2,3,4,5,6});
+    net::Tensor w({4,3}, net::requires_gradient::True); w.fill({1,2,-3,4,5,6,7,8,-9,10,11,-12});
+    
+    // Or use just a boolean. Whatever you prefer.
     net::Tensor b({1,4}, true); b.fill({1,2,3,4});
     net::Tensor I({2,4}, false); I.fill(1);
 

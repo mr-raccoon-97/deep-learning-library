@@ -17,6 +17,12 @@ Tensor::Tensor(shape_type shape, bool gradient_requirement ) {
     internal::Graph::add(tensor_);
 }
 
+Tensor::Tensor(shape_type shape, requires_gradient gradient_requirement ) {
+    tensor_ = std::make_shared<internal::Tensor>(shape);
+    tensor_-> requires_gradient(static_cast<bool>(gradient_requirement));
+    internal::Graph::add(tensor_);
+}
+
 void Tensor::reshape(shape_type shape) {
     if(tensor_ == nullptr) tensor_ = std::make_shared<internal::Tensor>(shape, false, false);
     tensor_-> reshape(shape);
@@ -75,11 +81,11 @@ void Tensor::fill(initializer distribution) {
 }
 
 void Tensor::fill(scalar_type value) {
-    for (auto& element : *this) element = value;
+    std::fill(tensor_->begin(), tensor_->end(), value);
 }
 
 void Tensor::fill(std::vector<scalar_type> values) {
-    std::move(values.begin(), values.end(), begin());
+    std::move(values.begin(), values.end(), tensor_->begin());
 }
 
 std::ostream& operator<<(std::ostream& ostream, const Tensor& tensor) {

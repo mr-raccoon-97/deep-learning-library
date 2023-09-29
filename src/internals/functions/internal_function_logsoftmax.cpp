@@ -29,7 +29,7 @@ Tensor* LogSoftmax::forward() {
     }
 
     else if (axis_ == 1) {        
-        Eigen::Map<Eigen::Array<scalar_type, -1, -1, 0>> input_map(
+        Eigen::Map<Eigen::Array<scalar_type, -1, -1, 1>> input_map(
             this->data(),
             rows,
             columns );
