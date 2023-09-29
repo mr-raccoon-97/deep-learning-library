@@ -1,4 +1,4 @@
-#include "CaberNet/CaberNet.h"
+#include "CaberNet.h"
 #include <gtest/gtest.h>
 
 TEST(subscripts, fill) {
