@@ -45,7 +45,7 @@ TEST(functions, gradient) {
     ASSERT_TRUE(diff_x.empty());
 
 
-    ASSERT_THAT(x, ElementsAre(0, 34, 0, 0, 0, 79, 17, 27));
+    ASSERT_THAT(x, testing::ElementsAre(0, 34, 0, 0, 0, 79, 17, 27));
     // ASSERT_EQ([0, 0, 0, 5, 7, 9, 4, 5, 6, 4, 5, 6], w.gradient());
     // ASSERT_EQ([0, 2, 1, 1], b.gradient());
 }
