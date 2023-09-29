@@ -15,7 +15,7 @@
 
 // Shuffling is a hard task, since we should see Tensors like a single block of memory like this:
 //   xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx
-// Where the first dimension is the batchsize. and each batch should be shuffled.
+// Where the first dimension is the batchsize. and each minibatch of the batch should be shuffled.
 // This class should be responsible for shuffling the data.
 // We can start first for a simple gradient descent and then try to implement a more complex
 // optimizer with shuffling.
