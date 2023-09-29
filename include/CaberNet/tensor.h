@@ -13,6 +13,7 @@ namespace net {
 class Tensor {
     public:
     using scalar_type = float;
+    using value_type = scalar_type; // Needed for GMock's built-in matches
     using pointer = scalar_type*;
     using const_pointer = const scalar_type*;
     using size_type = std::size_t;

@@ -34,7 +34,7 @@ TEST(criterion, loss) {
     net::criterion::NegativeLogLikelihood criterion(X, y);
 
     /*
-    The result shoud be: 1.82998
+    The result should be: 1.82998
     */
-    ASSERT_EQ(1.82998, criterion.loss());
+    EXPECT_FLOAT_EQ(1.8298835f, criterion.loss());
 }

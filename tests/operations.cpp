@@ -1,5 +1,8 @@
 #include "CaberNet.h"
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
+using ::testing::ElementsAre;
 
 TEST(operations, matmul) {
     /*
@@ -47,9 +50,9 @@ TEST(operations, matmul) {
         Jw: [7, 7, 7, 9, 9, 9, 11, 11, 11]
     */
 
-    // ASSERT_EQ([44, 53, 62, 76, 94, 112], x);
-    // ASSERT_EQ([2, 2, 2, 2, 2, 2], y.gradient());
-    // ASSERT_EQ([44, 53, 62, 76, 94, 112], z.gradient());
-    // ASSERT_EQ([7, 7, 7, 9, 9, 9, 11, 11, 11], w.gradient());
+    EXPECT_THAT(x, ElementsAre(44, 53, 62, 76, 94, 112));
+    EXPECT_THAT(y.gradient(), ElementsAre(2, 2, 2, 2, 2, 2));
+    EXPECT_THAT(z.gradient(), ElementsAre(44, 53, 62, 76, 94, 112));
+    EXPECT_THAT(w.gradient(), ElementsAre(7, 7, 7, 9, 9, 9, 11, 11, 11));
 }
 
