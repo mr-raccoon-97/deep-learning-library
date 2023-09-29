@@ -1,9 +1,12 @@
-#include <CaberNet/CaberNet.h>
-#include <iostream>
+#include "CaberNet.h"
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
-int main() {
-    net::Subscripts y({2, 3, 4}); y.fill(1);
-    std::cout << y << std::endl; 
+using ::testing::ElementsAre;
 
-    return 0;
+TEST(subscripts, fill) {
+    net::Subscripts y({2, 3, 4});
+    y.fill(1);
+
+    EXPECT_THAT(y, ElementsAre(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1));
 }
