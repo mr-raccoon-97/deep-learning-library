@@ -1,6 +1,6 @@
 #include "CaberNet.h"
 #include <gtest/gtest.h>
-#include <gtest/gmock.h>
+#include <gmock/gmock.h>
 
 using ::testing::ElementsAre;
 
