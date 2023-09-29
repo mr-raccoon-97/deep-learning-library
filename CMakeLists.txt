@@ -13,12 +13,14 @@ set(HEADERS
     ${INCLUDE_DIR}/CaberNet/functions.h
     ${INCLUDE_DIR}/CaberNet/layers.h
     ${INCLUDE_DIR}/CaberNet/model.h
+    ${INCLUDE_DIR}/CaberNet/subscripts.h
 )
 
 set(SOURCES
     ${SOURCE_DIR}/tensor.cpp
     ${SOURCE_DIR}/functions.cpp
     ${SOURCE_DIR}/layers.cpp
+    ${SOURCE_DIR}/subscripts.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_addition.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_multiplication.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_matmul.cpp

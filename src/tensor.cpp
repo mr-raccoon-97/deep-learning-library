@@ -81,11 +81,11 @@ void Tensor::fill(initializer distribution) {
 }
 
 void Tensor::fill(scalar_type value) {
-    for (auto& element : *this) element = value;
+    std::fill(tensor_->begin(), tensor_->end(), value);
 }
 
 void Tensor::fill(std::vector<scalar_type> values) {
-    std::move(values.begin(), values.end(), begin());
+    std::move(values.begin(), values.end(), tensor_->begin());
 }
 
 std::ostream& operator<<(std::ostream& ostream, const Tensor& tensor) {

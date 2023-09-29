@@ -1,7 +1,4 @@
-/*
-
 #pragma once
-
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -12,9 +9,9 @@
 // than the Tensor of floats, I would be a bad idea to mix types. This is not python.
 // If you came up with a better name idea than subscripts, please let me know.
 
-namespace net {
+namespace internal { template<typename T> class Array; }
 
-template<typename T> class Array;
+namespace net {
 
 class Subscripts {
     public:
@@ -28,7 +25,7 @@ class Subscripts {
     using const_iterator = std::vector<int>::const_iterator;
 
     Subscripts() = default;
-    Subscripts(std::shared_ptr<Array<int>> subscripts);
+    Subscripts(std::shared_ptr<internal::Array<int>> subscripts);
     Subscripts(shape_type shape);
 
     void reshape(shape_type shape);
@@ -50,9 +47,7 @@ class Subscripts {
     friend std::ostream& operator<<(std::ostream& ostream, const Subscripts& subscripts);
 
     private:
-    std::shared_ptr<Array<int>> subscripts_;
+    std::shared_ptr<internal::Array<int>> subscripts_;
 };
 
-};
-
-*/
+} // namespace net
