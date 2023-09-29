@@ -9,7 +9,7 @@ namespace net::criterion {
 
 NegativeLogLikelihood::~NegativeLogLikelihood() = default;
 
-NegativeLogLikelihood::NegativeLogLikelihood(Tensor& output, Subscripts& targets) {
+NegativeLogLikelihood::NegativeLogLikelihood(Tensor output, Subscripts targets) {
     criterion_ = std::make_unique<internal::NLLLoss>(output.internal(), targets.internal());
 }
 
