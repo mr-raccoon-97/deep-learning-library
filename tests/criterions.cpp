@@ -1,8 +1,6 @@
 #include "CaberNet.h"
 #include <gtest/gtest.h>
 
-
-
 TEST(criterion, loss) {
     /* Equivalent pytorch code:
 
