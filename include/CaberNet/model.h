@@ -2,9 +2,7 @@
 
 #include "tensor.h"
 
-namespace net {
-
-namespace base {
+namespace net::base {
 
 struct Model {
     using size_type = Tensor::size_type;
@@ -14,9 +12,9 @@ struct Model {
     virtual Tensor forward(Tensor input) = 0;
 };
 
-} // namespace base
+} // namespace net::base
 
-namespace layer {
+namespace net::layer {
 
 struct Sequence : public base::Model {
     using Layer  = base::Model;
@@ -38,6 +36,4 @@ struct Sequence : public base::Model {
     }
 };
 
-} // namespace layer 
-
-} // namespace net
+} // namespace net::layer
