@@ -4,12 +4,12 @@
 
 namespace net {
 
-Subscripts::Subscripts(std::shared_ptr<internal::Array<int>> subscripts) {
+Subscripts::Subscripts(std::shared_ptr<internal::Array<value_type>> subscripts) {
     subscripts_ = subscripts;
 }
 
 Subscripts::Subscripts(shape_type shape) {
-    subscripts_ = std::make_shared<internal::Array<int>>(shape);
+    subscripts_ = std::make_shared<internal::Array<value_type>>(shape);
 }
 
 void Subscripts::reshape(shape_type shape) {
@@ -23,6 +23,9 @@ void Subscripts::fill(value_type value) {
 void Subscripts::fill(std::vector<value_type> values) {
     std::move(values.begin(), values.end(), subscripts_->begin());
 }
+
+internal::Array<Subscripts::value_type>* Subscripts::internal() const { return subscripts_.get(); }
+internal::Array<Subscripts::value_type>* Subscripts::internal() { return subscripts_.get(); }
 
 Subscripts::iterator Subscripts::begin() { return subscripts_->begin(); }
 Subscripts::iterator Subscripts::end() { return subscripts_->end(); }

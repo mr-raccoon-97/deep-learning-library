@@ -1,36 +1,39 @@
-/*#pragma once
+#pragma once
+
+#include <iostream>
+#include <memory>
 
 #include "tensor.h"
 #include "subscripts.h"
 
-namespace internal { template<typename T> class Array; }
+namespace internal { 
+    template<typename T> class Array;
+    class Criterion;
+}
 
 namespace net::base {
 
 class Criterion {
     public:
     virtual ~Criterion() = default;
-    Criterion(Tensor& output, Subscripts& targets);
+    virtual Tensor::scalar_type loss() const = 0;
 
-    virtual void perform();
-    virtual float loss();
-    virtual void backward();
-
-    private:
-    std::shared_ptr<internal::Tensor> output_;
-    std::shared_ptr<internal::Array<int>> targets_;
+    protected:
+    Criterion() = default;
 };
 
-}
-
+} // namespace net::base
 
 namespace net::criterion {
 
 class NegativeLogLikelihood : public base::Criterion {
     public:
+    ~NegativeLogLikelihood() final;
     NegativeLogLikelihood(Tensor& output, Subscripts& targets);
+    Tensor::scalar_type loss() const override;
+
+    private:
+    std::unique_ptr<internal::Criterion> criterion_;
 };
 
 } // namespace net::criterion
-
-*/

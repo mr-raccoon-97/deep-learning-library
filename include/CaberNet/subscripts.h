@@ -15,22 +15,25 @@ namespace net {
 
 class Subscripts {
     public:
-    using value_type = int;
+    using value_type = std::size_t;
     using pointer = value_type*;
     using const_pointer = const value_type*;
     using size_type = std::size_t;
     using shape_type = std::vector<size_type>;
 
-    using iterator = std::vector<int>::iterator;
-    using const_iterator = std::vector<int>::const_iterator;
+    using iterator = std::vector<value_type>::iterator;
+    using const_iterator = std::vector<value_type>::const_iterator;
 
     Subscripts() = default;
-    Subscripts(std::shared_ptr<internal::Array<int>> subscripts);
+    Subscripts(std::shared_ptr<internal::Array<value_type>> subscripts);
     Subscripts(shape_type shape);
 
     void reshape(shape_type shape);
     void fill(value_type value);
     void fill(std::vector<value_type> values);
+
+    internal::Array<value_type>* internal() const;
+    internal::Array<value_type>* internal();
 
     iterator begin();
     iterator end();
@@ -47,7 +50,7 @@ class Subscripts {
     friend std::ostream& operator<<(std::ostream& ostream, const Subscripts& subscripts);
 
     private:
-    std::shared_ptr<internal::Array<int>> subscripts_;
+    std::shared_ptr<internal::Array<value_type>> subscripts_;
 };
 
 } // namespace net

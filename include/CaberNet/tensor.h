@@ -24,7 +24,7 @@ class Tensor {
     Tensor() = default;
     Tensor(std::shared_ptr<internal::Tensor> tensor);
     Tensor(shape_type shape, bool gradient_requirement = false);
-    Tensor(shape_type shape, requires_gradient gradient_requirement = requires_gradient::False);
+    Tensor(shape_type shape, requires_gradient gradient_requirement);
 
     void reshape(shape_type shape);
     
