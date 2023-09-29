@@ -39,4 +39,4 @@ jobs:
       - name: test
         shell: bash
         working-directory: ${{ github.workspace }}/build
-        run: ctest .
+        run: ctest . --rerun-failed --output-on-failure
