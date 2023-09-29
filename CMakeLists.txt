@@ -51,3 +51,8 @@ install(DIRECTORY ${INCLUDE_DIR}/
         DESTINATION include/${PROJECT_NAME}
         FILES_MATCHING PATTERN "*.h"
 )
+
+include(CTest)
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+endif()
