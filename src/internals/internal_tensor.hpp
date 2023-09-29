@@ -1,33 +1,25 @@
-/*************************************************************************************************\
 
+/*
 This is the main data structure of the library. It acts as a node of the computational graph. It is
 provided with virtual forward and backward methods that are used to perform the forward and backward 
 passes of the data through the graph. Those methods are mean to be overriden when implementing 
 different operations or functions as nodes of the computational graph.
-
 It is a multidimensional array that stores the metadata of the tensors and the gradients of
 the tensors. 
-
 The requires_gradient_ flag is used to determine if the tensor needs to store the gradient or not.
-
 The is_leaf_ flag is used to determine if the tensor is a leaf node of the computational graph or
 not. The Tensor class is leaf by default.
-
 The gradient of the tensor is stored in the gradient_ pointer. If the tensor is a leaf
 node, then the Tensor class owns the gradient_ pointer and is responsible for its deletion. 
 Since optional ownership cannot be expressed with smart pointers, the
 gradient_ pointer is a raw pointer.
-
 The gradient of the tensor is created only when the requires_gradient_ flag is set to true by the 
 requires_gradient() method. The gradient_ pointer is set to nullptr by default.
-
 This will need a refactor in the future. Since I don't like how the Tensor class is coupled to the
 Array class, and I would like to design some optional ownership mechanism that emulates the Eigen::Map
 but with our own data structure, so people can map their data structures to our Tensors and use them,
 as we are using Eigen now. this changes won't really afect the following code. But for now it works okay.
-
-
-/*************************************************************************************************/
+*/
 
 #ifndef INTERNAL_TENSOR_HPP
 #define INTERNAL_TENSOR_HPP
