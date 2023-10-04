@@ -91,24 +91,12 @@ I used Eigen::Map for performing all operations in place without making a single
 
 If you want to learn c++ or about automatic differentiation, feel free to contribute! There is a lot of work to do.
 
+## To build the project
 
-## To build the project:
-
-```sh
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-```
-
-Eigen supports cmake, so if sombody wants to integrate that support in the CMakeLists.txt would be nice. 
-
-Be sure Eigen is installed in your system. 
-Don't forget to add the path of the installed library when compiling, for example, if you want to compile example.cpp with g++:
-
-```g++ example.cpp -LCaberNet/lib -lCaberNet -I CaberNet/include```
+Please see the [contributing](.github/CONTRIBUTING.md#building-the-library) guide for more information.
 
 ## Acknowledgements
+
 This project is being possible thanks to:
+
 * @prince-chrismc.

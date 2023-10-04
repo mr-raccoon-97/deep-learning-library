@@ -18,6 +18,7 @@ lib/
 
 # IDE-specific files
 .vscode/
+.vscode/!extensions.json # Allow to provide recommended extensions
 .idea/
 
 # Ignore any personal or system-specific files
