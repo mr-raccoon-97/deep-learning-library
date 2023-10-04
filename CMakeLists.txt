@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.22)
 project(CaberNet)
-set(CMAKE_CXX_STANDARD 17)
+
+option(CABERNET_BUILD_EXAMPLES "Build the examples" ON)
 
 # Define source and header file variables
-
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
@@ -38,7 +38,8 @@ find_package(Eigen3 REQUIRED CONFIG)
 # Create the library target
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen) # TODO(prince-chrismc): Is this actually private?
+target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 
 # Install the library and header files
@@ -55,4 +56,8 @@ install(DIRECTORY ${INCLUDE_DIR}/
 include(CTest)
 if(BUILD_TESTING)
     add_subdirectory(tests)
+endif()
+
+if(CABERNET_BUILD_EXAMPLES)
+    add_subdirectory(examples)
 endif()
