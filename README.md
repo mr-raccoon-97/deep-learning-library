@@ -47,14 +47,14 @@ struct Autoencoder : public net::Model<Autoencoder> {
     net::layer::Sequence encoder {
         net::layer::Linear(784, 128, net::initializer::He),
         net::layer::ReLU(),
-        net::layer::Linear(128, 64, net::initializer::He),
+        net::layer::Linear(128, 64), // default initializer He,
     };
 
     net::layer::Sequence decoder {
-        net::layer::Linear(64, 128, net::initializer::He),
+        net::layer::Linear(64, 128),
         net::layer::ReLU(),
-        net::layer::Linear(128, 784, net::initializer::He),
-        net::layer::LogSoftmax(1/*axis*/)
+        net::layer::Linear(128, 784, net::initializer::Xavier),
+        net::layer::LogSoftmax(1/*axis*/) 
     };
 
     net::Tensor forward(net::Tensor x) {
