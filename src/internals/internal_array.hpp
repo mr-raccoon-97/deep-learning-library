@@ -27,8 +27,6 @@ class Array : public Base {
     using iterator = typename storage_type::iterator;
     using const_iterator = typename storage_type::const_iterator;
 
-    virtual ~Array() = default;
-
     Array() = default;
 
     Array(const Array* other) : Base(other->shape()) {

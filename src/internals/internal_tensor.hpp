@@ -47,8 +47,8 @@ class Tensor : public Array<float> {
         if (is_leaf_ && requires_gradient_) gradient_ = new Tensor(shape, false, false);
     }
 
+    virtual ~Tensor() { if (is_leaf_ && requires_gradient_) delete gradient_; }
     Tensor(const Tensor* other) { copy(other); }
-    ~Tensor() override { if (is_leaf_ && requires_gradient_) delete gradient_; }
     Tensor(const Tensor& other) = delete;
     Tensor(Tensor&& other) = delete;
     Tensor& operator=(const Tensor& other) = delete;

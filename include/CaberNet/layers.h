@@ -16,28 +16,28 @@ class Linear : public Model<Linear> {
         size_type output_features,
         initializer distribution = initializer::He );
 
-    Tensor forward(Tensor x);
+    Tensor<float> forward(Tensor<float> x);
 
     private:
-    Tensor weight_;
-    Tensor bias_;
+    Tensor<float> weight_;
+    Tensor<float> bias_;
 };
 
 struct ReLU : public Model<ReLU> {
     ReLU() = default;
-    Tensor forward(Tensor input);
+    Tensor<float> forward(Tensor<float> input);
 };
 
 struct Softmax : public Model<Softmax> {
     int axis;
     Softmax(int axis);
-    Tensor forward(Tensor input);
+    Tensor<float> forward(Tensor<float> input);
 };
 
 struct LogSoftmax : public Model<LogSoftmax> {
     int axis;
     LogSoftmax(int axis);
-    Tensor forward(Tensor input);
+    Tensor<float> forward(Tensor<float> input);
 };
 
 
@@ -56,8 +56,7 @@ class Sequence : public Model<Sequence> {
         layers_ = { std::forward<Layers>(layers)... };
     }
 
-
-    Tensor forward(Tensor input) {
+    Tensor<float> forward(Tensor<float> input) {
         for (auto& layer : layers_) {
             input = std::visit([input](auto&& argument) { return argument.forward(input); }, layer);
         }
