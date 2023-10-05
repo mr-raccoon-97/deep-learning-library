@@ -43,6 +43,8 @@ jobs:
 
   install:
     runs-on: ${{ matrix.os }}
+    env:
+      CMAKE_BUILD_TYPE: Release
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
@@ -69,6 +71,7 @@ jobs:
           cmake --build .
           sudo cmake --install .
 
+        # No sudo and it's multi config
       - if: matrix.os == 'windows-latest'
         name: setup
         shell: bash
@@ -76,7 +79,7 @@ jobs:
         run: |
           cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
           cmake --build .
-          cmake --install .
+          cmake --install . --config Release
 
       - name: examples
         shell: bash
