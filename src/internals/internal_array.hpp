@@ -12,31 +12,33 @@ dimension of the array.
 #include <vector>
 #include <memory>
 
+#include "internal_base.hpp"
+
 namespace internal {
 
 template<typename T>
-class Array {
+class Array : public Base {
     public:
     using scalar_type = T;
     using pointer = scalar_type*;
     using const_pointer = const scalar_type*;
 
-    using size_type = std::size_t;
-    using shape_type = std::vector<size_type>;
-    using storage_type = std::vector<scalar_type>;
-    
+    using storage_type = std::vector<scalar_type>;    
     using iterator = typename storage_type::iterator;
     using const_iterator = typename storage_type::const_iterator;
 
     virtual ~Array() = default;
 
     Array() = default;
-    Array(const Array* other) { copy(other); }
-    Array(shape_type shape) { reshape(shape); }
 
-    size_type size() const { return size_; }
-    shape_type shape() const { return shape_; }
-    size_type rank() const { return shape_.size(); }
+    Array(const Array* other) : Base(other->shape()) {
+        storage_ = other->storage_;
+    }
+
+    Array(shape_type shape) : Base(shape) {
+        storage_.resize(size());
+    }
+
     pointer data() { return storage_.data(); }
     const_pointer data() const { return storage_.data(); }
 
@@ -48,35 +50,28 @@ class Array {
     const_iterator cend() const { return storage_.cend(); }
 
     void copy(const Array* other) {
-        size_ = other->size_;
-        shape_ = other->shape_;
+        reshape(other->shape());
         storage_ = other->storage_;
     };
 
     void move(Array* other) {
-        size_ = other->size_;
-        shape_ = std::move(other->shape_);
+        reshape(other->shape());
+        other->collapse();
         storage_ = std::move(other->storage_);
-        other->size_ = 0;
-        other->shape_.clear();
         other->storage_.clear();
     };
 
     void reshape(const shape_type& shape) {
-        shape_ = shape;
-        size_ = 1; for (size_type dimension : shape) size_ *= dimension;
-        storage_.resize(size_);
+        Base::reshape(shape);
+        storage_.resize(size());
     }
 
     void clear() {
-        size_ = 0;
-        shape_.clear();
         storage_.clear();
+        collapse();
     }
 
     private:
-    size_type size_;
-    shape_type shape_;
     storage_type storage_;
 };
 
