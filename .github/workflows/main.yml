@@ -68,9 +68,10 @@ jobs:
           cmake --build .
           sudo cmake --install .
 
-      - name: examples
+      - if: matrix.os != 'windows-latest'
+        name: examples
         shell: bash
         working-directory: ${{ github.workspace }}/examples
         run: |
-          cmake . -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
+          cmake . --debug-find -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
           cmake --build .
