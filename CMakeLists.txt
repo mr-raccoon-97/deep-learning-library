@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.22)
 project(cabernet CXX)
 
+include(GNUInstallDirs) # Reasonable Defaults
+
 option(CABERNET_BUILD_EXAMPLES "Build and run the examples demonstration important features" OFF)
 
 # Define source and header file variables
