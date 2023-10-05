@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
-project(CaberNet)
+project(cabernet CXX)
 
-option(CABERNET_BUILD_EXAMPLES "Build the examples" ON)
+option(CABERNET_BUILD_EXAMPLES "Build and run the examples demonstration important features" ON)
 
 # Define source and header file variables
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -37,21 +37,16 @@ find_package(Eigen3 REQUIRED CONFIG)
 
 # Create the library target
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${INCLUDE_DIR}>  
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
-
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER ${HEADERS})
 
 # Install the library and header files
-install(TARGETS ${PROJECT_NAME}
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-)
-
-install(DIRECTORY ${INCLUDE_DIR}/
-        DESTINATION include/${PROJECT_NAME}
-        FILES_MATCHING PATTERN "*.h"
-)
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+add_subdirectory(cmake)
 
 include(CTest)
 if(BUILD_TESTING)

@@ -1,4 +1,4 @@
-#include <CaberNet/CaberNet.h>
+#include <CaberNet.h>
 
 struct Autoencoder : public net::Model<Autoencoder> {
 

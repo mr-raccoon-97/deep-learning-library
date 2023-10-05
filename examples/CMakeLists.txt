@@ -1,16 +1,20 @@
 cmake_minimum_required(VERSION 3.22)
-project(cabernet-examples)
+project(cabernet-examples CXX)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # This is the top level CMakeLists.txt
     find_package(cabernet CONFIG REQUIRED)
 endif()
 
-add_executable(${PROJECT_NAME}-functions functions.cpp)
-target_link_libraries(${PROJECT_NAME}-functions PRIVATE ${PROJECT_NAME})
+function(add_example example)
+    add_executable(${CMAKE_PROJECT_NAME}-${example} ${example}.cpp)
+    target_link_libraries(${CMAKE_PROJECT_NAME}-${example} PRIVATE cabernet::cabernet)
+    add_custom_command(
+    TARGET ${CMAKE_PROJECT_NAME}-${example} POST_BUILD
+    COMMAND $<TARGET_FILE:${CMAKE_PROJECT_NAME}-${example}>
+    VERBATIM)
+endfunction(add_example)
 
-add_executable(${PROJECT_NAME}-layers layers.cpp)
-target_link_libraries(${PROJECT_NAME}-layers PRIVATE ${PROJECT_NAME})
-
-add_executable(${PROJECT_NAME}-operations operations.cpp)
-target_link_libraries(${PROJECT_NAME}-operations PRIVATE ${PROJECT_NAME})
+add_example(functions)
+add_example(layers)
+add_example(operations)

@@ -20,7 +20,7 @@ g++ functions.cpp -LCaberNet/lib -lCaberNet -I CaberNet/include
 */
 
 #include <iostream>
-#include <CaberNet/CaberNet.h>
+#include <CaberNet.h>
 
 int main() {
     // You can use enums to set the gradient requirement:

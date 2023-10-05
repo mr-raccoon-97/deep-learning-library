@@ -20,7 +20,7 @@ g++ operations.cpp -LCaberNet/lib -lCaberNet -I CaberNet/include
 */
 
 #include <iostream>
-#include <CaberNet/CaberNet.h>
+#include <CaberNet.h>
 
 int main() {
     net::Tensor x({2,3}, false); x.fill({1,2,3,4,5,6});
