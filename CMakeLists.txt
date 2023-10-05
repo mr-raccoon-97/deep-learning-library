@@ -42,7 +42,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADERS}") # Quotes force ;-list syntax
 
 # Install the library and header files
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
