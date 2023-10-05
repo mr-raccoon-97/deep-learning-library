@@ -40,51 +40,30 @@ You can also will be able to build layers like this:
 With the new object oriented interface you will be able to create models like this:
 
 ```cpp
-#include <CaberNet/CaberNet.h>
-struct Encoder : public net::base::Model {
-    net::layer::Sequence layers;
-    Encoder() {
-        layers = {
-            new net::layer::Linear(64, 32),
-            new net::layer::ReLU(),
-            new net::layer::Linear(32, 16),
-            new net::layer::ReLU(),
-        };
-    }
+struct Autoencoder : public net::Model<Autoencoder> {
 
-    net::Tensor forward(net::Tensor x) override {
-        return layers.forward(x);
-    }
-};
+    Autoencoder() = default;
 
-struct Decoder : public net::base::Model {
-    net::layer::Sequence layers;
-    Decoder() {
-        layers = {
-            new net::layer::Linear(16, 32),
-            new net::layer::ReLU(),
-            new net::layer::Linear(32, 64)
-        };
-    }
+    net::layer::Sequence encoder {
+        net::layer::Linear(784, 128, net::initializer::He),
+        net::layer::ReLU(),
+        net::layer::Linear(128, 64, net::initializer::He),
+    };
 
-    net::Tensor forward(net::Tensor x) override {
-        x = layers.forward(x);
-        x = net::function::softmax(x, 1);
+    net::layer::Sequence decoder {
+        net::layer::Linear(64, 128, net::initializer::He),
+        net::layer::ReLU(),
+        net::layer::Linear(128, 784, net::initializer::He),
+        net::layer::LogSoftmax(1/*axis*/)
+    };
+
+    net::Tensor forward(net::Tensor x) {
+        x = encoder(x);
+        x = decoder(x);
         return x;
     }
 };
 
-struct Autoencoder : public net::base::Model {
-    Encoder encoder;
-    Decoder decoder;
-
-    Autoencoder() : encoder(), decoder() {}
-    net::Tensor forward(net::Tensor x) override {
-        x = encoder.forward(x);
-        x = decoder.forward(x);
-        return x;
-    }
-};
 ```
 
 I used Eigen::Map for performing all operations in place without making a single copy of the data, making them highly optimized. The code is also backend-agnostic, meaning you can write your custom CUDA implementations if needed.
