@@ -7,12 +7,13 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 endif()
 
 function(add_example example)
-    add_executable(${CMAKE_PROJECT_NAME}-${example} ${example}.cpp)
-    target_link_libraries(${CMAKE_PROJECT_NAME}-${example} PRIVATE cabernet::cabernet)
+    add_executable(${PROJECT_NAME}-${example} ${example}.cpp)
+    target_link_libraries(${PROJECT_NAME}-${example} PRIVATE cabernet::cabernet)
     add_custom_command(
-    TARGET ${CMAKE_PROJECT_NAME}-${example} POST_BUILD
-    COMMAND $<TARGET_FILE:${CMAKE_PROJECT_NAME}-${example}>
+    TARGET ${PROJECT_NAME}-${example} POST_BUILD
+    COMMAND $<TARGET_FILE:${PROJECT_NAME}-${example}>
     VERBATIM)
+    target_compile_features(${PROJECT_NAME}-${example} PRIVATE cxx_std_17)
 endfunction(add_example)
 
 add_example(functions)
