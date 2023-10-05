@@ -7,11 +7,11 @@ namespace net::layer {
 
 /// constructors
 
-Linear::Linear(size_type input_features, size_type output_features, initializer distribution) {
-    weight_ = std::make_unique<Tensor>(shape_type{output_features, input_features}, true);
-    weight_-> fill(distribution);
-    bias_ = std::make_unique<Tensor>(shape_type{1, output_features}, true);
-    bias_->fill(0.0);
+Linear::Linear(size_type input_features, size_type output_features, initializer distribution)
+:   weight_(shape_type{output_features, input_features}),
+    bias_(shape_type{1, output_features}, 0.0) {
+    weight_.fill(distribution);
+    bias_.fill(0.0);
 }
 
 Softmax::Softmax(int axis) : axis(axis) {}
@@ -20,7 +20,7 @@ LogSoftmax::LogSoftmax(int axis) : axis(axis) {}
 /// forward methods
 
 Tensor Linear::forward(Tensor input) {
-    return Tensor(std::make_shared<internal::Linear>(input.internal(), weight_->internal(), bias_->internal()));
+    return Tensor(std::make_shared<internal::Linear>(input.internal(), weight_.internal(), bias_.internal()));
 }
 
 Tensor ReLU::forward(Tensor input) {
