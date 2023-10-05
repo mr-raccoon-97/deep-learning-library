@@ -68,8 +68,7 @@ jobs:
           cmake --build .
           sudo cmake --install .
 
-      - if: matrix.os != 'windows-latest'
-        name: examples
+      - name: examples
         shell: bash
         working-directory: ${{ github.workspace }}/examples
         run: |
