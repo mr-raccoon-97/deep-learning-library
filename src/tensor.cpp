@@ -6,6 +6,21 @@
 
 namespace net {
 
+
+std::ostream& operator<<(std::ostream& ostream, const Tensor<float>& tensor) {
+    ostream << "[";
+    for (auto element : tensor) ostream << element << ", ";
+    ostream << "]";
+    return ostream;
+} 
+
+std::ostream& operator<<(std::ostream& ostream, const Tensor<int>& tensor) {
+    ostream << "[";
+    for (auto element : tensor) ostream << element << ", ";
+    ostream << "]";
+    return ostream;
+} 
+
 Tensor<float> operator + (const Tensor<float> & first, const Tensor<float> & second) {
     return Tensor<float> (std::make_shared<internal::Addition>( first.internal(), second.internal() ));
 }
