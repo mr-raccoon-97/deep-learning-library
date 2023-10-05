@@ -70,7 +70,7 @@ jobs:
 
       - name: examples
         shell: bash
-        working-directory: ${{ github.workspace }}/example
+        working-directory: ${{ github.workspace }}/examples
         run: |
           cmake . -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
           cmake --build .
