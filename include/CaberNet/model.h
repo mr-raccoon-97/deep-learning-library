@@ -2,38 +2,19 @@
 
 #include "tensor.h"
 
-namespace net::base {
+namespace internal { class optimizer; }
 
-struct Model {
-    using size_type = Tensor::size_type;
-    using shape_type = Tensor::shape_type;
+namespace net {
 
-    virtual ~Model() = default;
-    virtual Tensor forward(Tensor input) = 0;
-};
+template<class Derived>
+class Model {
+    public:
+    using size_type = std::size_t;
+    using shape_type = std::vector<size_t>;
 
-} // namespace net::base
-
-namespace net::layer {
-
-struct Sequence : public base::Model {
-    using Layer  = base::Model;
-    std::vector<std::unique_ptr<Layer>> layers;
-    Sequence() = default;
-    Sequence(std::initializer_list<Layer*> layers) {
-        for (auto layer : layers) this->layers.emplace_back(layer);
-    }
-
-    Sequence& operator=(std::initializer_list<Layer*> layers) {
-        this->layers.clear();
-        for (auto layer : layers) this->layers.emplace_back(layer);
-        return *this;
-    }
-
-    Tensor forward(Tensor input) final {
-        for (auto& layer : layers) input = layer->forward(input);
-        return input;
+    Tensor operator()(Tensor input) {
+        return static_cast<Derived*>(this)->forward(input);
     }
 };
 
-} // namespace net::layer
+} // namespace net
