@@ -17,8 +17,12 @@ The API is currently inspired by PyTorch, with one notable difference: when you 
 #include <CaberNet/CaberNet.h>
 
 int main() {
-    net::Tensor x({2,3}, false); x.fill({1,2,3,4,5,6});
-    net::Tensor w({4,3}, true); w.fill({1,2,-3,4,5,6,7,8,-9,10,11,-12});
+
+    // You can use enums to set the gradient requirement:
+    net::Tensor x({2,3}, net::requires_gradient::False); x.fill({1,2,3,4,5,6});
+    net::Tensor w({4,3}, net::requires_gradient::True); w.fill({1,2,-3,4,5,6,7,8,-9,10,11,-12});
+
+    // Or use just a boolean. Whatever you prefer.
     net::Tensor b({1,4}, true); b.fill({1,2,3,4});
     net::Tensor I({2,4}, false); I.fill(1);
 
@@ -40,51 +44,30 @@ You can also will be able to build layers like this:
 With the new object oriented interface you will be able to create models like this:
 
 ```cpp
-#include <CaberNet/CaberNet.h>
-struct Encoder : public net::base::Model {
-    net::layer::Sequence layers;
-    Encoder() {
-        layers = {
-            new net::layer::Linear(64, 32),
-            new net::layer::ReLU(),
-            new net::layer::Linear(32, 16),
-            new net::layer::ReLU(),
-        };
-    }
+struct Autoencoder : public net::Model<Autoencoder> {
 
-    net::Tensor forward(net::Tensor x) override {
-        return layers.forward(x);
-    }
-};
+    Autoencoder() = default;
 
-struct Decoder : public net::base::Model {
-    net::layer::Sequence layers;
-    Decoder() {
-        layers = {
-            new net::layer::Linear(16, 32),
-            new net::layer::ReLU(),
-            new net::layer::Linear(32, 64)
-        };
-    }
+    net::layer::Sequence encoder {
+        net::layer::Linear(784, 128, net::initializer::He),
+        net::layer::ReLU(),
+        net::layer::Linear(128, 64), // default initializer He,
+    };
 
-    net::Tensor forward(net::Tensor x) override {
-        x = layers.forward(x);
-        x = net::function::softmax(x, 1);
+    net::layer::Sequence decoder {
+        net::layer::Linear(64, 128),
+        net::layer::ReLU(),
+        net::layer::Linear(128, 784, net::initializer::Xavier),
+        net::layer::LogSoftmax(1/*axis*/) 
+    };
+
+    net::Tensor forward(net::Tensor x) {
+        x = encoder(x);
+        x = decoder(x);
         return x;
     }
 };
 
-struct Autoencoder : public net::base::Model {
-    Encoder encoder;
-    Decoder decoder;
-
-    Autoencoder() : encoder(), decoder() {}
-    net::Tensor forward(net::Tensor x) override {
-        x = encoder.forward(x);
-        x = decoder.forward(x);
-        return x;
-    }
-};
 ```
 
 I used Eigen::Map for performing all operations in place without making a single copy of the data, making them highly optimized. The code is also backend-agnostic, meaning you can write your custom CUDA implementations if needed.

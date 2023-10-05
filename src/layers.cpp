@@ -21,6 +21,7 @@ LogSoftmax::LogSoftmax(int axis) : axis(axis) {}
 
 Tensor<float> Linear::forward(Tensor<float> input) {
     return Tensor<float>(std::make_shared<internal::Linear>(input.internal(), weight_.internal(), bias_.internal()));
+
 }
 
 Tensor<float> ReLU::forward(Tensor<float> input) {

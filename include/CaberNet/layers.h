@@ -15,7 +15,7 @@ class Linear : public Model<Linear> {
         size_type input_features,
         size_type output_features,
         initializer distribution = initializer::He );
-
+  
     Tensor<float> forward(Tensor<float> x);
 
     private:
@@ -55,14 +55,13 @@ class Sequence : public Model<Sequence> {
     Sequence(Layers&& ... layers) {
         layers_ = { std::forward<Layers>(layers)... };
     }
-
+  
     Tensor<float> forward(Tensor<float> input) {
         for (auto& layer : layers_) {
             input = std::visit([input](auto&& argument) { return argument.forward(input); }, layer);
         }
         return input;
     }
-
 
     private:
     std::vector<layer_variant> layers_;
