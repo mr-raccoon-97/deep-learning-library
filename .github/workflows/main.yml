@@ -60,20 +60,12 @@ jobs:
         
       - run: cmake -E make_directory ${{ github.workspace }}/build
 
-      - name: configure
+      - name: setup
         shell: bash
         working-directory: ${{ github.workspace }}/build
-        run: cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
-
-      - name: build
-        shell: bash
-        working-directory: ${{ github.workspace }}/build
-        run: cmake --build .
-
-      - name: install
-        shell: bash
-        working-directory: ${{ github.workspace }}/build
-        run: cmake --install .
+        run: |
+          cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
+          cmake --install .
 
       - name: examples
         shell: bash

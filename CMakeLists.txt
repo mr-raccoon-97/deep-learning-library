@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 project(cabernet CXX)
 
-option(CABERNET_BUILD_EXAMPLES "Build and run the examples demonstration important features" ON)
+option(CABERNET_BUILD_EXAMPLES "Build and run the examples demonstration important features" OFF)
 
 # Define source and header file variables
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
