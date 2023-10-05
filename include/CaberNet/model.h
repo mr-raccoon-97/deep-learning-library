@@ -12,7 +12,7 @@ class Model {
     using size_type = std::size_t;
     using shape_type = std::vector<size_t>;
 
-    Tensor operator()(Tensor input) {
+    Tensor<float> operator()(Tensor<float> input) {
         return static_cast<Derived*>(this)->forward(input);
     }
 };

@@ -3,9 +3,9 @@
 
 namespace net::function {
 
-Tensor linear(const Tensor& input, const Tensor& weight, const Tensor& bias);
-Tensor softmax(Tensor& input, int axis);
-Tensor log_softmax(Tensor&input, int axis);
-Tensor relu(const Tensor& input);
+Tensor<float> linear(const Tensor<float>& input, const Tensor<float>& weight, const Tensor<float>& bias);
+Tensor<float> softmax(Tensor<float>& input, int axis);
+Tensor<float> log_softmax(Tensor<float>&input, int axis);
+Tensor<float> relu(const Tensor<float>& input);
 
 } // namespace net::function
