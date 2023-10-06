@@ -2,7 +2,7 @@
 
 ## Join the Discord:
 
-https://discord.gg/5Z7Xfs8Q
+https://discord.gg/QJsKT82a
 
 ## Description
 
@@ -19,12 +19,12 @@ The API is currently inspired by PyTorch, with one notable difference: when you 
 int main() {
 
     // You can use enums to set the gradient requirement:
-    net::Tensor x({2,3}, net::requires_gradient::False); x.fill({1,2,3,4,5,6});
-    net::Tensor w({4,3}, net::requires_gradient::True); w.fill({1,2,-3,4,5,6,7,8,-9,10,11,-12});
+    net::Tensor<float> x({2,3}, net::requires_gradient::False); x.fill({1,2,3,4,5,6});
+    net::Tensor<float> w({4,3}, net::requires_gradient::True); w.fill({1,2,-3,4,5,6,7,8,-9,10,11,-12});
 
     // Or use just a boolean. Whatever you prefer.
-    net::Tensor b({1,4}, true); b.fill({1,2,3,4});
-    net::Tensor I({2,4}, false); I.fill(1);
+    net::Tensor<float> b({1,4}, true); b.fill({1,2,3,4});
+    net::Tensor<float> I({2,4}, false); I.fill(1);
 
     x = net::function::linear(x,w,b);
     x = net::function::relu(x);
@@ -61,7 +61,7 @@ struct Autoencoder : public net::Model<Autoencoder> {
         net::layer::LogSoftmax(1/*axis*/) 
     };
 
-    net::Tensor forward(net::Tensor x) {
+    net::Tensor<float> forward(net::Tensor<float> x) {
         x = encoder(x);
         x = decoder(x);
         return x;

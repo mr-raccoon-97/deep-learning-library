@@ -25,10 +25,10 @@ TEST(functions, gradient) {
     print(b.grad)
 
     */
-    net::Tensor x({2,3}, false); x.fill({1,2,3,4,5,6});
-    net::Tensor w({4,3}, true); w.fill({1,2,-3,4,5,6,7,8,-9,10,11,-12});
-    net::Tensor b({1,4}, true); b.fill({1,2,3,4});
-    net::Tensor I({2,4}, false); I.fill(1);
+    net::Tensor<float> x({2,3}, false); x.fill({1,2,3,4,5,6});
+    net::Tensor<float> w({4,3}, true); w.fill({1,2,-3,4,5,6,7,8,-9,10,11,-12});
+    net::Tensor<float> b({1,4}, true); b.fill({1,2,3,4});
+    net::Tensor<float> I({2,4}, false); I.fill(1);
 
     x = net::function::linear(x,w,b);
     x = net::function::relu(x);

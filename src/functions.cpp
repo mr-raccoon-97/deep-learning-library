@@ -8,20 +8,20 @@
 
 namespace net::function {
 
-Tensor linear(const Tensor& input, const Tensor& weight, const Tensor& bias) {
-    return Tensor(std::make_shared<internal::Linear>( input.internal(), weight.internal(), bias.internal() ));
+Tensor<float> linear(const Tensor<float>& input, const Tensor<float>& weight, const Tensor<float>& bias) {
+    return Tensor<float>(std::make_shared<internal::Linear>( input.internal(), weight.internal(), bias.internal() ));
 }
 
-Tensor softmax(Tensor& input, int axis) {
-    return Tensor(std::make_shared<internal::Softmax>( input.internal(), axis ));
+Tensor<float> softmax(Tensor<float>& input, int axis) {
+    return Tensor<float>(std::make_shared<internal::Softmax>( input.internal(), axis ));
 }
 
-Tensor log_softmax(Tensor& input, int axis) {
-    return Tensor(std::make_shared<internal::LogSoftmax>( input.internal(), axis ));
+Tensor<float> log_softmax(Tensor<float>& input, int axis) {
+    return Tensor<float>(std::make_shared<internal::LogSoftmax>( input.internal(), axis ));
 }
 
-Tensor relu(const Tensor& input) {
-    return Tensor(std::make_shared<internal::ReLU>( input.internal() ));
+Tensor<float> relu(const Tensor<float>& input) {
+    return Tensor<float>(std::make_shared<internal::ReLU>( input.internal() ));
 }
 
 } // namespace net::function

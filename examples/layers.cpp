@@ -17,7 +17,7 @@ struct Autoencoder : public net::Model<Autoencoder> {
         net::layer::LogSoftmax(1/*axis*/)
     };
 
-    net::Tensor forward(net::Tensor x) {
+    net::Tensor<float> forward(net::Tensor<float> x) {
         x = encoder(x);
         x = decoder(x);
         return x;
@@ -27,8 +27,8 @@ struct Autoencoder : public net::Model<Autoencoder> {
 
 int main() {
     Autoencoder model;
-    net::Tensor x({1, 784}); x.fill(net::initializer::He);
-    net::Tensor y = model(x);
+    net::Tensor<float> x({1, 784}); x.fill(net::initializer::He);
+    net::Tensor<float> y = model(x);
     y.perform();
     std::cout << y;
 }

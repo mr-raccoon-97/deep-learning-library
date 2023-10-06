@@ -20,7 +20,7 @@ TEST(criterion, loss) {
 
     */
 
-    net::Tensor X({3, 5}, false); X.fill(
+    net::Tensor<float> X({3, 5}, false); X.fill(
         {
             -1.0, 2.0, -0.5, 1.0, 3.0,
             0.5, 1.0, 2.0, -1.0, -2.0,
@@ -28,7 +28,7 @@ TEST(criterion, loss) {
         }
     );
     
-    net::Subscripts y({3,1}); y.fill({1, 3, 0});
+    net::Tensor<int> y({3,1}); y.fill({1, 3, 0});
     X = net::function::log_softmax(X,1);
     
     net::criterion::NegativeLogLikelihood criterion(X, y);
@@ -36,5 +36,6 @@ TEST(criterion, loss) {
     /*
     The result should be: 1.82998
     */
+   
     EXPECT_FLOAT_EQ(1.8298835f, criterion.loss());
 }

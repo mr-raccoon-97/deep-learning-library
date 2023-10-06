@@ -19,20 +19,21 @@ LogSoftmax::LogSoftmax(int axis) : axis(axis) {}
 
 /// forward methods
 
-Tensor Linear::forward(Tensor input) {
-    return Tensor(std::make_shared<internal::Linear>(input.internal(), weight_.internal(), bias_.internal()));
+Tensor<float> Linear::forward(Tensor<float> input) {
+    return Tensor<float>(std::make_shared<internal::Linear>(input.internal(), weight_.internal(), bias_.internal()));
+
 }
 
-Tensor ReLU::forward(Tensor input) {
-    return Tensor(std::make_shared<internal::ReLU>(input.internal()));
+Tensor<float> ReLU::forward(Tensor<float> input) {
+    return Tensor<float>(std::make_shared<internal::ReLU>(input.internal()));
 }
 
-Tensor Softmax::forward(Tensor input) {
-    return Tensor(std::make_shared<internal::Softmax>(input.internal(), axis));
+Tensor<float> Softmax::forward(Tensor<float> input) {
+    return Tensor<float>(std::make_shared<internal::Softmax>(input.internal(), axis));
 }
 
-Tensor LogSoftmax::forward(Tensor input) {
-    return Tensor(std::make_shared<internal::LogSoftmax>(input.internal(), axis));
+Tensor<float> LogSoftmax::forward(Tensor<float> input) {
+    return Tensor<float>(std::make_shared<internal::LogSoftmax>(input.internal(), axis));
 }
 
 } // namespace net::layer

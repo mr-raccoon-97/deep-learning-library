@@ -1,16 +1,6 @@
 /*
 
-To run this code build the library:
-in your terminal:
-
-https://github.com/xEricCardozo/CaberNet-cpp.git
-
-and inside the folder:
-
-mkdir build
-cd build
-cmake ..
-make
+To run this code build the library following the instructions in the .github folder.
 
 then compile this file with:
 
@@ -23,11 +13,11 @@ g++ operations.cpp -LCaberNet/lib -lCaberNet -I CaberNet/include
 #include <CaberNet.h>
 
 int main() {
-    net::Tensor x({2,3}, false); x.fill({1,2,3,4,5,6});
-    net::Tensor y({2,3}, true);  y.fill({1,1,1,-1,-1,-1});
-    net::Tensor z({2,3}, true);  z.fill(1);  
-    net::Tensor I({2,3}, false); I.fill(1);
-    net::Tensor w({3,3}, true);  w.fill({1,2,3,4,5,6,7,8,9});
+    net::Tensor<float> x({2,3}, false); x.fill({1,2,3,4,5,6});
+    net::Tensor<float> y({2,3}, true);  y.fill({1,1,1,-1,-1,-1});
+    net::Tensor<float> z({2,3}, true);  z.fill(1);  
+    net::Tensor<float> I({2,3}, false); I.fill(1);
+    net::Tensor<float> w({3,3}, true);  w.fill({1,2,3,4,5,6,7,8,9});
 
     x = x + I;
     x = net::matmul(x, w);
