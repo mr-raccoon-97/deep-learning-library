@@ -29,6 +29,7 @@ int main() {
     std::cout << "Jy: " << y.gradient() << std::endl;
     std::cout << "Jz: " << z.gradient() << std::endl;
     std::cout << "Jw: " << w.gradient() << std::endl;
+    return 0;
 }
 
 /*

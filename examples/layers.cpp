@@ -31,4 +31,5 @@ int main() {
     net::Tensor<float> y = model(x);
     y.perform();
     std::cout << y;
+    return 0;
 }
