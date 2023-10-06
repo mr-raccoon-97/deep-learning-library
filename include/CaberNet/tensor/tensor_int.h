@@ -9,9 +9,9 @@ namespace net {
 
 template<typename T> class Tensor;
 
-class TensorInt16 {
+class TensorInt {
     public:
-    using value_type = int16_t;
+    using value_type = int;
     using pointer = value_type*;
     using const_pointer = const value_type*;
 
@@ -21,9 +21,9 @@ class TensorInt16 {
     using iterator = std::vector<value_type>::iterator;
     using const_iterator = std::vector<value_type>::const_iterator;
 
-    TensorInt16() = default;
-    TensorInt16(std::shared_ptr<internal::Array<value_type>> subscripts);
-    TensorInt16(shape_type shape);
+    TensorInt() = default;
+    TensorInt(std::shared_ptr<internal::Array<value_type>> subscripts);
+    TensorInt(shape_type shape);
 
     void reshape(shape_type shape);
     void fill(value_type value);

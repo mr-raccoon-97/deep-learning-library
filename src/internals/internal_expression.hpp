@@ -1,8 +1,6 @@
-/*************************************************************************************************\
-
+/*
 This is just an interface class for the non-leaf nodes of the computational graph.
-
-/*************************************************************************************************/
+*/
 
 #ifndef INTERNAL_EXPRESSION_HPP
 #define INTERNAL_EXPRESSION_HPP

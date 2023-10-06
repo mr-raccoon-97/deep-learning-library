@@ -12,7 +12,7 @@ namespace net {
 
 template<typename T> class Tensor;
 
-class TensorFloat32 {
+class TensorFloat {
     public:
     using value_type = float; // Needed for GMock's built-in matches
     using pointer = value_type*;
@@ -25,10 +25,10 @@ class TensorFloat32 {
     using iterator = storage_type::iterator;
     using const_iterator = storage_type::const_iterator;
 
-    TensorFloat32() = default;
-    TensorFloat32(std::shared_ptr<internal::Tensor> tensor);
-    TensorFloat32(shape_type shape, bool gradient_requirement = false);
-    TensorFloat32(shape_type shape, requires_gradient gradient_requirement);
+    TensorFloat() = default;
+    TensorFloat(std::shared_ptr<internal::Tensor> tensor);
+    TensorFloat(shape_type shape, bool gradient_requirement = false);
+    TensorFloat(shape_type shape, requires_gradient gradient_requirement);
 
     void reshape(shape_type shape);
     

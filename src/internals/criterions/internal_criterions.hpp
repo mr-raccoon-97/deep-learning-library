@@ -14,7 +14,7 @@ class Criterion {
     using shape_type = Tensor::shape_type;
     using scalar_type = Tensor::scalar_type;
 
-    Criterion(Tensor* output, Array<int16_t>* targets) {
+    Criterion(Tensor* output, Array<int>* targets) {
         output_ = output;
         targets_ = targets;
     }
@@ -23,20 +23,20 @@ class Criterion {
     virtual scalar_type loss() const = 0;   
 
     Tensor* output() const { return output_; }
-    Array<int16_t>* targets() const { return targets_; }
+    Array<int>* targets() const { return targets_; }
 
     size_type number_of_classes() const { return output()->size() / batch_size(); }
     size_type batch_size() const { return output()->shape().front(); }
 
     private:
     Tensor* output_;
-    Array<int16_t>* targets_;
+    Array<int>* targets_;
 };
 
 class NLLLoss : public Criterion {
     public:
     ~NLLLoss() final = default;
-    NLLLoss(Tensor* output, Array<int16_t>* targets) : Criterion(output, targets) {}
+    NLLLoss(Tensor* output, Array<int>* targets) : Criterion(output, targets) {}
     scalar_type loss() const final;
 };
 
