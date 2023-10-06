@@ -1,5 +1,5 @@
-#include "../../include/CaberNet/tensor/tensor_int.h"
-#include "../../include/CaberNet/tensor.h"
+#include "CaberNet/tensor/tensor_int.h"
+#include "CaberNet/tensor.h"
 
 #include "../internals/internal_array.hpp"
 
