@@ -86,4 +86,4 @@ jobs:
         working-directory: ${{ github.workspace }}/examples
         run: |
           cmake . --debug-find -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
-          cmake --build .
+          cmake --build . --config Release
