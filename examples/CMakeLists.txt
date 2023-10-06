@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 project(cabernet-examples CXX)
 
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-    # This is the top level CMakeLists.txt
+if(PROJECT_IS_TOP_LEVEL)
     find_package(cabernet CONFIG REQUIRED)
 endif()
 
