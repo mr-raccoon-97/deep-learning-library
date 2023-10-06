@@ -10,9 +10,10 @@
 #include <list>
 
 /*
+    #THIS NEEDS A COMPLETE REWRITE
+
     Reads a dataset from a csv file.
     Returns a pair of vectors, the first one containing the features and the second one the targets.
-    This is a very simple implementation, it is not optimized for speed, but it is enough for the purpose of this project.
     It's header only, so it can be included in the main file easily.
 */
 

@@ -10,18 +10,20 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(HEADERS
     ${INCLUDE_DIR}/CaberNet.h
     ${INCLUDE_DIR}/CaberNet/tensor.h
+    ${INCLUDE_DIR}/CaberNet/tensor/tensor_float.h
+    ${INCLUDE_DIR}/CaberNet/tensor/tensor_int.h
     ${INCLUDE_DIR}/CaberNet/functions.h
     ${INCLUDE_DIR}/CaberNet/layers.h
     ${INCLUDE_DIR}/CaberNet/model.h
-    ${INCLUDE_DIR}/CaberNet/subscripts.h
     ${INCLUDE_DIR}/CaberNet/criterions.h
 )
 
 set(SOURCES
     ${SOURCE_DIR}/tensor.cpp
+    ${SOURCE_DIR}/tensor/tensor_float.cpp
+    ${SOURCE_DIR}/tensor/tensor_int.cpp
     ${SOURCE_DIR}/functions.cpp
     ${SOURCE_DIR}/layers.cpp
-    ${SOURCE_DIR}/subscripts.cpp
     ${SOURCE_DIR}/criterions.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_addition.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_multiplication.cpp
