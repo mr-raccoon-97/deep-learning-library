@@ -1,3 +1,14 @@
+/*
+
+To run this code build the library following the instructions in the .github folder.
+
+then compile this file with:
+
+cmake . -DCABERNET_BUILD_EXAMPLES=ON
+cmake --build . --target cabernet-examples-layers
+
+*/
+
 #include <CaberNet.h>
 
 struct Autoencoder : public net::Model<Autoencoder> {

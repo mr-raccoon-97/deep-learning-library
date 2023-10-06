@@ -4,8 +4,8 @@ To run this code build the library following the instructions in the .github fol
 
 then compile this file with:
 
-g++ operations.cpp -LCaberNet/lib -lCaberNet -I CaberNet/include
-./a.out
+cmake . -DCABERNET_BUILD_EXAMPLES=ON
+cmake --build . --target cabernet-examples-operations
 
 */
 
