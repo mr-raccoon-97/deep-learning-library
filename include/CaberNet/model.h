@@ -1,13 +1,21 @@
 #pragma once
 
-#include "tensor.h"
+#include <iostream>
+#include <variant>
 
-namespace internal { class optimizer; }
+#include "tensor.h"
+#include "optimizers.h"
+
+namespace internal { class Optimizer; }
 
 namespace net {
 
 template<class Derived>
 class Model {
+    using optimizer_variant = std::variant<
+        optimizer::SGD
+    >;
+
     public:
     using size_type = std::size_t;
     using shape_type = std::vector<size_t>;
@@ -15,6 +23,20 @@ class Model {
     Tensor<float> operator()(Tensor<float> input) {
         return static_cast<Derived*>(this)->forward(input);
     }
+
+    protected:
+
+    void configure_optimizer(optimizer_variant instance) {
+        optimizer_ = std::visit([](auto&& argument) { return argument.get(); }, instance);
+        static_cast<Derived*>(this)->set_optimizer(optimizer_);
+    }
+
+    internal::Optimizer* optimizer() const {
+        return optimizer_;
+    }
+
+    private:
+    internal::Optimizer* optimizer_ = nullptr;
 };
 
 } // namespace net

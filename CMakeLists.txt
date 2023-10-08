@@ -15,6 +15,7 @@ set(HEADERS
     ${INCLUDE_DIR}/CaberNet/functions.h
     ${INCLUDE_DIR}/CaberNet/layers.h
     ${INCLUDE_DIR}/CaberNet/model.h
+    ${INCLUDE_DIR}/CaberNet/optimizers.h
     ${INCLUDE_DIR}/CaberNet/criterions.h
 )
 
@@ -25,6 +26,7 @@ set(SOURCES
     ${SOURCE_DIR}/functions.cpp
     ${SOURCE_DIR}/layers.cpp
     ${SOURCE_DIR}/criterions.cpp
+    ${SOURCE_DIR}/optimizers.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_addition.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_multiplication.cpp
     ${SOURCE_DIR}/internals/operations/internal_operation_matmul.cpp
@@ -33,6 +35,7 @@ set(SOURCES
     ${SOURCE_DIR}/internals/functions/internal_function_logsoftmax.cpp
     ${SOURCE_DIR}/internals/functions/internal_function_relu.cpp
     ${SOURCE_DIR}/internals/criterions/internal_criterion_nllloss.cpp
+    ${SOURCE_DIR}/internals/optimizers/internal_optimizer_sgd.cpp
 )
 
 find_package(Eigen3 REQUIRED CONFIG)
