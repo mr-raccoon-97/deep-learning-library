@@ -24,7 +24,7 @@ class Linear : public Model<Linear> {
   
     Tensor<float> forward(Tensor<float> x);
     void set_optimizer(internal::Optimizer* optimizer);
-
+  
     private:
     Tensor<float> weight_;
     Tensor<float> bias_;
@@ -71,7 +71,6 @@ class Sequence : public Model<Sequence> {
         }
         return input;
     }
-
     void set_optimizer(internal::Optimizer* optimizer) {
         for (auto& layer : layers_) {
             std::visit([optimizer](auto&& argument) { argument.set_optimizer(optimizer); }, layer);
