@@ -23,7 +23,7 @@ LogSoftmax::LogSoftmax(int axis) : axis(axis) {}
 
 /// settings
 
-void Linear::set_optimizer(internal::Optimizer* optimizer) {
+void Linear::set_optimizer(net::base::Optimizer* optimizer) {
     optimizer->add_parameter(weight_.internal());
     optimizer->add_parameter(bias_.internal());
 }
