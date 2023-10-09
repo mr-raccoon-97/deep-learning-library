@@ -23,7 +23,8 @@ LogSoftmax::LogSoftmax(int axis) : axis(axis) {}
 
 /// settings
 
-void Linear::set_optimizer(internal::Optimizer* optimizer) {
+//  TODO(prince-chrismc): Why doesn't windows like this function implementation
+void Linear::set_optimizer(net::base::Optimizer* optimizer) {
     optimizer->add_parameter(weight_.internal());
     optimizer->add_parameter(bias_.internal());
 }

@@ -6,8 +6,6 @@
 #include "tensor.h"
 #include "optimizers.h"
 
-namespace internal { class Optimizer; }
-
 namespace net {
 
 template<class Derived>
@@ -25,18 +23,17 @@ class Model {
     }
 
     void configure_optimizer(optimizer_variant instance) {
-        optimizer_ = std::visit([](auto&& argument) { return argument.get(); }, instance);
+        optimizer_ = std::visit([](auto&& argument) { return &argument; }, instance);
         static_cast<Derived*>(this)->set_optimizer(optimizer_);
     }
 
     protected:
-
-    internal::Optimizer* optimizer() const {
+    net::base::Optimizer* optimizer() const {
         return optimizer_;
     }
 
     private:
-    internal::Optimizer* optimizer_ = nullptr;
+    net::base::Optimizer* optimizer_ = nullptr;
 };
 
 } // namespace net
