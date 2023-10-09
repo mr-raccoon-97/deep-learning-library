@@ -67,7 +67,7 @@ jobs:
         shell: bash
         working-directory: ${{ github.workspace }}/build
         run: |
-          cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
+          cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake -DBUILD_TESTING=OFF
           cmake --build .
           sudo cmake --install .
 
@@ -77,7 +77,7 @@ jobs:
         shell: bash
         working-directory: ${{ github.workspace }}/build
         run: |
-          cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
+          cmake $GITHUB_WORKSPACE -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake -DBUILD_TESTING=OFF
           cmake --build . --config Release
           cmake --install . --config Release
 
