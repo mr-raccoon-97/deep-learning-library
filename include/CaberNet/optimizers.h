@@ -9,7 +9,11 @@
 namespace internal { 
 
 class Tensor; 
-class Optimizer;
+struct Optimizer {
+    virtual ~Optimizer() = default;
+    virtual void add_parameter(Tensor* parameter) = 0;
+    virtual void step() = 0;
+};
 }
 
 namespace net::base {
@@ -18,8 +22,6 @@ class Optimizer {
     public:
     void add_parameter(internal::Tensor* parameter);
     void step();
-
-    internal::Optimizer* get() const { return optimizer_.get(); }
 
     protected:
     std::shared_ptr<internal::Optimizer> optimizer_ = nullptr;

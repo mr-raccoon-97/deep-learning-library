@@ -1,18 +1,14 @@
 #ifndef INTERNAL_OPTIMIZERS_HPP
 #define INTERNAL_OPTIMIZERS_HPP
 
+#include "CaberNet/optimizers.h"
+
 #include <iostream>
 #include <vector>
 
 namespace internal {
 
 class Tensor;
-
-struct Optimizer {
-    virtual ~Optimizer() = default;
-    virtual void add_parameter(Tensor* parameter) = 0;
-    virtual void step() = 0;
-};
 
 template<class Derived>
 class OptimizerBase : public Optimizer {
