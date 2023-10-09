@@ -4,37 +4,56 @@
 #include <vector>
 #include <memory>
 
-#include "tensor.h"
 
-namespace internal { 
-
-class Tensor; 
-struct Optimizer {
-    virtual ~Optimizer() = default;
-    virtual void add_parameter(Tensor* parameter) = 0;
-    virtual void step() = 0;
-};
-}
+namespace internal { class Tensor; }
 
 namespace net::base {
 
-class Optimizer {
-    public:
-    void add_parameter(internal::Tensor* parameter);
-    void step();
+struct Optimizer {
+    virtual ~Optimizer() = default;
+    virtual void add_parameter(internal::Tensor* parameter) = 0;
+    virtual void step() = 0;
+};
 
-    protected:
-    std::shared_ptr<internal::Optimizer> optimizer_ = nullptr;
+template<class Derived>
+class Optimize : public Optimizer {
+    public:
+    ~Optimize() override = default;
+
+    void add_parameter(internal::Tensor* parameter) override final {
+        parameters_.push_back(parameter);
+    }
+
+    void step() override final {
+        for(internal::Tensor* parameter : parameters_) {
+            static_cast<Derived*>(this)->update(parameter);
+        }
+    }
+
+    private:
+    std::vector<internal::Tensor*> parameters_;
 };
 
 }
 
 namespace net::optimizer {
 
-class SGD : public base::Optimizer {
+class NoOptimization : public base::Optimize<NoOptimization> {
     public: 
+    ~NoOptimization() = default;
+    void update(internal::Tensor* parameter) {return;}
+};
+
+
+class SGD : public base::Optimize<SGD> {
+    public: 
+    SGD(float learning_rate): learning_rate_{learning_rate} {}
     ~SGD() = default;
-    SGD(float learning_rate);
+
+    void update(internal::Tensor* parameter);
+
+    protected:
+    const float learning_rate_;
 };
 
 } // namespace net::optimizer

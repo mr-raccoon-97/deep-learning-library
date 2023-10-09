@@ -22,7 +22,7 @@ class Linear : public Model<Linear> {
         initializer distribution = initializer::He );
   
     Tensor<float> forward(Tensor<float> x);
-    void set_optimizer(net::base::Optimizer* optimizer);
+    void set_optimizer(std::shared_ptr<net::base::Optimizer> optimizer);
   
     private:
     Tensor<float> weight_;
@@ -32,21 +32,21 @@ class Linear : public Model<Linear> {
 struct ReLU : public Model<ReLU> {
     ReLU() = default;
     Tensor<float> forward(Tensor<float> input);
-    void set_optimizer(net::base::Optimizer* optimizer) { return; }
+    void set_optimizer(std::shared_ptr<net::base::Optimizer> optimizer) { return; }
 };
 
 struct Softmax : public Model<Softmax> {
     int axis;
     Softmax(int axis);
     Tensor<float> forward(Tensor<float> input);
-    void set_optimizer(net::base::Optimizer* optimizer) { return; }
+    void set_optimizer(std::shared_ptr<net::base::Optimizer> optimizer) { return; }
 };
 
 struct LogSoftmax : public Model<LogSoftmax> {
     int axis;
     LogSoftmax(int axis);
     Tensor<float> forward(Tensor<float> input);
-    void set_optimizer(net::base::Optimizer* optimizer) { return; }
+    void set_optimizer(std::shared_ptr<net::base::Optimizer> optimizer) { return; }
 };
 
 class Sequence : public Model<Sequence> {
@@ -70,7 +70,7 @@ class Sequence : public Model<Sequence> {
         }
         return input;
     }
-    void set_optimizer(net::base::Optimizer* optimizer) {
+    void set_optimizer(std::shared_ptr<net::base::Optimizer> optimizer) {
         for (auto& layer : layers_) {
             std::visit([optimizer](auto&& argument) { argument.set_optimizer(optimizer); }, layer);
         }

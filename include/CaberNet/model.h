@@ -11,7 +11,7 @@ namespace net {
 template<class Derived>
 class Model {
     using optimizer_variant = std::variant<
-        optimizer::SGD
+        std::shared_ptr<optimizer::SGD>
     >;
 
     public:
@@ -23,18 +23,12 @@ class Model {
     }
 
     void configure_optimizer(optimizer_variant instance) {
-        optimizer_ = std::visit([](auto&& argument) { return &argument; }, instance);
+        optimizer_ = std::visit([](auto&& argument) { return argument; }, instance);
         static_cast<Derived*>(this)->set_optimizer(optimizer_);
     }
 
-    protected:
-
-    net::base::Optimizer* optimizer() const {
-        return optimizer_;
-    }
-
     private:
-    net::base::Optimizer* optimizer_ = nullptr;
+    std::shared_ptr<net::base::Optimizer> optimizer_ = std::make_shared<net::optimizer::NoOptimization>();
 };
 
 } // namespace net

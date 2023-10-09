@@ -2,7 +2,6 @@
 #include "../include/CaberNet/layers.h"
 
 #include "internals/functions/internal_functions.hpp"
-#include "internals/optimizers/internal_optimizers.hpp"
 
 
 namespace net::layer {
@@ -23,8 +22,7 @@ LogSoftmax::LogSoftmax(int axis) : axis(axis) {}
 
 /// settings
 
-//  TODO(prince-chrismc): Why doesn't windows like this function implementation
-void Linear::set_optimizer(net::base::Optimizer* optimizer) {
+void Linear::set_optimizer(std::shared_ptr<net::base::Optimizer> optimizer) {
     optimizer->add_parameter(weight_.internal());
     optimizer->add_parameter(bias_.internal());
 }
