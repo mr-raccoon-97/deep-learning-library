@@ -1,4 +1,4 @@
-/*#pragma once
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -6,49 +6,44 @@
 
 #include "tensor.h"
 
-// Here we can break the design of pytorch again.
-// PyTorch shuffles the data in the DataLoader class. But I think that is a bad design
-// because then SGD will not be Stochastic, and it will be just a batch gradient descent.
-// I think the optimizer should be responsible for shuffling the data. 
-// Having concerns separated like this will allow us to have a functional prototype of
-// the library working earlier. 
+namespace internal { 
 
-// Shuffling is a hard task, since we should see Tensors like a single block of memory like this:
-//   xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx|xxxxxx
-// Where the first dimension is the batchsize. and each minibatch of the batch should be shuffled.
-// This class should be responsible for shuffling the data.
-// We can start first for a simple gradient descent and then try to implement a more complex
-// optimizer with shuffling.
-
-namespace internal { class Tensor; }
+class Tensor; 
+class Optimizer;
+}
 
 namespace net::base {
 
 class Optimizer {
     public:
-    Optimizer() = default;
-    Optimizer(const std::vector<internal::Tensor*>& parameters);
+    void add_parameter(internal::Tensor* parameter);
+    void step();
 
-    virtual void optimize() = 0;
+    internal::Optimizer* get() const { return optimizer_.get(); }
 
-    private:
-    std::vector<internal::Tensor*> parameters_;
+    protected:
+    std::shared_ptr<internal::Optimizer> optimizer_ = nullptr;
 };
 
 }
 
 namespace net::optimizer {
 
-class GradientDescent : public base::Optimizer {
-    public:
-    GradientDescent(const std::vector<internal::Tensor*>& parameters, float learning_rate = 0.01);
-
-    void optimize() override;
-
-    private:
-    float learning_rate_;
+class SGD : public base::Optimizer {
+    public: 
+    ~SGD() = default;
+    SGD(float learning_rate);
 };
 
-}
+} // namespace net::optimizer
+
+
+
+/*
+
+SGD optimizer(0.1);
+optimizer.add_parameter(...);
+...
+optimizer.update();
 
 */

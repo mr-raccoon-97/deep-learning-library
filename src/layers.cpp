@@ -2,10 +2,14 @@
 #include "CaberNet/layers.h"
 
 #include "internals/functions/internal_functions.hpp"
+#include "internals/optimizers/internal_optimizers.hpp"
+
 
 namespace net::layer {
 
 /// constructors
+
+Linear::~Linear() = default;
 
 Linear::Linear(size_type input_features, size_type output_features, initializer distribution)
 :   weight_(shape_type{output_features, input_features}),
@@ -16,6 +20,13 @@ Linear::Linear(size_type input_features, size_type output_features, initializer 
 
 Softmax::Softmax(int axis) : axis(axis) {}
 LogSoftmax::LogSoftmax(int axis) : axis(axis) {}
+
+/// settings
+
+void Linear::set_optimizer(internal::Optimizer* optimizer) {
+    optimizer->add_parameter(weight_.internal());
+    optimizer->add_parameter(bias_.internal());
+}
 
 /// forward methods
 
