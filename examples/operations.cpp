@@ -4,13 +4,13 @@ To run this code build the library following the instructions in the .github fol
 
 then compile this file with:
 
-g++ operations.cpp -LCaberNet/lib -lCaberNet -I CaberNet/include
-./a.out
+cmake . -DCABERNET_BUILD_EXAMPLES=ON
+cmake --build . --target cabernet-examples-operations
 
 */
 
 #include <iostream>
-#include <CaberNet/CaberNet.h>
+#include <CaberNet.h>
 
 int main() {
     net::Tensor<float> x({2,3}, false); x.fill({1,2,3,4,5,6});
@@ -29,6 +29,7 @@ int main() {
     std::cout << "Jy: " << y.gradient() << std::endl;
     std::cout << "Jz: " << z.gradient() << std::endl;
     std::cout << "Jw: " << w.gradient() << std::endl;
+    return 0;
 }
 
 /*

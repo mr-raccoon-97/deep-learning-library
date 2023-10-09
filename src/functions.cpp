@@ -1,5 +1,5 @@
-#include "../include/CaberNet/tensor.h"
-#include "../include/CaberNet/functions.h"
+#include "CaberNet/tensor.h"
+#include "CaberNet/functions.h"
 #include "internals/internal_tensor.hpp"
 #include "internals/functions/internal_functions.hpp"
 
