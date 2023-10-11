@@ -28,7 +28,6 @@ class Model {
     }
 
     protected:
-
     net::base::Optimizer* optimizer() const {
         return optimizer_;
     }

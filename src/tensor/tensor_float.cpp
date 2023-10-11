@@ -1,5 +1,5 @@
-#include "../../include/CaberNet/tensor/tensor_float.h"
-#include "../../include/CaberNet/tensor.h"
+#include "CaberNet/tensor/tensor_float.h"
+#include "CaberNet/tensor.h"
 
 #include "../internals/internal_tensor.hpp"
 #include "../internals/internal_graph.hpp"

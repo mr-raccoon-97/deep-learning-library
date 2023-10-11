@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.22)
-project(CaberNet)
-set(CMAKE_CXX_STANDARD 17)
+project(cabernet CXX)
+
+include(GNUInstallDirs) # Reasonable Defaults
+
+option(CABERNET_BUILD_EXAMPLES "Build and run the examples demonstration important features" OFF)
 
 # Define source and header file variables
-
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
@@ -16,8 +18,7 @@ set(HEADERS
     ${INCLUDE_DIR}/CaberNet/layers.h
     ${INCLUDE_DIR}/CaberNet/model.h
     ${INCLUDE_DIR}/CaberNet/optimizers.h
-    ${INCLUDE_DIR}/CaberNet/criterions.h
-)
+    ${INCLUDE_DIR}/CaberNet/criterions.h)
 
 set(SOURCES
     ${SOURCE_DIR}/tensor.cpp
@@ -35,29 +36,28 @@ set(SOURCES
     ${SOURCE_DIR}/internals/functions/internal_function_logsoftmax.cpp
     ${SOURCE_DIR}/internals/functions/internal_function_relu.cpp
     ${SOURCE_DIR}/internals/criterions/internal_criterion_nllloss.cpp
-    ${SOURCE_DIR}/internals/optimizers/internal_optimizer_sgd.cpp
-)
+    ${SOURCE_DIR}/internals/optimizers/internal_optimizer_sgd.cpp)
 
 find_package(Eigen3 REQUIRED CONFIG)
 
 # Create the library target
 add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-target_include_directories(${PROJECT_NAME} PUBLIC ${INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen) # TODO(prince-chrismc): Is this actually private?
-
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC $<BUILD_INTERFACE:${INCLUDE_DIR}> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+  PRIVATE $<BUILD_INTERFACE:${SOURCE_DIR}>)
+target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 # Install the library and header files
-install(TARGETS ${PROJECT_NAME}
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-)
-
-install(DIRECTORY ${INCLUDE_DIR}/
-        DESTINATION include/${PROJECT_NAME}
-        FILES_MATCHING PATTERN "*.h"
-)
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+add_subdirectory(cmake)
 
 include(CTest)
 if(BUILD_TESTING)
-    add_subdirectory(tests)
+  add_subdirectory(tests)
+endif()
+
+if(CABERNET_BUILD_EXAMPLES)
+  add_subdirectory(examples)
 endif()

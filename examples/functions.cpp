@@ -4,13 +4,14 @@ To run this code build the library following the instructions in the .github fol
 
 then compile this file with:
 
-g++ functions.cpp -LCaberNet/lib -lCaberNet -I CaberNet/include
-./a.out
+cmake . -DCABERNET_BUILD_EXAMPLES=ON
+cmake --build . --target cabernet-examples-functions
 
 */
 
+#include <CaberNet.h>
+
 #include <iostream>
-#include <CaberNet/CaberNet.h>
 
 int main() {
     // You can use enums to set the gradient requirement:

@@ -1,5 +1,5 @@
-#include "../include/CaberNet/tensor.h"
-#include "../include/CaberNet/criterions.h"
+#include "CaberNet/tensor.h"
+#include "CaberNet/criterions.h"
 
 #include "internals/internal_tensor.hpp"
 #include "internals/criterions/internal_criterions.hpp"
