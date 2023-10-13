@@ -14,36 +14,64 @@ LogSoftmax::LogSoftmax(Tensor* input, int axis) : Function(input) {
 }
 
 Tensor* LogSoftmax::forward() {
-    this->copy(input()->forward());
     size_type rows = input()->shape().front();
     size_type columns = input()->size() / input()->shape().front();
 
-    if (axis_ == 0) {
-        Eigen::Map<Eigen::Array<scalar_type, -1, -1, 0>> input_map(
-            this->data(),
-            rows,
-            columns );
+    Eigen::Map<Eigen::Array<scalar_type, -1, -1, 1>> input_map(
+        input()->forward()->data(),
+        rows,
+        columns );
 
+    Eigen::Map<Eigen::Array<scalar_type, -1, -1, 1>> output_map(
+        this->data(),
+        rows,
+        columns );
+
+
+    if (axis_ == 0) {
         auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
-        input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
+        output_map = shifted.rowwise() - shifted.exp().colwise().sum().log();
     }
 
     else if (axis_ == 1) {        
-        Eigen::Map<Eigen::Array<scalar_type, -1, -1, 1>> input_map(
-            this->data(),
-            rows,
-            columns );
-
         auto shifted = (input_map.colwise() - input_map.rowwise().maxCoeff());
-        input_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
+        output_map = shifted.colwise() - shifted.exp().rowwise().sum().log();
+    }
+
+    else {
+        throw std::runtime_error("axis should be 0 or 1");
     }
 
     return this;
 }
 
 void LogSoftmax::backward(Tensor* gradient) const {
+    size_type rows = input()->shape().front();
+    size_type columns = input()->size() / input()->shape().front();
+
     if (input()->requires_gradient()) {
-        throw std::runtime_error("Not implemented yet, if you want to contribute, you can start from here!");
+        Eigen::Map<const Eigen::Array<scalar_type, -1, -1, 1>> output_map(
+            this->data(),
+            rows,
+            columns );
+
+        Eigen::Map<Eigen::Array<scalar_type, -1, -1, 1>> gradient_map(
+            gradient->data(),
+            rows,
+            columns );
+
+        if (axis_ == 0) {
+            gradient_map -= output_map.exp().rowwise() * gradient_map.colwise().sum();
+        }
+
+        else if (axis_ == 1) {
+            gradient_map -= output_map.exp().colwise() * gradient_map.rowwise().sum();
+        }
+
+        else {
+            throw std::runtime_error("axis should be 0 or 1");
+        }
+
         input()->backward(gradient);
     }
 }

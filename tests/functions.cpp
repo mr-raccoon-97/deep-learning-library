@@ -25,6 +25,7 @@ TEST(functions, gradient) {
     print(b.grad)
 
     */
+   
     net::Tensor<float> x({2,3}, false); x.fill({1,2,3,4,5,6});
     net::Tensor<float> w({4,3}, true); w.fill({1,2,-3,4,5,6,7,8,-9,10,11,-12});
     net::Tensor<float> b({1,4}, true); b.fill({1,2,3,4});
