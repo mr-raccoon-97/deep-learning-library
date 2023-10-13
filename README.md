@@ -2,7 +2,7 @@
 
 ## Join the Discord:
 
-https://discord.gg/QJsKT82a
+https://discord.gg/aDxCxYEm
 
 ## Description
 
