@@ -41,7 +41,6 @@ int main() {
 It produced the same results as the equivalent PyTorch code. Why am I excited? Because you can now change the internal data of the x tensor and redo all the calculations without a single memory allocation. This could be really useful for making inferences on a server because now your functions only have to change some inputs and call the perform() method.
 
 You can also will be able to build layers like this: 
-With the new object oriented interface you will be able to create models like this:
 
 ```cpp
 
