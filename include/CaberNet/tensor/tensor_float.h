@@ -27,8 +27,8 @@ class TensorFloat {
 
     TensorFloat() = default;
     TensorFloat(std::shared_ptr<internal::Tensor> tensor);
-    TensorFloat(shape_type shape, bool gradient_requirement = false);
-    TensorFloat(shape_type shape, requires_gradient gradient_requirement);
+    TensorFloat(shape_type shape, bool gradient_requirement = false, bool detached = false);
+    TensorFloat(shape_type shape, requires_gradient gradient_requirement,  bool detached = false);
 
     void reshape(shape_type shape);
     

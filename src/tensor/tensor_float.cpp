@@ -12,16 +12,16 @@ TensorFloat::TensorFloat(std::shared_ptr<internal::Tensor> tensor) {
     internal::Graph::add(tensor_);
 }
 
-TensorFloat::TensorFloat(shape_type shape, bool gradient_requirement ) {
+TensorFloat::TensorFloat(shape_type shape, bool gradient_requirement, bool detached ) {
     tensor_ = std::make_shared<internal::Tensor>(shape);
     tensor_-> requires_gradient(gradient_requirement);
-    internal::Graph::add(tensor_);
+    if(!detached) internal::Graph::add(tensor_);
 }
 
-TensorFloat::TensorFloat(shape_type shape, requires_gradient gradient_requirement ) {
+TensorFloat::TensorFloat(shape_type shape, requires_gradient gradient_requirement , bool detached ) {
     tensor_ = std::make_shared<internal::Tensor>(shape);
     tensor_-> requires_gradient(static_cast<bool>(gradient_requirement));
-    internal::Graph::add(tensor_);
+    if(!detached) internal::Graph::add(tensor_);
 }
 
 void TensorFloat::reshape(shape_type shape) {
