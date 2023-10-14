@@ -27,7 +27,7 @@ class Model {
     }
 
     void configure_optimizer(optimizer_variant instance) {
-        optimizer_ = std::visit([](auto&& argument) { return argument.optimizer(); }, instance);
+        optimizer_ = std::visit([](auto&& argument) { return argument.get(); }, instance);
         static_cast<Derived*>(this)->set_optimizer(optimizer_);
     }
 

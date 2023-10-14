@@ -21,6 +21,8 @@ class Optimizer {
     void add_parameter(internal::Tensor* parameter);
     void step();
 
+    internal::Optimizer* get() const;
+
     protected:
     std::shared_ptr<internal::Optimizer> optimizer_ = nullptr;
 };

@@ -5,6 +5,10 @@ namespace net::base {
 
 Optimizer::~Optimizer() {}
 
+internal::Optimizer* Optimizer::get() const {
+    return optimizer_.get();
+}
+
 void Optimizer::add_parameter(internal::Tensor* parameter) {
     if(optimizer_) optimizer_->add_parameter(parameter);
 }
