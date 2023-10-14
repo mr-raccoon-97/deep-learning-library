@@ -9,17 +9,15 @@
 namespace internal { 
 
 class Tensor; 
-struct Optimizer {
-    virtual ~Optimizer() = default;
-    virtual void add_parameter(Tensor* parameter) = 0;
-    virtual void step() = 0;
-};
-}
+struct Optimizer;
+
+} // namespace internal
 
 namespace net::base {
 
 class Optimizer {
     public:
+    ~Optimizer();
     void add_parameter(internal::Tensor* parameter);
     void step();
 
@@ -33,19 +31,8 @@ namespace net::optimizer {
 
 class SGD : public base::Optimizer {
     public: 
-    ~SGD() = default;
+    ~SGD();
     SGD(float learning_rate);
 };
 
 } // namespace net::optimizer
-
-
-
-/*
-
-SGD optimizer(0.1);
-optimizer.add_parameter(...);
-...
-optimizer.update();
-
-*/

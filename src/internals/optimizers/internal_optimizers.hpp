@@ -1,14 +1,19 @@
 #ifndef INTERNAL_OPTIMIZERS_HPP
 #define INTERNAL_OPTIMIZERS_HPP
 
-#include "CaberNet/optimizers.h"
-
 #include <iostream>
 #include <vector>
 
 namespace internal {
 
 class Tensor;
+
+class Optimizer {
+    public:
+    virtual ~Optimizer() = default;
+    virtual void add_parameter(Tensor* parameter) = 0;
+    virtual void step() = 0;
+};
 
 template<class Derived>
 class OptimizerBase : public Optimizer {
@@ -31,8 +36,11 @@ class OptimizerBase : public Optimizer {
 
 class SGD : public OptimizerBase<SGD> {
     public:
-    ~SGD() override = default;
+    ~SGD() final = default;
     SGD(float learning_rate);
+
+    protected:
+    friend class OptimizerBase<SGD>;
     void update(Tensor* parameter);
 
     private:
