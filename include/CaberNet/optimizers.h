@@ -9,7 +9,7 @@
 namespace internal { 
 
 class Tensor; 
-struct Optimizer;
+class Optimizer;
 
 } // namespace internal
 

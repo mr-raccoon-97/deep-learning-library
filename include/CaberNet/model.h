@@ -6,7 +6,9 @@
 #include "tensor.h"
 #include "optimizers.h"
 
-#include "internals/optimizers/internal_optimizers.hpp"
+namespace internal {
+    class Optimizer;
+}
 
 namespace net {
 
