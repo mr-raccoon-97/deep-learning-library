@@ -24,6 +24,7 @@ class Optimizer {
     internal::Optimizer* get() const;
 
     protected:
+    Optimizer() = default;
     std::shared_ptr<internal::Optimizer> optimizer_ = nullptr;
 };
 

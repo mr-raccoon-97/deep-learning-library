@@ -35,6 +35,9 @@ class Model {
         return optimizer_;
     }
 
+    protected:
+    Model() = default;
+
     private:
     internal::Optimizer* optimizer_;
     
