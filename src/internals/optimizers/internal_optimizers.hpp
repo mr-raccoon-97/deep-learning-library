@@ -10,6 +10,7 @@ class Tensor;
 
 class Optimizer {
     public:
+    Optimizer() = default;
     virtual ~Optimizer() = default;
     virtual void add_parameter(Tensor* parameter) = 0;
     virtual void step() = 0;
@@ -18,6 +19,7 @@ class Optimizer {
 template<class Derived>
 class OptimizerBase : public Optimizer {
     public:
+    OptimizerBase() = default;
     ~OptimizerBase() override = default;
 
     void add_parameter(Tensor* parameter) final {
@@ -36,6 +38,7 @@ class OptimizerBase : public Optimizer {
 
 class SGD : public OptimizerBase<SGD> {
     public:
+    SGD() = default;
     ~SGD() final = default;
     SGD(float learning_rate);
 

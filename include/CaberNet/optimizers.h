@@ -33,7 +33,8 @@ class Optimizer {
 namespace net::optimizer {
 
 class SGD : public base::Optimizer {
-    public: 
+    public:
+    SGD() = default;
     ~SGD();
     SGD(float learning_rate);
 };

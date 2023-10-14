@@ -35,7 +35,6 @@ class Model {
         return optimizer_;
     }
 
-    protected:
     Model() = default;
 
     private:
