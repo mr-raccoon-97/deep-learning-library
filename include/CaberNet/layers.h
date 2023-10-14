@@ -71,6 +71,7 @@ class Sequence : public Model<Sequence> {
         }
         return input;
     }
+    
     void set_optimizer(internal::Optimizer* optimizer) {
         for (auto& layer : layers_) {
             std::visit([optimizer](auto&& argument) { argument.set_optimizer(optimizer); }, layer);

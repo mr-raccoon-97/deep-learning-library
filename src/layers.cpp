@@ -3,7 +3,6 @@
 
 #include "internals/optimizers/internal_optimizers.hpp"
 #include "internals/functions/internal_functions.hpp"
-#include "internals/optimizers/internal_optimizers.hpp"
 
 
 namespace net::layer {

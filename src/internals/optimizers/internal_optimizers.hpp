@@ -16,11 +16,11 @@ class Optimizer {
     virtual void step() = 0;
 };
 
-template<class Derived>
-class OptimizerBase : public Optimizer {
+class SGD : public Optimizer {
     public:
-    OptimizerBase() = default;
-    ~OptimizerBase() override = default;
+    SGD() = default;
+    SGD(float learning_rate);
+    ~SGD() final = default;
 
     void add_parameter(Tensor* parameter) final {
         parameters_.push_back(parameter);
@@ -28,25 +28,14 @@ class OptimizerBase : public Optimizer {
 
     void step() final {
         for(Tensor* parameter : parameters_) {
-            static_cast<Derived*>(this)->update(parameter);
+            update(parameter);
         }
     }
 
-    private:
-    std::vector<Tensor*> parameters_;
-};
-
-class SGD : public OptimizerBase<SGD> {
-    public:
-    SGD() = default;
-    ~SGD() final = default;
-    SGD(float learning_rate);
-
-    protected:
-    friend class OptimizerBase<SGD>;
     void update(Tensor* parameter);
 
     private:
+    std::vector<Tensor*> parameters_;
     float learning_rate_;
 };
 
