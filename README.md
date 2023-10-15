@@ -21,7 +21,7 @@ Example:
 
 ```cpp
 #include <iostream>
-#include <CaberNet/CaberNet.h>
+#include <CaberNet.h>
 
 int main() {
 
