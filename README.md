@@ -13,7 +13,7 @@ Please see the [contributing](.github/CONTRIBUTING.md#building-the-library) guid
 
 This is a prototype for a full C++ deep learning library inspired by PyTorch API. It has one notable difference: when you perform an operation, the program doesn't actually execute it immediately. Instead, it allocates a node into a graph, waiting for you to call the perform() method on the result (like tensorflow but this is a dynamic graph). This allows the programmer to perform operations without making new memory allocations.
 
-There is an example [here](https://github.com/xEricCardozo/CaberNet/blob/main/examples/model.cpp) , of the digit MNIST dataset for a simple neural network working. Since I'm not a facebook team don't expect pytorch's performance, but it works nice.
+There is an example [here](examples/model.cpp) , of the digit MNIST dataset for a simple neural network working. Since I'm not a facebook team don't expect pytorch's performance, but it works nice.
 
 In the future, I plan to re write the backend using static polymorphism to avoid the virtual calls that disables the compilers optimizations.
 
@@ -27,7 +27,7 @@ int main() {
 
     net::Tensor<float> x({2,3}, net::requires_gradient::False); x.fill({1,2,3,4,5,6});
     net::Tensor<float> w({4,3}, net::requires_gradient::True); w.fill({1,2,-3,4,5,6,7,8,-9,10,11,-12});
-    net::Tensor<float> v({2,4}, net::requires_gradient::True); w.fill({1,2,-3,4,5,6,7,8});
+    net::Tensor<float> v({2,4}, net::requires_gradient::True); v.fill({1,2,-3,4,5,6,7,8});
 
     // Or use just a boolean.
     net::Tensor<float> b({1,4}, true); b.fill({1,2,3,4});
@@ -35,7 +35,9 @@ int main() {
 
     x = net::function::linear(x,w,b);
     x = net::function::relu(x);
-    x = x + net::matmul(v, w) * x; // builds an internal computational graph.
+    x = x + net::matmul(v, w) * x;
+    // builds an internal computational graph.
+
     x.perform();
     x.backward(I); // transverses the graph.
 
@@ -103,4 +105,4 @@ Eigen library is used for performing all operations. The code is also backend-ag
 
 Thanks for all your work!:
 
-* @prince-chrismc.
+* @prince-chrismc. Your work in the CI/CD setup is very valuable. 
