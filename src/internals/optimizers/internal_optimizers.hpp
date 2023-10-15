@@ -26,13 +26,7 @@ class SGD : public Optimizer {
         parameters_.push_back(parameter);
     }
 
-    void step() final {
-        for(Tensor* parameter : parameters_) {
-            update(parameter);
-        }
-    }
-
-    void update(Tensor* parameter);
+    void step() final;
 
     private:
     std::vector<Tensor*> parameters_;

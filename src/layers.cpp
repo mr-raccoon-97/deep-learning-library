@@ -12,8 +12,8 @@ namespace net::layer {
 Linear::~Linear() = default;
 
 Linear::Linear(size_type input_features, size_type output_features, initializer distribution)
-:   weight_(shape_type{output_features, input_features}),
-    bias_(shape_type{1, output_features}, 0.0) {
+:   weight_(shape_type{output_features, input_features}, true),
+    bias_(shape_type{1, output_features}, true) {
     weight_.fill(distribution);
     bias_.fill(0.0);
 }
@@ -24,6 +24,7 @@ LogSoftmax::LogSoftmax(int axis) : axis(axis) {}
 /// settings
 
 void Linear::set_optimizer(internal::Optimizer* optimizer) {
+    std::cout << "Setting optimizer for linear" << std::endl;
     optimizer->add_parameter(weight_.internal());
     optimizer->add_parameter(bias_.internal());
 }

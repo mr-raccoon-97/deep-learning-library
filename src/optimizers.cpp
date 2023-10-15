@@ -10,7 +10,8 @@ internal::Optimizer* Optimizer::get() const {
 }
 
 void Optimizer::add_parameter(internal::Tensor* parameter) {
-    if(optimizer_) optimizer_->add_parameter(parameter);
+    optimizer_->add_parameter(parameter);
+    std::cout << "Parameter added" << std::endl;
 }
 
 void Optimizer::step() {

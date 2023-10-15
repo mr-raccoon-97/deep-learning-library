@@ -5,3 +5,4 @@
 #include "CaberNet/model.h"
 #include "CaberNet/criterions.h"
 #include "CaberNet/optimizers.h"
+#include "CaberNet/dataset.h"

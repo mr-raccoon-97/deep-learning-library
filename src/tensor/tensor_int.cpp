@@ -25,6 +25,10 @@ void TensorInt::fill(std::vector<value_type> values) {
     std::move(values.begin(), values.end(), data_->begin());
 }
 
+void TensorInt::copy(internal::Array<value_type>* other) {
+    data_->copy(other);
+}
+
 internal::Array<TensorInt::value_type>* TensorInt::internal() const { return data_.get(); }
 internal::Array<TensorInt::value_type>* TensorInt::internal() { return data_.get(); }
 

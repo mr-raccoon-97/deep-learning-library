@@ -31,7 +31,7 @@ TEST(criterion, loss) {
     net::Tensor<int> y({3,1}); y.fill({1, 3, 0});
     X = net::function::log_softmax(X,1);
     
-    net::criterion::NegativeLogLikelihood criterion(X, y);
+    net::criterion::NLLLoss criterion(X, y);
 
     /*
     The result should be: 1.82998
