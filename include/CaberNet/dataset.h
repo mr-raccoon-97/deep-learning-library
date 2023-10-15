@@ -35,9 +35,11 @@ class Dataset {
                     file.read(reinterpret_cast<char*>(&label), 1);
                     targets_.back().data()[index] = static_cast<int>(label);
                 };
+
             }
 
             targets_.pop_back(); // the last batch has a lot of zeros, so we pop it. fix later.
+
         }
         
         else {
@@ -74,9 +76,11 @@ class Dataset {
                         [](uint8_t x) { return static_cast<float>(x) / 255.0f; }
                     );
                 }
+
             }
 
             features_.pop_back();
+
         }
             
         else {

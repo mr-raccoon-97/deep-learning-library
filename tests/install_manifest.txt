@@ -1,0 +1,16 @@
+/usr/local/lib/libcabernet.a
+/usr/local/include/CaberNet/model.h
+/usr/local/include/CaberNet/optimizers.h
+/usr/local/include/CaberNet/tensor.h
+/usr/local/include/CaberNet/functions.h
+/usr/local/include/CaberNet/layers.h
+/usr/local/include/CaberNet/statistics/distributions.h
+/usr/local/include/CaberNet/criterions.h
+/usr/local/include/CaberNet/tensor/tensor_float.h
+/usr/local/include/CaberNet/tensor/tensor_int.h
+/usr/local/include/CaberNet/initializers.h
+/usr/local/include/CaberNet.h
+/usr/local/cmake/cabernet-targets.cmake
+/usr/local/cmake/cabernet-targets-noconfig.cmake
+/usr/local/cmake/cabernet-config.cmake
+/usr/local/cmake/cabernet-config-version.cmake

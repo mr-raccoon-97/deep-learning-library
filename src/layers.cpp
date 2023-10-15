@@ -24,7 +24,6 @@ LogSoftmax::LogSoftmax(int axis) : axis(axis) {}
 /// settings
 
 void Linear::set_optimizer(internal::Optimizer* optimizer) {
-    std::cout << "Setting optimizer for linear" << std::endl;
     optimizer->add_parameter(weight_.internal());
     optimizer->add_parameter(bias_.internal());
 }

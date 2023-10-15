@@ -2,7 +2,7 @@
 
 ## Join the Discord:
 
-https://discord.gg/QJsKT82a
+https://discord.gg/aDxCxYEm
 
 
 ## To build the project
@@ -81,10 +81,8 @@ struct Autoencoder : public net::Model<Autoencoder> {
 
 int main() {
     Autoencoder network;
-
     net::Tensor<float> input({5,784}, true); input.fill(1) // fills with ones
     net::Tensor<float> output = network(input);
-
     net::Tensor<int> labels({5}); labels.fill({1,2,3,4,5});
 
     net::criterion::NLLLoss loss_function(output, labels);
