@@ -41,6 +41,8 @@ internal::Tensor* TensorFloat::internal() { return tensor_.get(); }
 void TensorFloat::backward(const Tensor<float>& gradient) { tensor_-> backward(gradient.internal()); }
 void TensorFloat::perform() { tensor_-> forward(); } // TODO : this should have a return type.
 
+void TensorFloat::copy(internal::Tensor* other) { tensor_-> copy(other); }
+
 TensorFloat::iterator TensorFloat::begin() { return tensor_->begin(); }
 TensorFloat::iterator TensorFloat::end() { return tensor_->end(); }
 TensorFloat::const_iterator TensorFloat::begin() const { return tensor_->begin(); }

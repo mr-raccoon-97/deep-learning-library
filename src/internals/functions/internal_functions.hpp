@@ -45,6 +45,8 @@ class Linear : public Function {
     size_type columns_dimension() const { return weight()->shape().front(); }
 
     private:
+    std::unique_ptr<Tensor> weight_gradient_copy_;
+    std::unique_ptr<Tensor> bias_gradient_copy_;
     Tensor* weight_;
     Tensor* bias_;       
 };

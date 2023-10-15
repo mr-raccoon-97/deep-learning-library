@@ -37,6 +37,10 @@ struct Autoencoder : public net::Model<Autoencoder> {
         return x;
     }
     
+    void step() {
+        encoder_optimizer.step();
+        decoder_optimizer.step();
+    }
     /* you can add diferent optimizers to different layers
     or the same, doesn't matter, the optimizer has a shared pointer
     to it's implementation so you can pass instances of it with value
@@ -52,5 +56,7 @@ int main() {
     net::Tensor<float> y = model(x);
     y.perform();
     std::cout << y;
+
+    model.step();
     return 0;
 }

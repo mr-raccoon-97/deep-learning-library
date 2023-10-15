@@ -19,6 +19,15 @@ Linear::Linear(Tensor* input, Tensor* weight, Tensor* bias)
     reshape({input->shape().front(), weight->shape().front()});
     bool gradient_requirement = input->requires_gradient() || ( weight->requires_gradient() || bias->requires_gradient() );
     requires_gradient(gradient_requirement);
+
+    if (bias->requires_gradient()) {
+        bias_gradient_copy_ = std::make_unique<Tensor>(bias->shape(), false, false);
+    }
+
+    if (weight->requires_gradient()) {
+        weight_gradient_copy_ = std::make_unique<Tensor>(weight->shape(), false, false);
+    }
+
 }
 
 Tensor* Linear::forward() {
@@ -80,30 +89,27 @@ void Linear::backward(Tensor* gradient) const {
     }
 
     if (weight()->requires_gradient()) {
-        Tensor* weight_gradient = new Tensor({columns_dimension(), inner_dimension()}, false, false);
+        
         Eigen::Map<const Eigen::Matrix<scalar_type, -1, -1, 1>> input_map(
             input()->data(),
             rows_dimension(),
             inner_dimension() );
 
         Eigen::Map<Eigen::Matrix<scalar_type, -1, -1, 1>> weight_gradient_map(
-            weight_gradient->data(),
+            weight_gradient_copy_->data(),
             columns_dimension(),
             inner_dimension() );
 
         weight_gradient_map = gradient_map.transpose() * input_map;
-        weight()->backward(weight_gradient);
-        delete weight_gradient;
+        weight()->backward(weight_gradient_copy_.get());
     }
     
     if (bias() && bias()->requires_gradient()) {
-        Tensor* bias_gradient = new Tensor({1, columns_dimension()}, false, false);
         Eigen::Map<Eigen::Matrix<scalar_type, 1, -1, 1>> bias_gradient_map(
-            bias_gradient->data(),
+            bias_gradient_copy_->data(),
             columns_dimension());
         bias_gradient_map = gradient_map.colwise().sum();
-        bias()->backward(bias_gradient);
-        delete bias_gradient;
+        bias()->backward(bias_gradient_copy_.get());
     }
 }
 

@@ -35,8 +35,11 @@ class Dataset {
                     file.read(reinterpret_cast<char*>(&label), 1);
                     targets_.back().data()[index] = static_cast<int>(label);
                 };
-                std::cout << targets_.back() << std::endl;
+
             }
+
+            targets_.pop_back(); // the last batch has a lot of zeros, so we pop it. fix later.
+
         }
         
         else {
@@ -73,8 +76,10 @@ class Dataset {
                         [](uint8_t x) { return static_cast<float>(x) / 255.0f; }
                     );
                 }
-                std::cout << features_.back() << std::endl;
+
             }
+
+            features_.pop_back();
 
         }
             
@@ -87,6 +92,16 @@ class Dataset {
         features_.clear();
         targets_.clear();
     }
+
+    std::size_t lenght() {
+        return features_.size();
+    }
+
+    std::vector<Tensor<float>>& features() { return features_; }
+    const std::vector<Tensor<float>>& features() const { return features_; }
+
+    std::vector<Tensor<int>>& targets() { return targets_; }
+    const std::vector<Tensor<int>>& targets() const { return targets_; }
 
     private:
     uint32_t swap_endian(uint32_t val) {

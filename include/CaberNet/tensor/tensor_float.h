@@ -39,6 +39,8 @@ class TensorFloat {
     void fill(value_type value);
     void fill(std::vector<value_type> values);
 
+    void copy(internal::Tensor* other);
+
     internal::Tensor* internal() const;
     internal::Tensor* internal();
 

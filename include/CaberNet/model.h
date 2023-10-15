@@ -31,6 +31,10 @@ class Model {
         static_cast<Derived*>(this)->set_optimizer(optimizer_);
     }
 
+    void set_optimizer(internal::Optimizer* optimizer) {
+        static_cast<Derived*>(this)->set_optimizer(optimizer);
+    }
+
     internal::Optimizer* optimizer() const {
         return optimizer_;
     }

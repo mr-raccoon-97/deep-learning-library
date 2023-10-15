@@ -11,11 +11,12 @@ namespace internal {
 
 namespace net::criterion {
 
-class NegativeLogLikelihood {
+class NLLLoss {
     public:
-    ~NegativeLogLikelihood();
-    NegativeLogLikelihood(Tensor<float> output, Tensor<int> targets);
+    ~NLLLoss();
+    NLLLoss(Tensor<float> output, Tensor<int> targets);
     float loss() const;
+    void backward();
 
     private:
     std::unique_ptr<internal::Criterion> criterion_;

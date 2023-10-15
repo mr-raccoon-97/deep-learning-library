@@ -57,13 +57,23 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/eric/deep-learning-library/examples
+CMAKE_SOURCE_DIR = /home/eric/deep-learning-library
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /home/eric/deep-learning-library/examples
 
 #=============================================================================
 # Targets provided globally by CMake.
+
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -84,6 +94,51 @@ rebuild_cache:
 # Special rule for the target rebuild_cache
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -117,115 +172,7 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named cabernet-examples-functions
 
-# Build rule for target.
-cabernet-examples-functions: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cabernet-examples-functions
-.PHONY : cabernet-examples-functions
-
-# fast build rule for target.
-cabernet-examples-functions/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-functions.dir/build.make CMakeFiles/cabernet-examples-functions.dir/build
-.PHONY : cabernet-examples-functions/fast
-
-#=============================================================================
-# Target rules for targets named cabernet-examples-layers
-
-# Build rule for target.
-cabernet-examples-layers: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cabernet-examples-layers
-.PHONY : cabernet-examples-layers
-
-# fast build rule for target.
-cabernet-examples-layers/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-layers.dir/build.make CMakeFiles/cabernet-examples-layers.dir/build
-.PHONY : cabernet-examples-layers/fast
-
-#=============================================================================
-# Target rules for targets named cabernet-examples-operations
-
-# Build rule for target.
-cabernet-examples-operations: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cabernet-examples-operations
-.PHONY : cabernet-examples-operations
-
-# fast build rule for target.
-cabernet-examples-operations/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-operations.dir/build.make CMakeFiles/cabernet-examples-operations.dir/build
-.PHONY : cabernet-examples-operations/fast
-
-functions.o: functions.cpp.o
-.PHONY : functions.o
-
-# target to build an object file
-functions.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-functions.dir/build.make CMakeFiles/cabernet-examples-functions.dir/functions.cpp.o
-.PHONY : functions.cpp.o
-
-functions.i: functions.cpp.i
-.PHONY : functions.i
-
-# target to preprocess a source file
-functions.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-functions.dir/build.make CMakeFiles/cabernet-examples-functions.dir/functions.cpp.i
-.PHONY : functions.cpp.i
-
-functions.s: functions.cpp.s
-.PHONY : functions.s
-
-# target to generate assembly for a file
-functions.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-functions.dir/build.make CMakeFiles/cabernet-examples-functions.dir/functions.cpp.s
-.PHONY : functions.cpp.s
-
-layers.o: layers.cpp.o
-.PHONY : layers.o
-
-# target to build an object file
-layers.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-layers.dir/build.make CMakeFiles/cabernet-examples-layers.dir/layers.cpp.o
-.PHONY : layers.cpp.o
-
-layers.i: layers.cpp.i
-.PHONY : layers.i
-
-# target to preprocess a source file
-layers.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-layers.dir/build.make CMakeFiles/cabernet-examples-layers.dir/layers.cpp.i
-.PHONY : layers.cpp.i
-
-layers.s: layers.cpp.s
-.PHONY : layers.s
-
-# target to generate assembly for a file
-layers.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-layers.dir/build.make CMakeFiles/cabernet-examples-layers.dir/layers.cpp.s
-.PHONY : layers.cpp.s
-
-operations.o: operations.cpp.o
-.PHONY : operations.o
-
-# target to build an object file
-operations.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-operations.dir/build.make CMakeFiles/cabernet-examples-operations.dir/operations.cpp.o
-.PHONY : operations.cpp.o
-
-operations.i: operations.cpp.i
-.PHONY : operations.i
-
-# target to preprocess a source file
-operations.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-operations.dir/build.make CMakeFiles/cabernet-examples-operations.dir/operations.cpp.i
-.PHONY : operations.cpp.i
-
-operations.s: operations.cpp.s
-.PHONY : operations.s
-
-# target to generate assembly for a file
-operations.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/cabernet-examples-operations.dir/build.make CMakeFiles/cabernet-examples-operations.dir/operations.cpp.s
-.PHONY : operations.cpp.s
 
 # Help Target
 help:
@@ -234,19 +181,6 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... rebuild_cache"
-	@echo "... cabernet-examples-functions"
-	@echo "... cabernet-examples-layers"
-	@echo "... cabernet-examples-operations"
-	@echo "... functions.o"
-	@echo "... functions.i"
-	@echo "... functions.s"
-	@echo "... layers.o"
-	@echo "... layers.i"
-	@echo "... layers.s"
-	@echo "... operations.o"
-	@echo "... operations.i"
-	@echo "... operations.s"
 .PHONY : help
 
 
