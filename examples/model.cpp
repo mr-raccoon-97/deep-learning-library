@@ -39,7 +39,7 @@ int main() {
 
         std::cout << "Epoch: " << epoch + 1 << std::endl;
         
-        for(int batch = 0; batch < dataset.lenght(); ++batch) {
+        for(int batch = 0; batch < dataset.length(); ++batch) {
             input.copy(dataset.features()[batch].internal()); // I will fix this in the future so it will be prettier and without copies.
             targets.copy(dataset.targets()[batch].internal());
 
