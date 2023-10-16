@@ -17,8 +17,6 @@ struct Network : public net::Model<Network> {
     }
 
     net::optimizer::SGD optimizer {/*learning rate*/ 0.1};
-
-    void step() { optimizer.step(); }
 };
 
 int main() {
@@ -47,7 +45,7 @@ int main() {
 
             std::cout << "loss" << criterion.loss() << std::endl;
             criterion.backward();
-            model.step();   
+            model.optimizer.step();   
         }
         
     }
