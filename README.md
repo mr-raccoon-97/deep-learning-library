@@ -77,8 +77,6 @@ struct Network : public net::Model<Network> {
     }
 
     net::optimizer::SGD optimizer {/*learning rate*/ 0.1};
-
-    void step() { optimizer.step(); }
 };
 
 int main() {
@@ -94,7 +92,7 @@ int main() {
     std::cout << loss_function.loss() << std::endl;
 
     loss_function.backward(); // backpropagate the gradients
-    network.step() // triggers the optimizer. 
+    network.optimizer.step() // triggers the optimizer. 
 }
 
 ```
