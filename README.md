@@ -60,7 +60,7 @@ struct Network : public net::Model<Network> {
     // it uses the CRTP pattern, so you define the forward method
     // to use the () operator when performing operations. 
 
-    Autoencoder() {
+    Network() {
         layers.configure_optimizer(optimizer);
     }
 
