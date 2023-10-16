@@ -1,5 +1,5 @@
-#include "../include/CaberNet/tensor.h"
-#include "../include/CaberNet/layers.h"
+#include "CaberNet/tensor.h"
+#include "CaberNet/layers.h"
 
 #include "internals/functions/internal_functions.hpp"
 
@@ -11,8 +11,8 @@ namespace net::layer {
 Linear::~Linear() = default;
 
 Linear::Linear(size_type input_features, size_type output_features, initializer distribution)
-:   weight_(shape_type{output_features, input_features}),
-    bias_(shape_type{1, output_features}, 0.0) {
+:   weight_(shape_type{output_features, input_features}, true),
+    bias_(shape_type{1, output_features}, true) {
     weight_.fill(distribution);
     bias_.fill(0.0);
 }

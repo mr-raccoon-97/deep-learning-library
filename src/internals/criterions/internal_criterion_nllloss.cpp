@@ -18,7 +18,24 @@ NLLLoss::scalar_type NLLLoss::loss() const {
         }
 
         return loss_value / static_cast<scalar_type>(batch_size());
-    }
 }
+
+
+void NLLLoss::backward() {
+    Eigen::Map<Eigen::Array<scalar_type, -1, -1, 1>> gradient_map(
+        gradient()->data(),
+        batch_size(),
+        number_of_classes()
+    );
+
+    gradient_map.fill(0);
+    for(auto index = 0; index < batch_size(); ++index) {
+        gradient_map(index, targets()->data()[index]) = -1;
+    }
+    gradient_map /= static_cast<scalar_type>(batch_size());
+    output()->backward(gradient());
+}
+
+} // namespace internal
 
 #endif // USE_EIGEN_BACKEND

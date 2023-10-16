@@ -1,5 +1,5 @@
-#include "../../include/CaberNet/tensor/tensor_float.h"
-#include "../../include/CaberNet/tensor.h"
+#include "CaberNet/tensor/tensor_float.h"
+#include "CaberNet/tensor.h"
 
 #include "../internals/internal_tensor.hpp"
 #include "../internals/internal_graph.hpp"
@@ -12,16 +12,16 @@ TensorFloat::TensorFloat(std::shared_ptr<internal::Tensor> tensor) {
     internal::Graph::add(tensor_);
 }
 
-TensorFloat::TensorFloat(shape_type shape, bool gradient_requirement ) {
+TensorFloat::TensorFloat(shape_type shape, bool gradient_requirement, bool detached ) {
     tensor_ = std::make_shared<internal::Tensor>(shape);
     tensor_-> requires_gradient(gradient_requirement);
-    internal::Graph::add(tensor_);
+    if(!detached) internal::Graph::add(tensor_);
 }
 
-TensorFloat::TensorFloat(shape_type shape, requires_gradient gradient_requirement ) {
+TensorFloat::TensorFloat(shape_type shape, requires_gradient gradient_requirement , bool detached ) {
     tensor_ = std::make_shared<internal::Tensor>(shape);
     tensor_-> requires_gradient(static_cast<bool>(gradient_requirement));
-    internal::Graph::add(tensor_);
+    if(!detached) internal::Graph::add(tensor_);
 }
 
 void TensorFloat::reshape(shape_type shape) {
@@ -40,6 +40,8 @@ internal::Tensor* TensorFloat::internal() { return tensor_.get(); }
 
 void TensorFloat::backward(const Tensor<float>& gradient) { tensor_-> backward(gradient.internal()); }
 void TensorFloat::perform() { tensor_-> forward(); } // TODO : this should have a return type.
+
+void TensorFloat::copy(internal::Tensor* other) { tensor_-> copy(other); }
 
 TensorFloat::iterator TensorFloat::begin() { return tensor_->begin(); }
 TensorFloat::iterator TensorFloat::end() { return tensor_->end(); }

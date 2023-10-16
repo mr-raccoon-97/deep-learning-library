@@ -57,14 +57,3 @@ class SGD : public base::Optimize<SGD> {
 };
 
 } // namespace net::optimizer
-
-
-
-/*
-
-SGD optimizer(0.1);
-optimizer.add_parameter(...);
-...
-optimizer.update();
-
-*/

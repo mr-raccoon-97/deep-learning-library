@@ -29,6 +29,8 @@ class TensorInt {
     void fill(value_type value);
     void fill(std::vector<value_type> values);
 
+    void copy(internal::Array<value_type>* other);
+
     internal::Array<value_type>* internal() const;
     internal::Array<value_type>* internal();
 

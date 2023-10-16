@@ -1,5 +1,5 @@
-#include "../../include/CaberNet/tensor/tensor_int.h"
-#include "../../include/CaberNet/tensor.h"
+#include "CaberNet/tensor/tensor_int.h"
+#include "CaberNet/tensor.h"
 
 #include "../internals/internal_array.hpp"
 
@@ -23,6 +23,10 @@ void TensorInt::fill(value_type value) {
 
 void TensorInt::fill(std::vector<value_type> values) {
     std::move(values.begin(), values.end(), data_->begin());
+}
+
+void TensorInt::copy(internal::Array<value_type>* other) {
+    data_->copy(other);
 }
 
 internal::Array<TensorInt::value_type>* TensorInt::internal() const { return data_.get(); }

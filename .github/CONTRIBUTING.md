@@ -1,6 +1,6 @@
 # Contributing
 
-Any contribution is more the welcomed.
+Any contribution is more the welcomed. If you are not sure about your contribution just push it in the in-process folder and I will see what can i do with it.
 
 > **Tip:** If you are working from VS Code, you can [install the recommended extensions](https://dev.to/askrishnapravin/recommend-vs-code-extensions-to-your-future-teammates-4gkb) to quickly get setup.
 

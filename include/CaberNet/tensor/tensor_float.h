@@ -27,8 +27,8 @@ class TensorFloat {
 
     TensorFloat() = default;
     TensorFloat(std::shared_ptr<internal::Tensor> tensor);
-    TensorFloat(shape_type shape, bool gradient_requirement = false);
-    TensorFloat(shape_type shape, requires_gradient gradient_requirement);
+    TensorFloat(shape_type shape, bool gradient_requirement = false, bool detached = false);
+    TensorFloat(shape_type shape, requires_gradient gradient_requirement,  bool detached = false);
 
     void reshape(shape_type shape);
     
@@ -38,6 +38,8 @@ class TensorFloat {
     void fill(initializer distribution);
     void fill(value_type value);
     void fill(std::vector<value_type> values);
+
+    void copy(internal::Tensor* other);
 
     internal::Tensor* internal() const;
     internal::Tensor* internal();
