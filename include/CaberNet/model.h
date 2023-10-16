@@ -28,7 +28,9 @@ class Model {
 
     protected:
     Model() = default;
-    Model(std::shared_ptr<net::base::Optimizer> optimizer) : optimizer_(optimizer){    }
+    Model(std::shared_ptr<net::base::Optimizer> optimizer) : optimizer_(optimizer) {
+        static_cast<Derived*>(this)->set_optimizer(instance);
+    }
 };
 
 } // namespace net
