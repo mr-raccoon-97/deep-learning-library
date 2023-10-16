@@ -55,7 +55,7 @@ You can also build layers like this:
 
 #include <CaberNet.h>
 
-struct Autoencoder : public net::Model<Autoencoder> {
+struct Network : public net::Model<Network> {
 
     // it uses the CRTP pattern, so you define the forward method
     // to use the () operator when performing operations. 
@@ -82,7 +82,7 @@ struct Autoencoder : public net::Model<Autoencoder> {
 };
 
 int main() {
-    Autoencoder network;
+    Network network;
     net::Tensor<float> input({5,784}, true); input.fill(1) // fills with ones
     net::Tensor<float> output = network(input);
     net::Tensor<int> labels({5}); labels.fill({1,2,3,4,5});
