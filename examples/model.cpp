@@ -42,7 +42,7 @@ int main() {
         std::cout << "Epoch: " << epoch + 1 << std::endl;
         
         for(int batch = 0; batch < dataset.lenght(); ++batch) {
-            input.copy(dataset.features()[batch].internal()); // this could be done without copies with a view. 
+            input.copy(dataset.features()[batch].internal()); // I will fix this in the futuro so it will be prettier and without copies.
             targets.copy(dataset.targets()[batch].internal());
 
             std::cout << "loss" << criterion.loss() << std::endl;
