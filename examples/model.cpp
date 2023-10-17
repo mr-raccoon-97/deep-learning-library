@@ -1,9 +1,9 @@
 #include <CaberNet.h>
 
 struct Network : public net::Model<Network> {
-    Network() {
-        layers.configure_optimizer(optimizer);
-    }
+    Network() : net::Model<Network>(
+        std::make_shared<net::optimizer::SGD>(/*learning rate*/ 0.1)
+    ) {}
 
     net::layer::Sequence layers {
         net::layer::Linear(784, 128),
@@ -15,10 +15,6 @@ struct Network : public net::Model<Network> {
     net::Tensor<float> forward(net::Tensor<float> x) {
         return layers(x);
     }
-
-    net::optimizer::SGD optimizer {/*learning rate*/ 0.1};
-
-    void step() { optimizer.step(); }
 };
 
 int main() {
@@ -41,13 +37,13 @@ int main() {
 
         std::cout << "Epoch: " << epoch + 1 << std::endl;
         
-        for(int batch = 0; batch < dataset.lenght(); ++batch) {
-            input.copy(dataset.features()[batch].internal()); // this could be done without copies with a view. 
+        for(int batch = 0; batch < dataset.length(); ++batch) {
+            input.copy(dataset.features()[batch].internal()); // I will fix this in the future so it will be prettier and without copies.
             targets.copy(dataset.targets()[batch].internal());
 
             std::cout << "loss" << criterion.loss() << std::endl;
             criterion.backward();
-            model.step();   
+            model.optimizer.step();   
         }
         
     }

@@ -55,12 +55,12 @@ You can also build layers like this:
 
 #include <CaberNet.h>
 
-struct Autoencoder : public net::Model<Autoencoder> {
+struct Network : public net::Model<Network> {
 
     // it uses the CRTP pattern, so you define the forward method
     // to use the () operator when performing operations. 
 
-    Autoencoder() {
+    Network() {
         layers.configure_optimizer(optimizer);
     }
 
@@ -77,12 +77,10 @@ struct Autoencoder : public net::Model<Autoencoder> {
     }
 
     net::optimizer::SGD optimizer {/*learning rate*/ 0.1};
-
-    void step() { optimizer.step(); }
 };
 
 int main() {
-    Autoencoder network;
+    Network network;
     net::Tensor<float> input({5,784}, true); input.fill(1) // fills with ones
     net::Tensor<float> output = network(input);
     net::Tensor<int> labels({5}); labels.fill({1,2,3,4,5});
@@ -94,7 +92,7 @@ int main() {
     std::cout << loss_function.loss() << std::endl;
 
     loss_function.backward(); // backpropagate the gradients
-    network.step() // triggers the optimizer. 
+    network.optimizer.step() // triggers the optimizer. 
 }
 
 ```
@@ -105,4 +103,4 @@ Eigen library is used for performing all operations. The code is also backend-ag
 
 Thanks for all your work!:
 
-* @prince-chrismc. Your work in the CI/CD setup is very valuable. 
+* @prince-chrismc. All your work is extremely valuable. 

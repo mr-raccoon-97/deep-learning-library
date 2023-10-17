@@ -1,7 +1,6 @@
 #include "CaberNet/tensor.h"
 #include "CaberNet/layers.h"
 
-#include "internals/optimizers/internal_optimizers.hpp"
 #include "internals/functions/internal_functions.hpp"
 
 
@@ -23,7 +22,7 @@ LogSoftmax::LogSoftmax(int axis) : axis(axis) {}
 
 /// settings
 
-void Linear::set_optimizer(internal::Optimizer* optimizer) {
+void Linear::set_optimizer(std::shared_ptr<net::base::Optimizer> optimizer) {
     optimizer->add_parameter(weight_.internal());
     optimizer->add_parameter(bias_.internal());
 }

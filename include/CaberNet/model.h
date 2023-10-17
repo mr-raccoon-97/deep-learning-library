@@ -6,18 +6,10 @@
 #include "tensor.h"
 #include "optimizers.h"
 
-namespace internal {
-    class Optimizer;
-}
-
 namespace net {
 
 template<class Derived>
 class Model {
-    using optimizer_variant = std::variant<
-        optimizer::SGD
-    >;
-
     public:
     using size_type = std::size_t;
     using shape_type = std::vector<size_t>;
@@ -26,24 +18,19 @@ class Model {
         return static_cast<Derived*>(this)->forward(input);
     }
 
-    void configure_optimizer(optimizer_variant instance) {
-        optimizer_ = std::visit([](auto&& argument) { return argument.get(); }, instance);
-        static_cast<Derived*>(this)->set_optimizer(optimizer_);
-    }
-
-    void set_optimizer(internal::Optimizer* optimizer) {
+    void configure_optimizer(std::shared_ptr<net::base::Optimizer> optimizer) {
         static_cast<Derived*>(this)->set_optimizer(optimizer);
+        optimizer_ = optimizer;
     }
-
-    internal::Optimizer* optimizer() const {
-        return optimizer_;
-    }
-
-    Model() = default;
 
     private:
-    internal::Optimizer* optimizer_;
-    
+    std::shared_ptr<net::base::Optimizer> optimizer_ = std::make_shared<net::optimizer::NoOptimization>();
+
+    protected:
+    Model() = default;
+    Model(std::shared_ptr<net::base::Optimizer> optimizer) : optimizer_(optimizer) {
+        static_cast<Derived*>(this)->set_optimizer(optimizer);
+    }
 };
 
 } // namespace net
