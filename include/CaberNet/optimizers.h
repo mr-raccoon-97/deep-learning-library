@@ -12,6 +12,7 @@ namespace net::base {
 struct Optimizer {
     virtual ~Optimizer() = default;
     virtual void add_parameter(internal::Tensor* parameter) = 0;
+    virtual void add_parameter(const std::vector<internal::Tensor*>& parameters) = 0;
     virtual void step() = 0;
 };
 
@@ -22,6 +23,10 @@ class Optimize : public Optimizer {
 
     void add_parameter(internal::Tensor* parameter) override final {
         parameters_.push_back(parameter);
+    }
+
+    void add_parameter(const std::vector<internal::Tensor*>& parameters) override final {
+        parameters_.insert(parameters_.end(), parameters.begin(), parameters.end());
     }
 
     void step() override final {

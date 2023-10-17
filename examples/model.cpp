@@ -1,9 +1,10 @@
 #include <CaberNet.h>
 
 struct Network : public net::Model<Network> {
-    Network() : net::Model<Network>(
-        std::make_shared<net::optimizer::SGD>(/*learning rate*/ 0.1)
-    ) {}
+    
+    Network() {
+        optimizer.add_parameter(layers.parameters());
+    }
 
     net::layer::Sequence layers {
         net::layer::Linear(784, 128),
@@ -15,6 +16,8 @@ struct Network : public net::Model<Network> {
     net::Tensor<float> forward(net::Tensor<float> x) {
         return layers(x);
     }
+
+    net::optimizer::SGD optimizer{0.01};
 };
 
 int main() {

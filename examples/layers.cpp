@@ -14,8 +14,8 @@ cmake --build . --target cabernet-examples-layers
 struct Autoencoder : public net::Model<Autoencoder> {
 
     Autoencoder() {
-        encoder.configure_optimizer(std::dynamic_pointer_cast<net::base::Optimizer>(encoder_optimizer));
-        decoder.configure_optimizer(std::dynamic_pointer_cast<net::base::Optimizer>(decoder_optimizer));
+        encoder_optimizer.add_parameter(encoder.parameters());
+        decoder_optimizer.add_parameter(decoder.parameters());
     }
 
     net::layer::Sequence encoder {
@@ -38,16 +38,16 @@ struct Autoencoder : public net::Model<Autoencoder> {
     }
     
     void step() {
-        encoder_optimizer->step();
-        decoder_optimizer->step();
+        encoder_optimizer.step();
+        decoder_optimizer.step();
     }
     /* you can add different optimizers to different layers
     or the same, doesn't matter, the optimizer has a shared pointer
     to it's implementation so you can pass instances of it with value
     semantics without making deep copies */
 
-    std::shared_ptr<net::optimizer::SGD> encoder_optimizer = std::make_shared<net::optimizer::SGD>(/*learning rate*/ 0.1);
-    std::shared_ptr<net::optimizer::SGD> decoder_optimizer = std::make_shared<net::optimizer::SGD>(/*learning rate*/ 0.2);
+    net::optimizer::SGD encoder_optimizer{0.01};
+    net::optimizer::SGD decoder_optimizer{0.01};
 };
 
 int main() {
