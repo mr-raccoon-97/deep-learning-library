@@ -93,7 +93,7 @@ class Dataset {
         targets_.clear();
     }
 
-    std::size_t lenght() {
+    std::size_t length() {
         return features_.size();
     }
 

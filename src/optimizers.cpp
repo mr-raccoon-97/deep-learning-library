@@ -1,31 +1,20 @@
 #include "CaberNet/optimizers.h"
-#include "internals/optimizers/internal_optimizers.hpp"
 
-namespace net::base {
+#include "internals/config.h"
+#include "internals/internal_tensor.hpp"
 
-Optimizer::~Optimizer() {}
 
-internal::Optimizer* Optimizer::get() const {
-    return optimizer_.get();
-}
-
-void Optimizer::add_parameter(internal::Tensor* parameter) {
-    optimizer_->add_parameter(parameter);
-    std::cout << "Parameter added" << std::endl;
-}
-
-void Optimizer::step() {
-    if(optimizer_) optimizer_->step();
-}
-
-}
+#if defined(USE_EIGEN_BACKEND)
 
 namespace net::optimizer {
 
-SGD::~SGD() {}
-
-SGD::SGD(float learning_rate) {
-    optimizer_ = std::make_shared<internal::SGD>(learning_rate);
+void SGD::update(internal::Tensor* parameter) {
+    Eigen::Map<Eigen::Array<internal::Tensor::scalar_type, 1, -1>> parameter_map(parameter->data(), parameter->size());
+    Eigen::Map<Eigen::Array<internal::Tensor::scalar_type, 1, -1>> parameter_gradient_map(parameter->gradient()->data(), parameter->size());
+    parameter_map -= learning_rate_ * parameter_gradient_map;
+    parameter_gradient_map = 0;
 }
 
 }
+
+#endif
