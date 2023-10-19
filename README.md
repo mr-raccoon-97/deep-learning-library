@@ -1,8 +1,11 @@
 # CaberNet C++ Deep Learning Library
 
+Important 18/10: Thanks you all for the support! I will be inactive developing features for a few months researching in how to implement quantization and loading torchscripts into the computational graph for making CPU inference, since I just find out how to create memory pool quantized tensors and had some cool ideas using template metaprogramming. Anyway, every contribution is welcomed since I'm planning to rehuse the user interface created for this library. If you are not sure of your contribution, just push it into the in-process folder and I will see how can I merge it into the project, we need implementations for convolutions, optimizers, and different criterions. 
+
 ## Join the Discord:
 
 https://discord.gg/aDxCxYEm
+If the link doesn't work, just send me an email: eric.m.cardozo@gmail.com. 
 
 
 ## To build the project
