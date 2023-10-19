@@ -1,17 +1,5 @@
 # CaberNet C++ Deep Learning Library
 
-Important 18/10: Thank you for all the support! I will be inactive developing features for a few months researching in how to implement quantization and loading torchscripts into the computational graph for making CPU inference, since I just find out how to create memory pool for quantized tensors and had some cool ideas using template metaprogramming. Anyway, every contribution is welcomed since I'm planning to rehuse the user interface created for this library. If you are not sure of your contribution, just push it into the in-process folder and I will see how can I merge it into the project, we need implementations for convolutions, optimizers, and different criterions. 
-
-## Join the Discord:
-
-https://discord.gg/aDxCxYEm
-If the link doesn't work, just send me an email: eric.m.cardozo@gmail.com. 
-
-
-## To build the project
-
-Please see the [contributing](.github/CONTRIBUTING.md#building-the-library) guide for more information.
-
 ## Description
 
 This is a prototype for a full C++ deep learning library inspired by PyTorch API. It has one notable difference: when you perform an operation, the program doesn't actually execute it immediately. Instead, it allocates a node into a graph, waiting for you to call the perform() method on the result (like tensorflow but this is a dynamic graph). This allows the programmer to perform operations without making new memory allocations.
@@ -19,6 +7,14 @@ This is a prototype for a full C++ deep learning library inspired by PyTorch API
 There is an example [here](examples/model.cpp) , of the digit MNIST dataset for a simple neural network working. Since I'm not a facebook team don't expect pytorch's performance, but it works nice.
 
 In the future, I plan to re write the backend using static polymorphism to avoid the virtual calls that disables the compilers optimizations.
+
+Important 18/10: Thank you for all the support! I will be inactive developing features for a few months researching in how to implement quantization and loading torchscripts into the computational graph for making CPU inference, I just find out how to create memory pool for quantized tensors using low level C and had some cool ideas using template metaprogramming.
+
+Anyway, every contribution is welcomed since I'm planning to rehuse the user interface created for this library. If you are not sure of your contribution, just push it into the in-process folder and I will see how can I merge it into the project, we need implementations for convolutions, optimizers, criterions, broadcasting mechanisms, etc..
+
+## To build the project
+
+Please see the [contributing](.github/CONTRIBUTING.md#building-the-library) guide for more information.
 
 Example:
 
@@ -101,6 +97,14 @@ int main() {
 ```
 
 Eigen library is used for performing all operations. The code is also backend-agnostic, meaning you can write your custom CUDA implementations if needed.
+
+
+## Join the Discord:
+
+https://discord.gg/aDxCxYEm
+If the link doesn't work, just send me an email: eric.m.cardozo@gmail.com. 
+
+
 
 ## Acknowledgements
 
