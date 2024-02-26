@@ -1,9 +1,4 @@
-# CaberNet C++ Deep Learning Library
-
-## Join the Discord:
-
-https://discord.gg/aDxCxYEm
-If the link doesn't work and you want to contribute, just send me an email: eric.m.cardozo@gmail.com. 
+# C++ prototype for a Deep Learning Library
 
 ## Description
 
