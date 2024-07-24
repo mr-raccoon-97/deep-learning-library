@@ -1,5 +1,8 @@
 # C++ prototype for a Deep Learning Library
 
+## Archived
+While the idea of having a full deep learning framework with autograd in C++ is nice, With limited resources I think we should focus on an inference only library first. There are to many things to consider aside from the core, like performant dataloaders, data access, and tools for training, optimizers, etc. I will be working in inference only for now for some specific models. 
+
 ## Description
 
 This is a prototype for a full C++ deep learning library inspired by PyTorch API. It has one notable difference: when you perform an operation, the program doesn't actually execute it immediately. Instead, it allocates a node into a graph, waiting for you to call the perform() method on the result (like tensorflow but this is a dynamic graph). This allows the programmer to perform operations without making new memory allocations.
@@ -8,11 +11,6 @@ There is an example [here](examples/model.cpp) , of the digit MNIST dataset for 
 
 In the future, I plan to re write the backend using static polymorphism to avoid the virtual calls that disables the compilers optimizations.
 
-### Important 18/10
-
-Thank you all for the support! I will be inactive developing new features for a few months, I'll be researching the implementation of quantization and loading torchscripts into the computational graph for making CPU inference. I just find out how to create memory pools for quantized tensors using low level C and had some cool ideas using template metaprogramming.
-
-Anyway, every contribution is welcomed since I'm planning to rehuse the user interface created for this library. If you are not sure of your contribution, just push it into the in-process folder and I will see how can I merge it into the project, we need implementations for convolutions, optimizers, criterions, broadcasting mechanisms, etc..
 
 ## To build the project
 
