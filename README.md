@@ -1,7 +1,7 @@
 # C++ prototype for a Deep Learning Library
 
 ## Archived
-While the idea of having a full deep learning framework with autograd in C++ is nice, with limited resources I think we should focus on an inference only library first. There are to many things to consider aside from the core, like performant dataloaders, data access, tools for training, optimizers, etc. I will be working on inference only for now for some specific models. 
+While the idea of having a full deep learning framework with autograd in C++ is nice, it's to ambitious, with limited resources I think we should focus on an inference only library first. There are to many things to consider aside from the core, like performant dataloaders, data access, tools for training, optimizers, etc. I will be working on inference only for now for some specific models. 
 
 ## Description
 
