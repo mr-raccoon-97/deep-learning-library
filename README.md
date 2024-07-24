@@ -5,7 +5,7 @@ While the idea of having a full deep learning framework with autograd in C++ is 
 
 ## Description
 
-This is a prototype for a full C++ deep learning library inspired by PyTorch API. It has one notable difference: when you perform an operation, the program doesn't actually execute it immediately. Instead, it allocates a node into a graph, waiting for you to call the perform() method on the result (like tensorflow but this is a dynamic graph). This allows the programmer to perform operations without making new memory allocations.
+A full C++ deep learning library inspired by PyTorch API. It has one notable difference: when you perform an operation, the program doesn't actually execute it immediately. Instead, it allocates a node into a graph, waiting for you to call the perform() method on the result (like tensorflow but this is a dynamic graph). This allows the programmer to perform operations without making new memory allocations.
 
 There is an example [here](examples/model.cpp) , of the digit MNIST dataset for a simple neural network working. Since I'm not a facebook team don't expect pytorch's performance, but it works nice.
 
